@@ -1052,6 +1052,15 @@ public class SolrDBManager {
 
 	
 	
+	public ArrayList<String> getTop(HashMap<String, Integer> h, int n) {
+		ArrayList<String> r = new ArrayList<String> ();
+		for (String k: h.keySet()) r.add(k);
+		if (r.size()>0)
+			sortingMap.qsort(r, h, 0, r.size()-1);
+		ArrayList<String> top = new ArrayList<String> ();
+		for (int i = 0; i < Math.min(n, r.size()-1); i++) top.add(r.get(i));
+		return top;
+	}
 	public  JSONArray getStoryTellingGraph(String entity_a, String entity_b,
 			int n, String language) {
 		entity_a = entity_a.replace("_", " ");
@@ -1065,7 +1074,8 @@ public class SolrDBManager {
 				"meta.source.keywords",
 				"meta.extracted.text.ner.all"
 				);
-		query.setQuery("meta.extracted.text.ner.all:*" + entity_a + "* OR *" + entity_b + "*");
+		query.setQuery("( meta.extracted.text.ner.all:*" + entity_a + "* OR *" + entity_b + "* ) OR " +
+				"( meta.source.keywords:*" + entity_a + "* OR *" + entity_b + "* )");
 		//query.addFilterQuery("meta.source.inLanguage:\"" + language + "\"");
 		query.setRows(500);
 		QueryResponse response;
@@ -1105,15 +1115,40 @@ public class SolrDBManager {
 			SolrDocument startdoc = results.get(path.get(0));
 			HashMap<String, Integer> prekeywords = getDistribution("meta.source.keywords", startdoc);
 			HashMap<String, Integer> preentities = getDistribution("meta.extracted.text.ner.all", startdoc);
-					
+			
+			
+			ArrayList<String> topw = new ArrayList<String> ();
+			for (String tmp: getTop(prekeywords,2)) topw.add(tmp);
+			for (String tmp: getTop(preentities,2)) topw.add(tmp);
+			
+			boolean hasA = false;
+			for (String tmp: topw) {
+				if (tmp.equals(entity_a)) {hasA = true; break;}
+			}
+			if (!hasA) topw.add(entity_a);
+			
 		    for (int i = 1; i < path.size(); ++i) {
 		    	//make forced graph for meaningful representation
 		    	SolrDocument currentDoc = results.get(path.get(i));
 		    	HashMap<String, Integer> nextkeywords = getDistribution("meta.source.keywords", currentDoc);
 				HashMap<String, Integer> nextentities = getDistribution("meta.extracted.text.ner.all", currentDoc);
 				
-				for (String w1: prekeywords.keySet()) {
-					for (String w2: nextkeywords.keySet()){
+				ArrayList<String> nexttopk = getTop(nextkeywords, 2);
+				ArrayList<String> nexttope = getTop(nextentities, 2);
+				ArrayList<String> nextw = new ArrayList<String> ();
+				for (String tmp: nexttopk) nextw.add(tmp);
+				for (String tmp: nexttope) nextw.add(tmp);
+				
+				if (i==path.size()-1) {
+					boolean hasB= false;
+					for (String tmp: nextw) {
+						if (tmp.equals(entity_b)) {hasB = true; break;}
+					}
+					if (!hasB) nextw.add(entity_b);
+				}
+				
+				for (String w1: topw) {
+					for (String w2: nextw){
 						String graphkey = w1 + ">>_<<" + w2; 
 		    			if (w2.compareTo(w1) <0) {
 		    				graphkey =w2 + ">>_<<" + w1;
@@ -1122,22 +1157,7 @@ public class SolrDBManager {
 		    			graph.put(graphkey, cur+1);
 					}
 				}
-				
-				
-				for (String w1: preentities.keySet()) {
-					for (String w2: nextentities.keySet()){
-						String graphkey = w1 + ">>_<<" + w2; 
-		    			if (w2.compareTo(w1) <0) {
-		    				graphkey =w2 + ">>_<<" + w1;
-		    			}
-		    			int cur = graph.containsKey(graphkey)?graph.get(graphkey):0;
-		    			graph.put(graphkey, cur+1);
-					}
-				}
-				
-    			
-    			prekeywords = nextkeywords;
-    			preentities = nextentities;
+				topw = nextw;
 		    }
 		} catch (Exception ex) {
 			ex.printStackTrace();
