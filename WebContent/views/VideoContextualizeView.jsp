@@ -162,7 +162,9 @@
 											</s:a>
 										</s:iterator>)<br/>
 									</s:if>
-									
+								
+											
+								
 									
 									<!--  Key DBPedia entities -->
 									<s:set var="entityname" value="%{''}"/>
@@ -178,8 +180,17 @@
 											
 										
 										<br/>
+										<s:iterator var="sources" value="#event.references">
 										<a href='<s:url action="textsync" includeContext="true"><s:param name="myparam" value="%{#entityname}"/>
-										</s:url>'>Play </a>
+										 
+											
+												
+											 <s:param name="videoUrl" value="%{#sources.url}"/>
+											
+										
+										 
+										
+										</s:url>'>Play </a></s:iterator>
 									</s:if>
 									
 						    	</s:div>

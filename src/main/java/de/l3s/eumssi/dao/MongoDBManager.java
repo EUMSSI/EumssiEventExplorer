@@ -30,8 +30,9 @@ public class MongoDBManager {
 	DB db = null;
 	String host = "127.0.0.1";
 //	String host = "pharos.l3s.uni-hannover.de";
-	String dbname = "eumssi_db";
-	String collection = "content_items";
+	//String dbname = "eumssi_db";
+	String dbname = "EumssiEntity";
+//	String collection = "location";
 	DBCollection coll = null;
 	public MongoDBManager() {
 		try {
@@ -39,7 +40,7 @@ public class MongoDBManager {
 			mongoClient = new MongoClient( host , 27017);
 			db = mongoClient.getDB(dbname);
 			System.out.println("Connection to mongodb at "  + host  + " is successful.");
-			coll = getCollection();
+			//coll = getCollection();
 		} catch (UnknownHostException e) {
 			System.err.println("Connection errors");
 			e.printStackTrace();
@@ -53,12 +54,12 @@ public class MongoDBManager {
 		}
 	}
 	
-	private DBCollection getCollection() {
+	public DBCollection getCollection(String collection) {
 		return db.getCollection(collection);
 	}
 
-	private void test () {
-		DBObject myDoc = getCollection().findOne();
+	private void test (String collection) {
+		DBObject myDoc = getCollection(collection).findOne();
 		System.out.println(myDoc);
 	}
 	

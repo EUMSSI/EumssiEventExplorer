@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.io.BufferedReader;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
@@ -24,19 +26,29 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBCollection;
 import com.opensymphony.xwork2.Action;
 
-public class LocationInfoAction implements Action,ServletRequestAware{
+import de.l3s.eumssi.dao.MongoDBManager;
+
+public class LocationInfoAction implements Action,ServletRequestAware  {
 	List person=new ArrayList();
 	HashSet<String> hs;
 	HttpServletRequest request;
 	public String execute() throws Exception{
+		MongoDBManager mongo=new MongoDBManager(); 
+		BasicDBObject document = new BasicDBObject();
+		DBCollection collection=mongo.getCollection("location");
 		ServletContext context = request.getServletContext();
 		String path = context.getRealPath("/");
 		HttpSolrServer solr = new HttpSolrServer("http://eumssi.cloudapp.net/Solr_EUMSSI/content_items/");
 		SolrQuery query = new SolrQuery();
-		query.setQuery("meta.extracted.text.dbpedia.LOCATION:*");
+		query.setQuery("source:\"DW video\"");
+		query.addFilterQuery("meta.extracted.text.dbpedia.LOCATION:*");
 		query.setFields("meta.extracted.text.dbpedia.LOCATION");
+		query.setStart(0);
+		query.setRows(34380);
 		QueryResponse response = solr.query(query);
 	    SolrDocumentList results = response.getResults();
 	    System.out.println(results.size());
@@ -49,6 +61,7 @@ public class LocationInfoAction implements Action,ServletRequestAware{
 	    }
 	  
 	    hs=new HashSet<>(person);
+	    System.out.println(hs.size());
 	    System.out.println(hs);
 	    
 	    Iterator it =hs.iterator();
@@ -82,31 +95,43 @@ public class LocationInfoAction implements Action,ServletRequestAware{
    		    			 String demoMainValue;
                            String[] splitKey1=(String[])key1.split("/");
 		    			    mainKey=splitKey1[splitKey1.length-1].toString();
-                              if(mainKey.equals("abstract") || mainKey.equals("country") || mainKey.equals("language") || mainKey.equals("currency") || mainKey.equals("populationTotal") || mainKey.equals("thumbnail")||mainKey.equals("wgs84_pos#lat")||mainKey.equals("wgs84_pos#long")){
+                              if(mainKey.equals("abstract") || mainKey.equals("country") || mainKey.equals("officialLanguage") || mainKey.equals("currency") || mainKey.equals("populationTotal") || mainKey.equals("thumbnail")||mainKey.equals("capital")||mainKey.equals("wgs84_pos#lat")||mainKey.equals("wgs84_pos#long")){
 		    			        for( int i=0;i<jarray.size(); i++){
    		    			         job2=(JSONObject)(jarray.get(i));
    		    			          if(mainKey.equals("abstract")){
    		    					if(job2.get("lang").equals("en")){
-   		    						   mainValue=job2.get("value").toString();	
+   		    					   String abs=job2.get("value").toString();
+		    						   List sentenceList=new ArrayList();
+		    						Pattern re = Pattern.compile("[^.!?\\s][^.!?]*(?:[.!?](?!['\"]?\\s|$)[^.!?]*)*[.!?]?['\"]?(?=\\s|$)", Pattern.MULTILINE | Pattern.COMMENTS);
+		    					    Matcher reMatcher = re.matcher(abs);
+		    					    while (reMatcher.find()) {
+		    					        sentenceList.add(reMatcher.group());
+		    					    }
+		    					    if(!sentenceList.isEmpty()){
+		    					    
+		    					    	if(sentenceList.size()>1)
+		    			 			mainValue=(String)sentenceList.get(0)+(String)sentenceList.get(1);
+		    					    	else
+		    					    		mainValue=(String)sentenceList.get(0);
+		    					    }	
 
    		    					   }
    		    				    }
    		    				else if (mainKey.equals("country"))
    		    				{
-   		    					if(mainValue==null){
+   		    					
    		    						String tempValue=job2.get("value").toString();
    		    					    String[] splitKey2=(String[])tempValue.split("/");
-   			    			        mainValue=splitKey2[splitKey2.length-1].toString();
-   		    					
+   			    			       String demo =splitKey2[splitKey2.length-1].toString();
+   			    			       if(demo.equals(personName)){
+   			    			    	   continue;
+   			    			       }
+   			    			       else{
+   			    			    	  mainValue=demo;
+   			    			       }
+   			    			    	   
+   			    			      
    		    					}
-   		    					else{
-   		    						String tempValue=job2.get("value").toString();
-   		    					    String[] splitKey2=(String[])tempValue.split("/");
-   			    			        mainValue=mainValue+","+splitKey2[splitKey2.length-1].toString();
-   		    						
-   		    					}
-   		    					
-   		    				}
    		    				else if (mainKey.equals("currency"))
    		    				{
    		    					
@@ -114,15 +139,43 @@ public class LocationInfoAction implements Action,ServletRequestAware{
    		    					    String[] splitKey2=(String[])tempValue.split("/");
    			    			        String mainValueTemp=splitKey2[splitKey2.length-1].toString();
    			    			     String[] splitKey3=(String[])mainValueTemp.split("_");
-			    			         mainValue=splitKey3[splitKey3.length-1].toString();
+			    			        String demo=splitKey3[splitKey3.length-1].toString();
+			    			         if(demo.equals(personName)){
+	 			    			    	   continue;
+	 			    			       }
+	 			    			       else{
+	 			    			    	  mainValue=demo;
+	 			    			       } 
+   		    					
+   		    					
+   		    				}
+   		    			          
+   		    				else if (mainKey.equals("capital"))
+   		    				{
+   		    					
+   		    						String tempValue=job2.get("value").toString();
+   		    					    String[] splitKey2=(String[])tempValue.split("/");
+   			    			        String demo=splitKey2[splitKey2.length-1].toString();
+   			    			     if(demo.equals(personName)){
+ 			    			    	   continue;
+ 			    			       }
+ 			    			       else{
+ 			    			    	  mainValue=demo;
+ 			    			       } 
+   			    			
    		    					
    		    					
    		    					
    		    				}
-   		    				else if (mainKey.equals("language"))
+   		    				else if (mainKey.equals("officialLanguage"))
    		    				{
    		    					
-   		    					mainValue=job2.get("value").toString();
+   		    					String tempValue=job2.get("value").toString();
+		    					    String[] splitKey2=(String[])tempValue.split("/");
+			    			        String mainValueTemp=splitKey2[splitKey2.length-1].toString();
+			    			 //    String[] splitKey3=(String[])mainValueTemp.split("_");
+		    			       //  mainValue=splitKey3[splitKey3.length-1].toString();
+			    			        mainValue=mainValueTemp.replaceAll("[_]"," ");
    		    				}
    		    				else if (mainKey.equals("populationTotal"))
    		    				{
@@ -158,7 +211,9 @@ public class LocationInfoAction implements Action,ServletRequestAware{
    		    					mainKey=splitKey2[splitKey2.length-1].toString();
    		    				}
    		    			}
+		    			       if(!(mainValue==null)){
 		    			        innerJsonObject.put(mainKey, mainValue);
+		    			       }
    		    		 }
 		    			    
    		    		 }
@@ -166,8 +221,11 @@ public class LocationInfoAction implements Action,ServletRequestAware{
    		    
    	 }
      //System.out.println(innerJsonObject);
-   	 outerJsonObject.put(personName, innerJsonObject);
+   	 innerJsonObject.put("name",personName);
+   	innerJsonObject.put("type","location");
+   	 collection.insert(new BasicDBObject(innerJsonObject));
 	    }
+	   /*
 	    System.out.println(outerJsonObject);
 		FileWriter file = new FileWriter(path+"scripts\\locationinfo.json");
 		System.out.println(path);
@@ -176,7 +234,11 @@ public class LocationInfoAction implements Action,ServletRequestAware{
 		
 		file.flush();
 		file.close();
-		return "success";
+		*/
+	    
+	    System.out.println("The End");
+		
+	    return "success";
 		
 	}
    		    			     

@@ -59,15 +59,16 @@
                         </div>
                     </div>
 <s:hidden  name="jsonFileName" id="jsonFileName" />
-
+<s:hidden  name="videoUrl" id="videoUrl" />
+ <s:property value="videoUrl" />
                     <script>
                  
                         $( function () {
                         	 var fileName = document.getElementById("jsonFileName").value;
-
+                        	 var videoUrl = document.getElementById("videoUrl").value;
                             $( "#defaultPlayer" ).mediaPlayer( {
                                 autoplay : true,
-                                src : "http://tv-download.dw.de/dwtv_video/flv/eme/eme20140119_whisky_sd_avc.mp4",
+                                src : videoUrl,
                                 controlBar :
                                     {
                                         sticky : true
