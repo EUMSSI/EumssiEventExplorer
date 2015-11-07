@@ -1118,23 +1118,23 @@ public class SolrDBManager {
 			
 			
 			ArrayList<String> topw = new ArrayList<String> ();
-			for (String tmp: getTop(prekeywords,1)) topw.add(tmp);
-			for (String tmp: getTop(preentities,1)) topw.add(tmp);
+			for (String tmp: getTop(prekeywords,3)) topw.add(tmp);
+			for (String tmp: getTop(preentities,3)) topw.add(tmp);
 			
 			boolean hasA = false;
 			for (String tmp: topw) {
 				if (tmp.equals(entity_a)) {hasA = true; break;}
 			}
 			if (!hasA) topw.add(entity_a);
-			
+			HashSet<String> indexed = new HashSet<String> ();
 		    for (int i = 1; i < path.size(); ++i) {
 		    	//make forced graph for meaningful representation
 		    	SolrDocument currentDoc = results.get(path.get(i));
 		    	HashMap<String, Integer> nextkeywords = getDistribution("meta.source.keywords", currentDoc);
 				HashMap<String, Integer> nextentities = getDistribution("meta.extracted.text.ner.all", currentDoc);
 				
-				ArrayList<String> nexttopk = getTop(nextkeywords, 1);
-				ArrayList<String> nexttope = getTop(nextentities, 1);
+				ArrayList<String> nexttopk = getTop(nextkeywords, 3);
+				ArrayList<String> nexttope = getTop(nextentities, 3);
 				ArrayList<String> nextw = new ArrayList<String> ();
 				for (String tmp: nexttopk) nextw.add(tmp);
 				for (String tmp: nexttope) nextw.add(tmp);
@@ -1153,8 +1153,12 @@ public class SolrDBManager {
 		    			if (w2.compareTo(w1) <0) {
 		    				graphkey =w2 + ">>_<<" + w1;
 		    			}
-		    			int cur = graph.containsKey(graphkey)?graph.get(graphkey):0;
-		    			graph.put(graphkey, cur+1);
+		    			if (!indexed.contains(w2)) {
+		    				int cur = graph.containsKey(graphkey)?graph.get(graphkey):0;
+		    				graph.put(graphkey, cur+1);
+		    				indexed.add(w2);
+		    				indexed.add(w1);
+		    			}
 					}
 				}
 				topw = nextw;
