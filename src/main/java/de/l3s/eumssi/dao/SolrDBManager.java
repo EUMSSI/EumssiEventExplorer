@@ -1107,7 +1107,7 @@ public class SolrDBManager {
 				path.add(j);
 				found = (checkExist(results.get(j), entity_b)
 									&& visitted.size() >1) 
-									||visitted.size() ==Math.min(2*budget, dset);
+									||visitted.size() ==Math.min(5*budget, dset);
 				
 			}
 			
@@ -1118,8 +1118,8 @@ public class SolrDBManager {
 			
 			
 			ArrayList<String> topw = new ArrayList<String> ();
-			for (String tmp: getTop(prekeywords,2)) topw.add(tmp);
-			for (String tmp: getTop(preentities,2)) topw.add(tmp);
+			for (String tmp: getTop(prekeywords,1)) topw.add(tmp);
+			for (String tmp: getTop(preentities,1)) topw.add(tmp);
 			
 			boolean hasA = false;
 			for (String tmp: topw) {
@@ -1133,8 +1133,8 @@ public class SolrDBManager {
 		    	HashMap<String, Integer> nextkeywords = getDistribution("meta.source.keywords", currentDoc);
 				HashMap<String, Integer> nextentities = getDistribution("meta.extracted.text.ner.all", currentDoc);
 				
-				ArrayList<String> nexttopk = getTop(nextkeywords, 2);
-				ArrayList<String> nexttope = getTop(nextentities, 2);
+				ArrayList<String> nexttopk = getTop(nextkeywords, 1);
+				ArrayList<String> nexttope = getTop(nextentities, 1);
 				ArrayList<String> nextw = new ArrayList<String> ();
 				for (String tmp: nexttopk) nextw.add(tmp);
 				for (String tmp: nexttope) nextw.add(tmp);
