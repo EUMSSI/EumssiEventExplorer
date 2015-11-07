@@ -74,7 +74,7 @@
 									<s:submit name="keyword search" value="Generate Timeline" align="center" method="eventSearch" />
 									<%-- <s:submit name="word cloud" value="Visualize by Wordcloud" align="center" method="wordCloud"/> --%>
 									<s:submit name="forceDirectedLayout" value="Force Directed Layout" align="center" method="forceDirectedLayout"/>
-									<s:submit name="WCEPEvents" value="Wikipedia event faceted search" align="center" method="WCEPeventSearch"/>
+									<s:submit name="WCEPEvents" value="Wikipedia events faceted search" align="center" method="WCEPeventSearch"/>
 							</tr>
 						</table>
 					</td>

@@ -405,21 +405,21 @@
 								<a href="
 									<s:if test="itemType == 'Query'">
 										<s:if test="useContextPath != false">
-											<s:url action="eventSearchByKeyword" method="eventSearch" includeContext="true">
+											<s:url action="entityTimeline" includeContext="true">
 												<s:param name="query" value="query" > </s:param>
 												<s:param name="fromDate" value="fromDate" > </s:param>
 												<s:param name="toDate" value="toDate" > </s:param>
 												<s:param name="filterType">filterByEntity</s:param>
-												<s:param name="filterItemId" value="#entity.id" > </s:param>
+												<s:param name="entityId" value="#entity.id" > </s:param>
 											</s:url>
 										</s:if>
 										<s:else>
-											<s:url action="eventSearchByKeyword" method="eventSearch" includeContext="false">
+											<s:url action="entityTimeline" includeContext="false">
 												<s:param name="query" value="query" > </s:param>
 												<s:param name="fromDate" value="fromDate" > </s:param>
 												<s:param name="toDate" value="toDate" > </s:param>
 												<s:param name="filterType">filterByEntity</s:param>
-												<s:param name="filterItemId" value="#entity.id" > </s:param>
+												<s:param name="entityId" value="#entity.id" > </s:param>
 											</s:url>
 										</s:else>
 									</s:if>

@@ -40,8 +40,8 @@ public class EventDistribution {
 		endDate = date;
 		
 		descriptionTerm = new ArrayList<String> ();
-		String lemmatized_descr = lemma.getLemmatization(desc);
-		//String lemmatized_descr = desc;
+		//String lemmatized_descr = lemma.getLemmatization(desc);
+		String lemmatized_descr = desc;
 		for (String term: lemmatized_descr.split("\\s+")) {
 			term = truncate(term);
 			if (term.endsWith(":")) term = term.replace(":","");

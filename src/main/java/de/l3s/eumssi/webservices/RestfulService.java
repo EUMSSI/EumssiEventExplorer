@@ -1,6 +1,7 @@
 package de.l3s.eumssi.webservices;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -215,6 +216,39 @@ public class RestfulService {
 			tfjson =  distr.getTermFrequencies(n);
 			
 			System.out.println("Finish generating wordcloud");
+			
+		}catch(Exception e){
+			e.printStackTrace();	
+		}finally{
+			
+		}
+		return tfjson.toString();
+	}
+	
+	
+	/**
+	 * 
+	 * @param solrformatedQuery
+	 * @param n: number of items to return
+	 * @param type: entity or keyword
+	 * @param language: filter by en, de, es, fr language
+	 * @return json style of [{item, frequency}]
+	 */
+	@GET
+	@Path("/getSemanticCloud/json/{n}/{type}/{query}/{language}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String getWordCloud(@PathParam("query") String solrformatedQuery, 
+			@PathParam("n") int n, @PathParam("type") String type, @PathParam("language") String language) {
+	
+		SolrDBManager db = new SolrDBManager();
+		JSONArray tfjson = null;
+		
+		try{
+			
+			HashMap<String, Integer> distr = db.getSemanticDistribution(solrformatedQuery, type, language);
+			tfjson =  StoryDistribution.getTermFrequencies(distr, n);
+			
+			System.out.println("Finish generating cloud");
 			
 		}catch(Exception e){
 			e.printStackTrace();	

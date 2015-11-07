@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
@@ -712,6 +713,99 @@ public class SolrDBManager {
 		String query = "*:*";
 		List<Event> test_events = sm.searchBySolrQuery(20, query);
 		
+	}
+
+
+	public HashMap<String, Integer> getSemanticDistribution(String solrquery,
+			String type, String language) {
+		HashMap<String, Integer> distribution = new HashMap<String, Integer> ();
+		ArrayList<Event> itemList = new ArrayList<Event> ();
+		HashSet<String> selectedTitles = new HashSet<String> ();
+		SolrQuery query = new SolrQuery();
+		query.setFields( 
+				"meta.source.headline", 
+				"meta.source.text", 
+				"meta.extracted.text.ner.all", 
+				"meta.source.keywords"
+				);
+		query.setQuery(solrquery);
+		query.addFilterQuery("meta.source.inLanguage:\"" + language + "\"");
+		query.setRows(1000);
+		StoryDistribution sd = new StoryDistribution();
+		System.out.println("SearchByKeyword\n" + query.toString());
+		QueryResponse response;
+
+		try {
+			response = solr.query(query);
+			SolrDocumentList results = response.getResults();
+		    for (int i = 0; i < results.size(); ++i) {
+		    	StringBuffer sb = new StringBuffer();
+		    	String headline = null;
+		    	String url = null;
+		    	for (String searchField: new String[] {"meta.source.text",  
+		    			"meta.source.headline",  "meta.extracted.text.ner.all", "meta.source.keywords"}) 
+		    	{
+		    		Object fieldVal = results.get(i).getFieldValue(searchField);
+		    		if (fieldVal!=null) {
+			    		
+		    			if (searchField.equals("meta.source.text")) {
+			    			sb.append(fieldVal.toString());
+			    		}
+		    			
+			    		if (searchField.equals("meta.source.headline")) {
+			    			headline = fieldVal.toString();
+			    			//headline = clean(headline);
+			    		}
+			    		
+		    		}
+		    	}
+		    	String fieldText = sb.toString(); // short description
+		    
+		    	//entities
+		    	ArrayList<Entity> dbentities = new ArrayList<Entity> ();
+		    	if (type.equals("entity")) {
+			    	Collection<Object> entityObject = results.get(i).getFieldValues("meta.extracted.text.ner.all");
+			    	if (entityObject!=null)  {
+				    	for (Object oe: entityObject) {
+				    		String entityName = oe.toString();
+				    		int cur = distribution.containsKey(entityName)?distribution.get(entityName):0;
+				    		distribution.put(entityName, cur+1);
+				    	}
+			    	}
+		    	}
+		    	
+		    	if (type.equals("keyword")) {
+			    	Collection<Object> keywords = results.get(i).getFieldValues("meta.source.keywords");
+			    	if (keywords!=null)  {
+				    	for (Object oe: keywords) {
+				    		String kw = oe.toString();
+				    		int cur = distribution.containsKey(kw)?distribution.get(kw):0;
+				    		distribution.put(kw, cur+1);
+				    	}
+			    	}
+		    	}
+		    	
+		    	/*
+		    	Event e = new Event();
+		    	e.setEntities(dbentities);
+		    	e.setDescription(fieldText);
+		    	e.setDate(sqldate);
+		    	e.setHeadline(headline);
+		    	if (ref!=null) e.addReference(ref);
+		    	if (e.getDate()!=null && e.getDate().toString().compareTo("2050")<0) { 
+		    		//ensure there is not a date mistake when adding events to show
+		    		if (!selectedTitles.contains(headline)) {
+		    			selectedTitles.add(headline);
+		    			EventDistribution evt = new EventDistribution(e.getDescription(), date);
+			    		sd.index(evt);
+		    		}
+		    	}
+		    	*/
+		    }
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return distribution;
 	}
 	
 	

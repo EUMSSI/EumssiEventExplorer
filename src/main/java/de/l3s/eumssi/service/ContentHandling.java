@@ -211,8 +211,8 @@ public class ContentHandling {
     	String[] parts;
     	
     	//check for the case where the name is different in case (upper/lower case)
-    	String lowerCaseDescription = event.getAnnotatedDescription().toLowerCase();
-    	String tmpDescription = event.getAnnotatedDescription();
+    	String lowerCaseDescription = event.getDescription().toLowerCase();
+    	String tmpDescription = event.getDescription();
 //    	System.out.printf(" annotated description: %s \n lowerCase: %s \n", tmpDescription, lowerCaseDescription);
 
     	for(Entity entity : event.getEntities()){

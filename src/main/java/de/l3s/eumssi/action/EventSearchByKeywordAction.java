@@ -52,7 +52,7 @@ public class EventSearchByKeywordAction  extends ActionSupport implements Servle
 	
 	
 	public String eventSearch() throws Exception {
-		if (ServletActionContext.getRequest().getServerName().equals("eventsense.l3s.de")){
+		if (ServletActionContext.getRequest().getServerName().equals("eumssi.l3s.de")){
 			contextPath = null;
 			useContextPath = false;
 		}else{
@@ -106,7 +106,7 @@ public class EventSearchByKeywordAction  extends ActionSupport implements Servle
 	
 	
 	public String storySearch() throws Exception {
-		if (ServletActionContext.getRequest().getServerName().equals("eventsense.l3s.de")){
+		if (ServletActionContext.getRequest().getServerName().equals("eumssi.l3s.de")){
 			contextPath = null;
 			useContextPath = false;
 		}else{

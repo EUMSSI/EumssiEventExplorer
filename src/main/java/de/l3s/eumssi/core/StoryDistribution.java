@@ -238,6 +238,7 @@ public class StoryDistribution {
 		return sortedKeys;
 	}
 	
+	
 	/*
 	 * get top K term frequencies
 	 */
@@ -259,6 +260,30 @@ public class StoryDistribution {
 		}
 		return jsa;
 	}
+	
+	public static JSONArray getTermFrequencies(HashMap<String, Integer> distr, int k) {
+		JSONArray jsa = new JSONArray();
+		
+		ArrayList<String> sortedKeys = new ArrayList<String> ();
+		sortedKeys.addAll(distr.keySet());
+		if (distr.size()>0)
+			sortingMap.qsort(sortedKeys, distr, 0, distr.size()-1);
+		 
+		
+		for (String key: sortedKeys){
+			JSONObject o = new JSONObject();
+			try {
+				o.put("text", key);
+				o.put("size", distr.get(key));
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			jsa.put(o);
+			if (k-- ==0) break;
+		}
+		return jsa;
+	}
+	
 	
 	public JSONArray getCoOccurenceOfTopTerms (int k) {
 		ArrayList<String >sortedKeys = sortTermByFreq();
