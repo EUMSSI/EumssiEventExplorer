@@ -282,6 +282,39 @@ public class RestfulService {
 		return tfjson.toString();
 	}
 	
+	/**
+	 * 
+	 * @param solrformatedQuery
+	 * @param n: number of items to return
+	 * @param type: entity keyword
+	 * @param language: filter by en, de, es, fr language
+	 * @param query: solr based query
+	 * @return json style of [{item, frequency}]
+	 
+	 */
+	@GET
+	@Path("/storyTelling/json/{n}/{entity_a}/{entity_b}/{language}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String storyTelling( 
+			@PathParam("n") int n,
+			@PathParam("entity_a") String entity_a,
+			@PathParam("entity_b") String entity_b,
+			@PathParam("language") String language) {
+	
+		//n: so luong top words to display
+		SolrDBManager db = new SolrDBManager();
+		JSONArray coocc = new JSONArray();
+				
+		try{
+			coocc = db.getStoryTellingGraph(entity_a, entity_b, n, language);
+		}catch(Exception e){
+			e.printStackTrace();	
+		}
+				
+		return coocc.toString();
+	}
+	
+	
 	@GET
 	@Path("/getWordCloud/json/{fields}/{sources}/{keyword}")
 	@Produces(MediaType.APPLICATION_JSON)

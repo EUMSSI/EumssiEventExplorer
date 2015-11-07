@@ -26,6 +26,7 @@ import org.apache.solr.client.solrj.SolrQuery.ORDER;
 import org.apache.solr.client.solrj.impl.HttpSolrServer;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.struts2.ServletActionContext;
 import org.json.JSONArray;
@@ -819,13 +820,6 @@ public class SolrDBManager {
 		return itemList;
 	}
 	
-	public static void main(String[] args) {
-		SolrDBManager sm = new SolrDBManager();
-		String query = "*:*";
-		List<Event> test_events = sm.searchBySolrQuery(20, query);
-		
-	}
-
 
 	public HashMap<String, Integer> getSemanticDistribution(String solrquery, 
 			 String language, String field, String filterValue) {
@@ -1055,5 +1049,203 @@ public class SolrDBManager {
 			if (solrquery.contains(f)) return f;
 		return "meta.extracted.text.ner.all"; // by default
 	}
+
 	
+	
+	public  JSONArray getStoryTellingGraph(String entity_a, String entity_b,
+			int n, String language) {
+		entity_a = entity_a.replace("_", " ");
+		entity_b = entity_b.replace("_", " ");
+		HashMap<String, Integer> graph = new HashMap<String, Integer> ();
+		SolrQuery query = new SolrQuery();
+		//query.setFields(field);
+		query.setFields( 
+				"meta.source.headline", 
+				"meta.source.text", 
+				"meta.source.keywords",
+				"meta.extracted.text.ner.all"
+				);
+		query.setQuery("meta.extracted.text.ner.all:*" + entity_a + "* OR *" + entity_b + "*");
+		//query.addFilterQuery("meta.source.inLanguage:\"" + language + "\"");
+		query.setRows(500);
+		QueryResponse response;
+		
+		try {
+			System.out.println(query);
+			response = solr.query(query);
+			SolrDocumentList results = response.getResults();
+			int dset = results.size();
+			if (dset ==0) return new JSONArray();
+			
+			int budget = Math.min(dset, n);
+			boolean found = false;
+			ArrayList<Integer> path = new ArrayList<Integer> ();
+			HashSet<Integer> visitted = new HashSet<Integer> ();
+			int start = 0;
+			for (int i = 0; i< results.size(); i++) {
+				if (checkExist(results.get(i), entity_a)){
+					start = i;
+					break;
+				}
+			}
+			path.add(start);
+			visitted.add(start);
+			while (!found) {
+				int j = getMaxCoherence(visitted, path, results);
+				start = j;
+				visitted.add(j);
+				path.add(j);
+				found = (checkExist(results.get(j), entity_b)
+									&& visitted.size() >1) 
+									||visitted.size() ==Math.min(5*budget, dset);
+				
+			}
+			
+			System.out.println("Coherence path : " + path.size());
+			SolrDocument startdoc = results.get(path.get(0));
+			HashMap<String, Integer> prekeywords = getDistribution("meta.source.keywords", startdoc);
+			HashMap<String, Integer> preentities = getDistribution("meta.extracted.text.ner.all", startdoc);
+					
+		    for (int i = 1; i < path.size(); ++i) {
+		    	//make forced graph for meaningful representation
+		    	SolrDocument currentDoc = results.get(path.get(i));
+		    	HashMap<String, Integer> nextkeywords = getDistribution("meta.source.keywords", currentDoc);
+				HashMap<String, Integer> nextentities = getDistribution("meta.extracted.text.ner.all", currentDoc);
+				
+				for (String w1: prekeywords.keySet()) {
+					for (String w2: nextkeywords.keySet()){
+						String graphkey = w1 + ">>_<<" + w2; 
+		    			if (w2.compareTo(w1) <0) {
+		    				graphkey =w2 + ">>_<<" + w1;
+		    			}
+		    			int cur = graph.containsKey(graphkey)?graph.get(graphkey):0;
+		    			graph.put(graphkey, cur+1);
+					}
+				}
+				
+				
+				for (String w1: preentities.keySet()) {
+					for (String w2: nextentities.keySet()){
+						String graphkey = w1 + ">>_<<" + w2; 
+		    			if (w2.compareTo(w1) <0) {
+		    				graphkey =w2 + ">>_<<" + w1;
+		    			}
+		    			int cur = graph.containsKey(graphkey)?graph.get(graphkey):0;
+		    			graph.put(graphkey, cur+1);
+					}
+				}
+				
+    			
+    			prekeywords = nextkeywords;
+    			preentities = nextentities;
+		    }
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		
+		ArrayList<String> all_items = new ArrayList<String> ();
+		for (String s: graph.keySet()) all_items.add(s);
+		System.out.println(all_items.size());
+		JSONArray jsa = new JSONArray();
+		if (all_items.size()==0) return jsa;
+		sortingMap.qsort(all_items, graph, 0, all_items.size()-1);
+		
+		for (int j = 0; j < Math.min(500, graph.size()); j++) {
+			JSONObject o = new JSONObject();
+			String graphkey = all_items.get(j);
+			String[] keysplt  = graphkey.split(">>_<<");
+			int f = graph.get(all_items.get(j));
+			if  (keysplt.length <2) continue;
+			
+			try {
+				o.put("source", keysplt[0]);
+				o.put("target", keysplt[1]);
+				o.put("weight", Math.floor(1.0 * f/1));
+				jsa.put(o);
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+		System.out.println(jsa.toString());
+		return jsa;
+		
+	}
+
+	
+	
+	private boolean checkExist(SolrDocument solrDocument, String entity) {
+		Collection<Object> entityObject = solrDocument.getFieldValues("meta.extracted.text.ner.all");
+    	HashSet<String> itemset = new HashSet<String> ();
+    	
+	    	if (entityObject!=null)  {
+		    	for (Object oe: entityObject) {
+		    		String entityName = oe.toString();
+		    		if (entityName.equals(entity)) {
+		    			System.out.println("Found " + entityName);
+		    			return true;
+		    		}
+		    	}
+		    	
+	    	}
+		return false;
+	}
+
+
+	/** maximizes coherence */
+	private int getMaxCoherence(HashSet<Integer> visitted,
+			ArrayList<Integer> path, SolrDocumentList results) {
+		int last = path.size()-1;
+		double maxcoh = -1;
+		int keep = 0;
+		for (int i = 0; i< results.size(); i++) {
+			if (!visitted.contains(i) ) {
+				double coh = coherence(results.get(i), results.get(last));
+				if (coh > maxcoh) {
+					maxcoh = coh;
+					keep = i;
+				}
+			}
+		}
+		return keep;
+	}
+
+
+	private double coherence(SolrDocument solrDocumentA,
+			SolrDocument solrDocumentB) {
+		HashMap<String, Integer> e1 = getDistribution("meta.extracted.text.ner.all", solrDocumentA);
+		HashMap<String, Integer> e2 = getDistribution("meta.extracted.text.ner.all", solrDocumentB);
+		HashMap<String, Integer> k1 = getDistribution("meta.source.keywords", solrDocumentA);
+		HashMap<String, Integer> k2 = getDistribution("meta.source.keywords", solrDocumentB);
+		return coherence(e1, e2) + coherence(k1, k2);
+	}
+	
+	public double coherence(HashMap<String, Integer> v1, HashMap<String, Integer> v2) {
+		int size = v1.size();
+		if (size ==0) return 0;
+		int sc = 0;
+		for (String x: v2.keySet())
+			if (v1.containsKey(x)) sc++;
+		return 1.0 * sc / size;
+	}
+	
+	//field: "meta.extracted.text.ner.all" or others
+	public HashMap<String, Integer> getDistribution(String field, SolrDocument document) {
+		Collection<Object> entityObject = document.getFieldValues(field);
+    	HashMap<String, Integer> itemset = new HashMap<String, Integer> ();
+	    	if (entityObject!=null)  {
+		    	for (Object oe: entityObject) {
+		    		String entityName = oe.toString();
+		    		int c = itemset.containsKey(entityName)?itemset.get(entityName):0;
+		    		itemset.put(entityName, c+1);
+		    	}
+		    	
+	    	}
+		return itemset;
+	}
+	
+	public static void main(String[] args) {
+		SolrDBManager sm = new SolrDBManager();
+		String query = "*:*";
+		sm.getStoryTellingGraph("Angela_Merkel", "Barack_Obama", 20, "en");
+	}
 }
