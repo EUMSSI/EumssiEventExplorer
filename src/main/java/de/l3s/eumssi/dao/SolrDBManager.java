@@ -1107,7 +1107,7 @@ public class SolrDBManager {
 				path.add(j);
 				found = (checkExist(results.get(j), entity_b)
 									&& visitted.size() >1) 
-									||visitted.size() ==Math.min(5*budget, dset);
+									||visitted.size() ==Math.min(2*budget, dset);
 				
 			}
 			
