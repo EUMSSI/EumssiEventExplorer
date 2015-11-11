@@ -110,6 +110,8 @@ public class EventSearchByKeywordInDBOnlyAction  extends ActionSupport implement
 	
 	
 	public String WCEPeventSearch() throws Exception {
+		System.out.println(db.toString());
+		
 		if (ServletActionContext.getRequest().getServerName().equals(db.conf.getProperty("domainName"))){
 			contextPath = null;
 			useContextPath = false;
@@ -117,7 +119,7 @@ public class EventSearchByKeywordInDBOnlyAction  extends ActionSupport implement
 			contextPath = ServletActionContext.getServletContext().getContextPath();
 			useContextPath = true;
 		}
-		
+//		
 		infer = Boolean.valueOf(db.conf.getProperty("display_infered_relations"));
 		
 		

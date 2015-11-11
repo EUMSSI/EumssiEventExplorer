@@ -59,14 +59,15 @@ public class SolrDBManager {
 	HttpSolrServer solr;
 	public Properties conf;
 	public SolrDBManager() {
-		/*
-		lemma.init();
+		
+		//lemma.init();
+		
 		try {
 			loadConfiguration();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		*/
+		
 		solr = new HttpSolrServer("http://eumssi.cloudapp.net/Solr_EUMSSI/content_items/");
 	}
 	
