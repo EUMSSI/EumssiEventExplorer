@@ -25,6 +25,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -154,6 +156,9 @@ public class textsyncAction implements Action, ServletRequestAware{
 				  else if((boolean) mainArrayList.get(i).get("type").equals("person")){
 					  type="person";
 				  }
+				  else if((boolean) mainArrayList.get(i).get("type").equals("other")){
+					  type="other";
+				  }
 				  
 				  if(type.equals("location")){
 					  if(dicision.equals("question")){
@@ -177,7 +182,7 @@ public class textsyncAction implements Action, ServletRequestAware{
 								"<br><input type='radio' name=\'"+mainKeyValue+"\' value=\'"+options.get(1)+"\'>"+options.get(1)+
 								"<br><input type='radio' name=\'"+mainKeyValue+"\' value=\'"+options.get(2)+"\'>"+options.get(2)+
 								"<input type='radio' name=\'"+mainKeyValue+"\' value=\'"+options.get(3)+"\'>"+options.get(3)+
-								"<input type='button'  value='check/'></div>";
+								"<input type='button'  value='check'></div>";
 						
 					//	System.out.println(question);
 						makeData(question,i+1,(String) entity.get("thumbnail"));
@@ -205,6 +210,7 @@ public class textsyncAction implements Action, ServletRequestAware{
 				    	System.out.println("dicision abstract");
 				    	if((String) entity.get("abstract")==null)continue;
 				    	String abs=(String) entity.get("name")+"<br>"+(String) entity.get("abstract");
+				    	abs=abs.replaceAll("\\(.+?\\)\\s*", "");
 				    	System.out.println(abs);
 				    	makeData(abs,i+1,(String) entity.get("thumbnail"));
 				    }
@@ -232,7 +238,7 @@ public class textsyncAction implements Action, ServletRequestAware{
 								"<br><input type='radio' name=\'"+mainKeyValue+"\' value=\'"+options.get(1)+"\'>"+options.get(1)+
 								"<br><input type='radio' name=\'"+mainKeyValue+"\' value=\'"+options.get(2)+"\'>"+options.get(2)+
 								"<input type='radio' name=\'"+mainKeyValue+"\' value=\'"+options.get(3)+"\'>"+options.get(3)+
-								"<input type='button'  value='check/'></div>";
+								"<input type='button'  value='check'></div>";
 						
 						System.out.println(question);
 						makeData(question,i+1,(String) entity.get("thumbnail"));
@@ -259,12 +265,21 @@ public class textsyncAction implements Action, ServletRequestAware{
 				    	if((String) entity.get("abstract")==null)continue;
 				    	String abs=(String) entity.get("name")+"<br>"+(String) entity.get("abstract");
 				    	System.out.println(abs);
-				    	makeData((String) entity.get("abstract"),i+1,(String) entity.get("thumbnail"));
+				    	abs=abs.replaceAll("\\(.+?\\)\\s*", "");
+				    	makeData(abs,i+1,(String) entity.get("thumbnail"));
 				    }
 				  
 	
 					  
 				  }
+				  
+				  if(type.equals("other")){
+					  String entityAbstract=(String) entity.get("abstract");
+					  entityAbstract=entityAbstract.replaceAll("[\"]","");
+					  entityAbstract=entityAbstract.replaceAll("\\(.+?\\)\\s*", "");
+					  makeData(entityAbstract,i+1,(String) entity.get("thumbnail"));
+				  }
+				  
 	 }
 	    
 		mainContent=content1+dataContent+content8;
@@ -421,7 +436,13 @@ public class textsyncAction implements Action, ServletRequestAware{
            			  
            			   mainArrayList.add(entity);
          			}
-         			
+         			if(locationCursor.count()==0 || personCursor.count()==0){
+         			   BasicDBObject entityOther=abstractFinder((String)entities[entityCounter]);
+                        entityOther.put("type", "other");
+         				mainArrayList.add(entityOther);
+         				
+         				
+         			}
                      
         	        	 }
         	// reArrangeMainArrayList(mainArrayList);
@@ -438,6 +459,93 @@ public class textsyncAction implements Action, ServletRequestAware{
          
 	    return "test";
 	}
+	
+ private static BasicDBObject abstractFinder(String entityName) throws Exception{
+   	 String outputString=readUrl("http://dbpedia.org/data/"+entityName+".json");
+   	 Object ob;
+   	 JSONObject job1;
+   	 JSONObject job2;
+   	 JSONArray jarray;
+     BasicDBObject mainValue=new BasicDBObject();
+     JSONParser parser = new JSONParser();
+   	 Object obj=new Object();
+	try {
+		obj = parser.parse(outputString);
+	} catch (ParseException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}    
+        JSONObject jsonObject = (JSONObject) obj;
+   	 for(Iterator iterator = jsonObject.keySet().iterator(); iterator.hasNext();) {
+   		    String key = (String) iterator.next();
+   		   
+   	        ob= jsonObject.get(key);
+   		    job1 = (JSONObject) ob;
+   		    int indexOfmainArrayList=0;
+   		    for(Iterator iterator1 = job1.keySet().iterator(); iterator1.hasNext();){
+   		    	 String key1 = (String) iterator1.next();
+   		         if(job1.get(key1) instanceof JSONArray)
+   		    		 {
+   		        	   
+   		    			 jarray= (JSONArray)job1.get(key1);
+   		    			 String mainKey=null;
+   		    			 String demoMainValue;
+                           String[] splitKey1=(String[])key1.split("/");
+		    			    mainKey=splitKey1[splitKey1.length-1].toString();
+                              if(mainKey.equals("abstract") || mainKey.equals("thumbnail")){
+		    			        for( int i=0;i<jarray.size(); i++){
+   		    			         job2=(JSONObject)(jarray.get(i));
+   		    			          if(mainKey.equals("abstract")){
+   		    					if(job2.get("lang").equals("en")){
+   		    					   String abs=job2.get("value").toString();
+		    						   List sentenceList=new ArrayList();
+		    						Pattern re = Pattern.compile("[^.!?\\s][^.!?]*(?:[.!?](?!['\"]?\\s|$)[^.!?]*)*[.!?]?['\"]?(?=\\s|$)", Pattern.MULTILINE | Pattern.COMMENTS);
+		    					    Matcher reMatcher = re.matcher(abs);
+		    					    while (reMatcher.find()) {
+		    					        sentenceList.add(reMatcher.group());
+		    					    }
+		    					    if(!sentenceList.isEmpty()){
+		    					    
+		    					    	if(sentenceList.size()>1)
+		    			 			mainValue.put("abstract",(String)sentenceList.get(0)+(String)sentenceList.get(1) );
+		    					    	
+		    					    	else
+		    					    		mainValue.put("abstract",(String)sentenceList.get(0));
+		    					    }	
+
+   		    					   }
+   		    			          }
+   		    			       else if (mainKey.equals("thumbnail"))
+      		    				{
+      		    					
+      		    					mainValue.put("thumbnail",job2.get("value").toString());
+      		    				}
+		    			        }
+                              }
+	 
+ }
+   		    }
+   	 }
+   	 return mainValue;
+ }
+	
+		    			        private static String readUrl(String urlString) throws Exception {
+		   		    		        BufferedReader reader = null;
+		   		    		        try {
+		   		    		            URL url = new URL(urlString);
+		   		    		            reader = new BufferedReader(new InputStreamReader(url.openStream()));
+		   		    		            StringBuffer buffer = new StringBuffer();
+		   		    		            int read;
+		   		    		            char[] chars = new char[1024];
+		   		    		            while ((read = reader.read(chars)) != -1) {
+		   		    		                buffer.append(chars, 0, read); 
+		   		    		            }
+		   		    		            return buffer.toString();
+		   		    		        } finally {
+		   		    		            if (reader != null)
+		   		    		                reader.close();
+		   		    		        }
+		   		    		    }
 	public String getMyparam() {
 		return myparam;
 	}
