@@ -101,7 +101,8 @@ public class DatabaseManager{
         ArrayList<Event> events = new ArrayList<Event>();
         try{
         	query = "% "+query+" %";
-            pstmt = openConnection().prepareStatement("select EventID, Date from Event where Description like ? AND Date>=? and Date<=?");
+            pstmt = openConnection().prepareStatement("select EventID, Date from Event where Description like ? AND Date>=? and Date<=?" +
+            		" order by Date DESC limit 150");
             pstmt.setString(1,query);
             pstmt.setString(2,from);
             pstmt.setString(3,to);
