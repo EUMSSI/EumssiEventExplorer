@@ -269,14 +269,14 @@ public class DatabaseManager{
         
         ArrayList<Event> events = new ArrayList<Event>();
         try{
-        	String query = "%"+entityName+"%";
+        	String query = entityName;
             pstmt = openConnection().prepareStatement("select e.EventID, e.Date from Event e " +
             		" join Event_Entity_Relation r on e.EventID=r.EventID " +
             		" join WikiRef w on w.WikiRefID = r.WikiRefID " + 
-            		" where e.Date>=? and e.Date<=? and w.Name like ?");
+            		" where e.Date>=? and e.Date<=? and w.WikipediaURL = ? limit 100");
             pstmt.setString(1,from);
             pstmt.setString(2,to);
-            pstmt.setString(3, query);
+            pstmt.setString(3, "http://en.wikipedia.org/wiki/"+query);
             result = pstmt.executeQuery();
             while(result.next()){
             	events.add(getEventById(result.getString("EventID")));
