@@ -33,42 +33,42 @@ public class SolrPersonInfoAction implements Action,ServletRequestAware{
 	public String execute() throws Exception{
 		ServletContext context = request.getServletContext();
 		String path = context.getRealPath("/");
-		HttpSolrServer solr = new HttpSolrServer("http://eumssi.cloudapp.net/Solr_EUMSSI/content_items/");
+		HttpSolrServer solr = new HttpSolrServer("http://demo.eumssi.eu/Solr_EUMSSI/content_items/");
 		SolrQuery query = new SolrQuery();
-		query.setQuery("meta.extracted.text.dbpedia.PERSON:*");
-		query.setFields("meta.extracted.text.dbpedia.PERSON");
+		query.setQuery("meta.extracted.text_nerl.dbpedia.PERSON:*");
+		query.setFields("meta.extracted.text_nerl.dbpedia.PERSON");
 		QueryResponse response = solr.query(query);
 	    SolrDocumentList results = response.getResults();
 	    System.out.println(results.size());
 	    for (int i = 0; i < results.size(); ++i) {
-	   ArrayList tempPerson= (ArrayList) results.get(i).getFieldValue("meta.extracted.text.dbpedia.PERSON");
+	   ArrayList tempPerson= (ArrayList) results.get(i).getFieldValue("meta.extracted.text_nerl.dbpedia.PERSON");
 	      for(int j=0;j<tempPerson.size();j++){
-	    
+
 	    	  person.add(tempPerson.get(j));
 	      }
 	    }
-	  
+
 	    hs=new HashSet<>(person);
 	    System.out.println(hs);
-	    
+
 	    Iterator it =hs.iterator();
-	    		
+
 	    JSONParser parser = new JSONParser();
-	    
+
 	    JSONObject outerJsonObject=new JSONObject();
 	    while(it.hasNext()){
-	    	JSONObject innerJsonObject=new JSONObject();	
-	    String personName=(String) it.next(); 	
+	    	JSONObject innerJsonObject=new JSONObject();
+	    String personName=(String) it.next();
    	 String outputString=readUrl("http://dbpedia.org/data/"+personName+".json");
    	 Object ob;
    	 JSONObject job1;
    	 JSONObject job2;
    	 JSONArray jarray;
-   	 Object obj = parser.parse(outputString);    
+   	 Object obj = parser.parse(outputString);
         JSONObject jsonObject = (JSONObject) obj;
    	 for(Iterator iterator = jsonObject.keySet().iterator(); iterator.hasNext();) {
    		    String key = (String) iterator.next();
-   		   
+
    	        ob= jsonObject.get(key);
    		    job1 = (JSONObject) ob;
    		    int indexOfmainArrayList=0;
@@ -87,7 +87,7 @@ public class SolrPersonInfoAction implements Action,ServletRequestAware{
    		    			         job2=(JSONObject)(jarray.get(i));
    		    			          if(mainKey.equals("abstract")){
    		    					if(job2.get("lang").equals("en")){
-   		    						   mainValue=job2.get("value").toString();	
+   		    						   mainValue=job2.get("value").toString();
 
    		    					   }
    		    				    }
@@ -97,24 +97,24 @@ public class SolrPersonInfoAction implements Action,ServletRequestAware{
    		    						String tempValue=job2.get("value").toString();
    		    					    String[] splitKey2=(String[])tempValue.split("/");
    			    			        mainValue=splitKey2[splitKey2.length-1].toString();
-   		    					
+
    		    					}
    		    					else{
    		    						String tempValue=job2.get("value").toString();
    		    					    String[] splitKey2=(String[])tempValue.split("/");
    			    			        mainValue=mainValue+","+splitKey2[splitKey2.length-1].toString();
-   		    						
+
    		    					}
-   		    					
+
    		    				}
    		    				else if (mainKey.equals("birthDate"))
    		    				{
-   		    					
+
    		    					mainValue=job2.get("value").toString();
    		    				}
    		    				else if (mainKey.equals("almaMater"))
    		    				{
-   		    					if(mainValue==null){ 
+   		    					if(mainValue==null){
    		    						String tempValue=job2.get("value").toString();
 		    					    String[] splitKey2=(String[])tempValue.split("/");
 			    			        mainValue=splitKey2[splitKey2.length-1].toString();
@@ -123,12 +123,12 @@ public class SolrPersonInfoAction implements Action,ServletRequestAware{
    		    						String tempValue=job2.get("value").toString();
    		    					    String[] splitKey2=(String[])tempValue.split("/");
    			    			        mainValue=mainValue+","+splitKey2[splitKey2.length-1].toString();
-   		    						
+
    		    					}
    		    				}
    		    				else if (mainKey.equals("spouse"))
    		    				{
-   		    					if(mainValue==null){ 
+   		    					if(mainValue==null){
    		    						String tempValue=job2.get("value").toString();
 		    					    String[] splitKey2=(String[])tempValue.split("/");
 			    			        mainValue=splitKey2[splitKey2.length-1].toString();
@@ -141,16 +141,16 @@ public class SolrPersonInfoAction implements Action,ServletRequestAware{
    		    				}
    		    				else if (mainKey.equals("thumbnail"))
    		    				{
-   		    					
+
    		    					mainValue=job2.get("value").toString();
    		    				}
    		    			}
 		    			        innerJsonObject.put(mainKey, mainValue);
    		    		 }
-		    			    
+
    		    		 }
    		    }
-   		    
+
    	 }
      //System.out.println(innerJsonObject);
    	 outerJsonObject.put(personName, innerJsonObject);
@@ -159,14 +159,14 @@ public class SolrPersonInfoAction implements Action,ServletRequestAware{
 		FileWriter file = new FileWriter(path+"scripts\\personinfo.json");
 		System.out.println(path);
 			file.write(outerJsonObject.toJSONString());
-		
-		
+
+
 		file.flush();
 		file.close();
 		return "success";
-		
+
 	}
-   		    			     
+
    		    			  private static String readUrl(String urlString) throws Exception {
    		    		        BufferedReader reader = null;
    		    		        try {
@@ -176,7 +176,7 @@ public class SolrPersonInfoAction implements Action,ServletRequestAware{
    		    		            int read;
    		    		            char[] chars = new char[1024];
    		    		            while ((read = reader.read(chars)) != -1) {
-   		    		                buffer.append(chars, 0, read); 
+   		    		                buffer.append(chars, 0, read);
    		    		            }
    		    		            return buffer.toString();
    		    		        } finally {
@@ -188,7 +188,7 @@ public class SolrPersonInfoAction implements Action,ServletRequestAware{
 						@Override
 						public void setServletRequest(HttpServletRequest request) {
 							this.request = request;
-							
+
 						}
 
 }
