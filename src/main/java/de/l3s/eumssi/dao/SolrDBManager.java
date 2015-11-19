@@ -68,7 +68,7 @@ public class SolrDBManager {
 			e.printStackTrace();
 		}
 		
-		solr = new HttpSolrServer("http://eumssi.cloudapp.net/Solr_EUMSSI/content_items/");
+		solr = new HttpSolrServer("http://demo.eumssi.eu/Solr_EUMSSI/content_items/");
 	}
 	
 	
@@ -300,7 +300,7 @@ public class SolrDBManager {
 		    	
 		    	//dbpedia entities
 		    	ArrayList<Entity> dbentities = new ArrayList<Entity> ();
-		    	Collection<Object> entityObject = results.get(i).getFieldValues("meta.extracted.text.dbpedia.all");
+		    	Collection<Object> entityObject = results.get(i).getFieldValues("meta.extracted.text_nerl.dbpedia.all");
 		    	if (entityObject!=null)  {
 			    	for (Object oe: entityObject) {
 			    		String entityName = oe.toString();
@@ -468,7 +468,7 @@ public class SolrDBManager {
 		query.addFilterQuery("meta.source.inLanguage:\"en\"");
 		//--------------------------------------------------------------------
 		query.setFields("meta.source.datePublished", "meta.source.headline", "meta.source.url", "meta.source.mediaurl", 
-				"meta.source.publisher", "meta.extracted.text.dbpedia.all");
+				"meta.source.publisher", "meta.extracted.text_nerl.dbpedia.all");
 		for (String searchField: searchfields) {query.addField(searchField);}
 		
 		
@@ -518,7 +518,7 @@ public class SolrDBManager {
 		    	
 		    	//dbpedia entities
 		    	ArrayList<Entity> dbentities = new ArrayList<Entity> ();
-		    	Collection<Object> entityObject = results.get(i).getFieldValues("meta.extracted.text.dbpedia.all");
+		    	Collection<Object> entityObject = results.get(i).getFieldValues("meta.extracted.text_nerl.dbpedia.all");
 		    	if (entityObject!=null)
 		    	for (Object oe: entityObject) {
 		    		String entityName = oe.toString();
@@ -619,9 +619,9 @@ public class SolrDBManager {
 		HashSet<String> selectedTitles = new HashSet<String> ();
 		SolrQuery query = new SolrQuery();
 		query.setFields("meta.source.datePublished", "meta.source.headline", "meta.source.url", 
-				"meta.source.publisher", "meta.source.text", "meta.extracted.text.ner.all");
+				"meta.source.publisher", "meta.source.text", "meta.extracted.text_nerl.ner.all");
 		query.setQuery(solrFormatedQuery);
-		
+		System.out.println("DEBUG: query=" + solrFormatedQuery);
 		
 		query.setRows(5*n);		
 		System.out.println("SearchByKeyword" + query.toString());
@@ -636,7 +636,7 @@ public class SolrDBManager {
 		    	String url = null;
 		    	for (String searchField: new String[] {"meta.source.text", "meta.source.datePublished", 
 		    			"meta.source.headline", "meta.source.url", "meta.source.publisher", 
-		    			"meta.extracted.text.ner.all"}) 
+		    			"meta.extracted.text_nerl.ner.all"}) 
 		    	{
 		    		Object fieldVal = results.get(i).getFieldValue(searchField);
 		    		if (fieldVal!=null) {
@@ -682,7 +682,7 @@ public class SolrDBManager {
 		    	//dbpedia entities
 		    	ArrayList<Entity> dbentities = new ArrayList<Entity> ();
 		    	HashMap<String, Integer> en_hash = new HashMap<String, Integer> ();
-		    	Collection<Object> entityObject = results.get(i).getFieldValues("meta.extracted.text.ner.all");
+		    	Collection<Object> entityObject = results.get(i).getFieldValues("meta.extracted.text_nerl.ner.all");
 		    	if (entityObject!=null)  {
 			    	for (Object oe: entityObject) {
 			    		String entityName = oe.toString();
@@ -786,7 +786,7 @@ public class SolrDBManager {
 		    	
 		    	//dbpedia entities
 		    	ArrayList<Entity> dbentities = new ArrayList<Entity> ();
-		    	Collection<Object> entityObject = results.get(i).getFieldValues("meta.extracted.text.dbpedia.all");
+		    	Collection<Object> entityObject = results.get(i).getFieldValues("meta.extracted.text_nerl.dbpedia.all");
 		    	if (entityObject!=null)  {
 			    	for (Object oe: entityObject) {
 			    		String entityName = oe.toString();
@@ -937,9 +937,11 @@ public class SolrDBManager {
 		    	Collection<Object> entityObject = results.get(i).getFieldValues(sfield);
 		    	HashSet<String> itemset = new HashSet<String> ();
 		    	
-		    	if (isEntityBasedType(solrquery)) {
+		    	if (isEntityBasedType(solrquery)|| isEntityBasedType(field)) {
+		    		System.out.println("Is Entity based query");
 			    	if (entityObject!=null)  {
 				    	for (Object oe: entityObject) {
+				    		
 				    		String entityName = oe.toString();
 				    		int cur = distribution.containsKey(entityName)?distribution.get(entityName):0;
 				    		distribution.put(entityName, cur+1);
@@ -949,9 +951,11 @@ public class SolrDBManager {
 			    	}
 		    	}
 		    	else {// text base query
+		    		System.out.println("Is NOT Entity based query");
 			    	if (entityObject!=null)  {
 				    	for (Object oe: entityObject) {
 				    		String text = oe.toString();
+				    		
 				    		for (String term: text.split("\\s+")) {
 				    			term = EventDistribution.truncate(term).toLowerCase();
 				    			if (term.endsWith(":")) term = term.replace(":","");
@@ -1017,16 +1021,17 @@ public class SolrDBManager {
 	 * @return
 	 */
 	private boolean isEntityBasedType(String solrquery) {
+		
 		String[] fields = new String[] {
 				"meta.source.keywords",
-				"meta.extracted.text.dbpedia.all",
-				"meta.extracted.text.dbpedia.PERSON",
-				"meta.extracted.text.dbpedia.ORGANIZATION",
-				"meta.extracted.text.dbpedia.LOCATION",
-				"meta.extracted.text.ner.PERSON",
-				"meta.extracted.text.ner.ORGANIZATION",
-				"meta.extracted.text.ner.LOCATION",
-				"meta.extracted.text.ner.all"};
+				"meta.extracted.text_nerl.dbpedia.all",
+				"meta.extracted.text_nerl.dbpedia.PERSON",
+				"meta.extracted.text_nerl.dbpedia.ORGANIZATION",
+				"meta.extracted.text_nerl.dbpedia.LOCATION",
+				"meta.extracted.text_nerl.ner.PERSON",
+				"meta.extracted.text_nerl.ner.ORGANIZATION",
+				"meta.extracted.text_nerl.ner.LOCATION",
+				"meta.extracted.text_nerl.ner.all"};
 		for (String f: fields) 
 			if (solrquery.contains(f)) return true;
 		return false;
@@ -1038,17 +1043,17 @@ public class SolrDBManager {
 				"meta.source.headline", 
 				"meta.source.text", 
 				"meta.source.keywords",
-				"meta.extracted.text.dbpedia.all",
-				"meta.extracted.text.dbpedia.PERSON",
-				"meta.extracted.text.dbpedia.ORGANIZATION",
-				"meta.extracted.text.dbpedia.LOCATION",
-				"meta.extracted.text.ner.PERSON",
-				"meta.extracted.text.ner.ORGANIZATION",
-				"meta.extracted.text.ner.LOCATION",
-				"meta.extracted.text.ner.all"};
+				"meta.extracted.text_nerl.dbpedia.all",
+				"meta.extracted.text_nerl.dbpedia.PERSON",
+				"meta.extracted.text_nerl.dbpedia.ORGANIZATION",
+				"meta.extracted.text_nerl.dbpedia.LOCATION",
+				"meta.extracted.text_nerl.ner.PERSON",
+				"meta.extracted.text_nerl.ner.ORGANIZATION",
+				"meta.extracted.text_nerl.ner.LOCATION",
+				"meta.extracted.text_nerl.ner.all"};
 		for (String f: fields) 
 			if (solrquery.contains(f)) return f;
-		return "meta.extracted.text.ner.all"; // by default
+		return "meta.extracted.text_nerl.ner.all"; // by default
 	}
 
 	
@@ -1073,9 +1078,9 @@ public class SolrDBManager {
 				"meta.source.headline", 
 				"meta.source.text", 
 				"meta.source.keywords",
-				"meta.extracted.text.ner.all"
+				"meta.extracted.text_nerl.ner.all"
 				);
-		query.setQuery("( meta.extracted.text.ner.all:*" + entity_a + "* OR *" + entity_b + "* ) OR " +
+		query.setQuery("( meta.extracted.text_nerl.ner.all:*" + entity_a + "* OR *" + entity_b + "* ) OR " +
 				"( meta.source.keywords:*" + entity_a + "* OR *" + entity_b + "* )");
 		//query.addFilterQuery("meta.source.inLanguage:\"" + language + "\"");
 		query.setRows(500);
@@ -1115,7 +1120,7 @@ public class SolrDBManager {
 			System.out.println("Coherence path : " + path.size());
 			SolrDocument startdoc = results.get(path.get(0));
 			HashMap<String, Integer> prekeywords = getDistribution("meta.source.keywords", startdoc);
-			HashMap<String, Integer> preentities = getDistribution("meta.extracted.text.ner.all", startdoc);
+			HashMap<String, Integer> preentities = getDistribution("meta.extracted.text_nerl.ner.all", startdoc);
 			
 			
 			ArrayList<String> topw = new ArrayList<String> ();
@@ -1132,7 +1137,7 @@ public class SolrDBManager {
 		    	//make forced graph for meaningful representation
 		    	SolrDocument currentDoc = results.get(path.get(i));
 		    	HashMap<String, Integer> nextkeywords = getDistribution("meta.source.keywords", currentDoc);
-				HashMap<String, Integer> nextentities = getDistribution("meta.extracted.text.ner.all", currentDoc);
+				HashMap<String, Integer> nextentities = getDistribution("meta.extracted.text_nerl.ner.all", currentDoc);
 				
 				ArrayList<String> nexttopk = getTop(nextkeywords, 3);
 				ArrayList<String> nexttope = getTop(nextentities, 3);
@@ -1199,7 +1204,7 @@ public class SolrDBManager {
 	
 	
 	private boolean checkExist(SolrDocument solrDocument, String entity) {
-		Collection<Object> entityObject = solrDocument.getFieldValues("meta.extracted.text.ner.all");
+		Collection<Object> entityObject = solrDocument.getFieldValues("meta.extracted.text_nerl.ner.all");
     	HashSet<String> itemset = new HashSet<String> ();
     	
 	    	if (entityObject!=null)  {
@@ -1237,8 +1242,8 @@ public class SolrDBManager {
 
 	private double coherence(SolrDocument solrDocumentA,
 			SolrDocument solrDocumentB) {
-		HashMap<String, Integer> e1 = getDistribution("meta.extracted.text.ner.all", solrDocumentA);
-		HashMap<String, Integer> e2 = getDistribution("meta.extracted.text.ner.all", solrDocumentB);
+		HashMap<String, Integer> e1 = getDistribution("meta.extracted.text_nerl.ner.all", solrDocumentA);
+		HashMap<String, Integer> e2 = getDistribution("meta.extracted.text_nerl.ner.all", solrDocumentB);
 		HashMap<String, Integer> k1 = getDistribution("meta.source.keywords", solrDocumentA);
 		HashMap<String, Integer> k2 = getDistribution("meta.source.keywords", solrDocumentB);
 		return coherence(e1, e2) + coherence(k1, k2);

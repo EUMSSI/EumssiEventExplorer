@@ -52,6 +52,7 @@ public class RestfulService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<Event> getImportantEvents(@PathParam("query") String solrFormatedQuery,
 			@PathParam("n") int n) { //solr formated query (q=...) and the number of events to be returned
+		System.out.println("here");
 		SolrDBManager db = new SolrDBManager();
 		List<Event> events = new ArrayList<Event> ();
 		try{
