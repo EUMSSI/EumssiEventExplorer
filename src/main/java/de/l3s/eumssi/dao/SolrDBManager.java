@@ -1,6 +1,6 @@
 /**
- * db manager for mongodb 
- * 
+ * db manager for mongodb
+ *
  * gtran@l3s.de
  * Nov 28 2014
  */
@@ -51,7 +51,7 @@ class Gram {
 		v = word2;
 		frq = count;
 	}
-	
+
 	public String getWord1() { return u;}
 	public String getWord2(){ return v;}
 }
@@ -59,26 +59,26 @@ public class SolrDBManager {
 	HttpSolrServer solr;
 	public Properties conf;
 	public SolrDBManager() {
-		
+
 		//lemma.init();
-		
+
 		try {
 			loadConfiguration();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		solr = new HttpSolrServer("http://demo.eumssi.eu/Solr_EUMSSI/content_items/");
 	}
-	
-	
+
+
 	public void loadConfiguration() throws FileNotFoundException, IOException{
 		conf = new Properties();
 		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-		conf.load(classLoader.getResourceAsStream("DBHandler.properties"));		
+		conf.load(classLoader.getResourceAsStream("DBHandler.properties"));
 	}
-	
-	
+
+
 	 public JSONObject toJSONObject(Event event, Object contextPath) {
 			JSONObject eventObject = null;
 			try {
@@ -88,11 +88,11 @@ public class SolrDBManager {
 				eventObject.put("headline", event.getHeadline());
 				String text = "";
 				if (event.getStory()!=null){
-					 if (ServletActionContext.getRequest().getServerName().equals("wikitimes.l3s.de")){        			
+					 if (ServletActionContext.getRequest().getServerName().equals("wikitimes.l3s.de")){
 			    			text = "<a href=\"/storyTimeline.action?storyId=" +event.getStory().getId() + "\">" +
 			    					  		"<font color=\"#0040FF\" >" + event.getStory().getName()+ "</font>" +
 			    					  	"</a>";
-			    		}else{        			
+			    		}else{
 			    			text = "<a href=\""+contextPath+"/storyTimeline.action?storyId=" +event.getStory().getId()+"\">" +
 			    							"<font color=\"#0040FF\" >" + event.getStory().getName()+ "</font>" +
 			    						"</a>" ;
@@ -114,16 +114,16 @@ public class SolrDBManager {
 			}
 			return eventObject;
 		}
-	 
+
 	public JSONObject getTimelineJSON(List<Event> events, Object contextPath){
-    	
+
     	JSONObject timeline = null;
-    	
+
     	List<JSONObject> eventsJSObjects = new ArrayList<JSONObject>();
     	for (Event event: events){
     		eventsJSObjects.add(toJSONObject(event, contextPath));
     	}
-    	
+
 		try {
 			JSONObject content = new JSONObject();
 			content.put("headline:", "The Main Timeline Headline");
@@ -135,14 +135,14 @@ public class SolrDBManager {
 		} catch (JSONException e1) {
 			e1.printStackTrace();
 		}
-		
+
 		return timeline;
     }
-	
+
 	public void test() throws SolrServerException {
 		SolrQuery query = new SolrQuery();
 		query.setQuery("source:\"Youtube-video-GeneralChannel\"");
-		 
+
 		QueryResponse response = solr.query(query);
 	    SolrDocumentList results = response.getResults();
 	    System.out.println(results.size());
@@ -150,7 +150,7 @@ public class SolrDBManager {
 	      System.out.println(results.get(i).getFieldValue("meta.source.rtspHigh"));
 	    }
 	}
-	
+
 	public ArrayList<String> getField(String source, String field) {
 		ArrayList<String> array_results = new ArrayList<String> ();
 		SolrQuery query = new SolrQuery();
@@ -170,10 +170,10 @@ public class SolrDBManager {
 		} catch (SolrServerException e) {
 			e.printStackTrace();
 		}
-	    
+
 	    return array_results;
 	}
-	
+
 	public String formulateQueryMultipleFields(ArrayList<String> searchfields, String keyword) {
 		ArrayList<String> qstr = new ArrayList<String> ();
 		for (String s: searchfields) qstr.add(String.format("%s:\"*%s*\"\t", s, keyword));
@@ -181,11 +181,11 @@ public class SolrDBManager {
 		String q = StringUtils.join(tmp, " OR ");
 		return q;
 	}
-	
+
 	public StoryDistribution getDistribution(String keyword, ArrayList<String> sources, ArrayList<String> searchfields, int maxNumOfEvents) {
 		SolrQuery query = new SolrQuery();
 		String source = formulateQuerySimple(sources);
-		
+
 		if (keyword==null || keyword.equals("")) {
 			for (String searchField: searchfields) {
 				query.setQuery(String.format("%s:*\t", searchField));
@@ -200,7 +200,7 @@ public class SolrDBManager {
 		query.addFilterQuery("meta.source.inLanguage:\"en\"");
 		query.setFields( "meta.source.datePublished");
 		for (String searchField: searchfields) {query.addField(searchField);}
-		
+
 		query.setRows(maxNumOfEvents);
 		System.out.println(query.toString());
 		QueryResponse response;
@@ -219,7 +219,7 @@ public class SolrDBManager {
 		    		}
 		    	}
 		    	String fieldText = sb.toString();
-		    	
+
 		    	int len = Math.min(fieldText.length(), 1000);
 		    	fieldText = fieldText.substring(0, len-1);
 		    	Date date = (Date) results.get(i).getFieldValue("meta.source.datePublished");
@@ -233,16 +233,16 @@ public class SolrDBManager {
 		}
 	    return sd;
 	}
-	
+
 	public StoryDistribution getDistribution(String solrquery) {
 		ArrayList<Event> itemList = new ArrayList<Event> ();
 		HashSet<String> selectedTitles = new HashSet<String> ();
 		SolrQuery query = new SolrQuery();
-		query.setFields("meta.source.datePublished", "meta.source.headline", "meta.source.url", 
+		query.setFields("meta.source.datePublished", "meta.source.headline", "meta.source.url",
 				"meta.source.publisher", "meta.source.text");
 		query.setQuery(solrquery);
-		
-		
+
+
 		query.setRows(300);
 		StoryDistribution sd = new StoryDistribution();
 		System.out.println("SearchByKeyword" + query.toString());
@@ -255,31 +255,31 @@ public class SolrDBManager {
 		    	StringBuffer sb = new StringBuffer();
 		    	String headline = null;
 		    	String url = null;
-		    	for (String searchField: new String[] {"meta.source.text", "meta.source.datePublished", "meta.source.headline", "meta.source.url", "meta.source.publisher"}) 
+		    	for (String searchField: new String[] {"meta.source.text", "meta.source.datePublished", "meta.source.headline", "meta.source.url", "meta.source.publisher"})
 		    	{
 		    		Object fieldVal = results.get(i).getFieldValue(searchField);
 		    		if (fieldVal!=null) {
-			    		
+
 		    			if (searchField.equals("meta.source.text")) {
 			    			sb.append(results.get(i).getFieldValue("meta.source.text").toString());
 			    		}
-		    			
+
 			    		if (searchField.equals("meta.source.headline")) {
 			    			headline = results.get(i).getFieldValue("meta.source.headline").toString();
 			    			//headline = clean(headline);
 			    		}
-			    		
+
 			    		if (searchField.equals("meta.source.url")) {
 			    			Object uObj = results.get(i).getFieldValue("meta.source.url");
 			    			if (uObj==null) uObj = results.get(i).getFieldValue("meta.source.mediaurl");
 			    			if (uObj!= null) {
-			    				url  = uObj.toString(); 
+			    				url  = uObj.toString();
 			    			}
 			    		}
 		    		}
 		    	}
 		    	String fieldText = sb.toString(); // short description
-		    	
+
 		    	String publisher = "";
 		    	Object pObj = results.get(i).getFieldValue("meta.source.publisher");
 		    	if (pObj!=null)
@@ -287,17 +287,17 @@ public class SolrDBManager {
 		    	else {
 		    		publisher = "Deutsche Welle";
 		    	}
-		    	
+
 		    	Reference ref =  null;
 		    	if (url != null) {
 		    		ref = new Reference(url, url, publisher);
 		    	}
-		    	
+
 		    	Date date = (Date) results.get(i).getFieldValue("meta.source.datePublished");
 		    	java.sql.Date sqldate = null;
 		    	if (date!= null )
 		    		sqldate = new java.sql.Date(date.getYear(), date.getMonth(), date.getDate());
-		    	
+
 		    	//dbpedia entities
 		    	ArrayList<Entity> dbentities = new ArrayList<Entity> ();
 		    	Collection<Object> entityObject = results.get(i).getFieldValues("meta.extracted.text_nerl.dbpedia.all");
@@ -309,15 +309,15 @@ public class SolrDBManager {
 			    		dbentities.add(e);
 			    	}
 		    	}
-		    	
-		    	
+
+
 		    	Event e = new Event();
 		    	e.setEntities(dbentities);
 		    	e.setDescription(fieldText);
 		    	e.setDate(sqldate);
 		    	e.setHeadline(headline);
 		    	if (ref!=null) e.addReference(ref);
-		    	if (e.getDate()!=null && e.getDate().toString().compareTo("2050")<0) { 
+		    	if (e.getDate()!=null && e.getDate().toString().compareTo("2050")<0) {
 		    		//ensure there is not a date mistake when adding events to show
 		    		if (!selectedTitles.contains(headline)) {
 		    			selectedTitles.add(headline);
@@ -331,9 +331,9 @@ public class SolrDBManager {
 		}
 	    return sd;
 	}
-	
-	
-	
+
+
+
 	private String formulateQuerySimple(ArrayList<String> sources) {
 		ArrayList<String> qfilter = new ArrayList<String> ();
 		for (String s: sources) {
@@ -354,14 +354,14 @@ public class SolrDBManager {
 		return "(" + strqfilter + ")";
 	}
 	/*
-	 * get most recent n items 
+	 * get most recent n items
 	 */
 	public List<Event> searchByKeyword(String keyword, ArrayList<String> sources, ArrayList<String> searchfields, int n_items) {
 		HashSet<String> selectedTitles = new HashSet<String> ();
 		ArrayList<Event> itemList = new ArrayList<Event> ();
 		SolrQuery query = new SolrQuery();
 		String source = formulateQuerySimple(sources);
-		
+
 		if (keyword==null || keyword.equals("")) {
 			for (String searchField: searchfields) {
 				query.setQuery(String.format("%s:*\t", searchField));
@@ -375,11 +375,11 @@ public class SolrDBManager {
 		query.addFilterQuery("source:" + source);
 		//query.addFilterQuery("meta.source.inLanguage:\"en\"");
 		//--------------------------------------------------------------------
-		query.setFields("meta.source.datePublished", "meta.source.headline", "meta.source.url", "meta.source.httpHigh", 
+		query.setFields("meta.source.datePublished", "meta.source.headline", "meta.source.url", "meta.source.httpHigh",
 				"meta.source.publisher");
 		for (String searchField: searchfields) {query.addField(searchField);}
-		
-		
+
+
 		//query.addFilterQuery("meta.source.inLanguage:\"en\"");
 		query.setSort("meta.source.datePublished", ORDER.desc);
 		query.setRows(n_items);
@@ -404,9 +404,9 @@ public class SolrDBManager {
 		    	String url = null;
 		    	Object uObj = results.get(i).getFieldValue("meta.source.url");
 		    	if (uObj==null) uObj = results.get(i).getFieldValue("meta.source.httpHigh");
-		    	
+
 		    	if (uObj!= null) {
-		    		url  = uObj.toString(); 
+		    		url  = uObj.toString();
 		    	}
 		    	String publisher = "";
 		    	Object pObj = results.get(i).getFieldValue("meta.source.publisher");
@@ -415,16 +415,16 @@ public class SolrDBManager {
 		    	else {
 		    		publisher = "Deutsche Welle";
 		    	}
-		    	
+
 		    	Reference ref =  null;
 		    	if (url != null) {
 		    		ref = new Reference(url, url, publisher);
 		    	}
-		    	
+
 		    	Date date = (Date) results.get(i).getFieldValue("meta.source.datePublished");
 		    	java.sql.Date sqldate = new java.sql.Date(date.getYear(), date.getMonth(), date.getDate());
-		    	
-		    	
+
+
 		    	Event e = new Event();
 		    	e.setDescription(fieldText);
 		    	e.setDate(sqldate);
@@ -442,18 +442,18 @@ public class SolrDBManager {
 		}
 	    return itemList;
 	}
-	
-	
-	
+
+
+
 	/*
-	 * get most recent n items 
+	 * get most recent n items
 	 */
 	public List<Event> videoSearch(String keyword, ArrayList<String> sources, ArrayList<String> searchfields, int n_items) {
 		HashSet<String> selectedTitles = new HashSet<String> ();
 		ArrayList<Event> itemList = new ArrayList<Event> ();
 		SolrQuery query = new SolrQuery();
 		String source = formulateQuerySimple(sources);
-		
+
 		if (keyword==null || keyword.equals("")) {
 			for (String searchField: searchfields) {
 				query.setQuery(String.format("%s:*\t", searchField));
@@ -467,11 +467,12 @@ public class SolrDBManager {
 		query.addFilterQuery("source:" + source);
 		query.addFilterQuery("meta.source.inLanguage:\"en\"");
 		//--------------------------------------------------------------------
-		query.setFields("meta.source.datePublished", "meta.source.headline", "meta.source.url", "meta.source.mediaurl", 
+
+		query.setFields("meta.source.datePublished", "meta.source.headline", "meta.source.url", "meta.source.mediaurl",
 				"meta.source.publisher", "meta.extracted.text_nerl.dbpedia.all");
 		for (String searchField: searchfields) {query.addField(searchField);}
-		
-		
+
+
 		query.addFilterQuery("meta.source.inLanguage:\"en\"");
 		query.setSort("meta.source.datePublished", ORDER.desc);
 		query.setRows(n_items);
@@ -496,9 +497,9 @@ public class SolrDBManager {
 		    	String url = null;
 		    	Object uObj = results.get(i).getFieldValue("meta.source.url");
 		    	if (uObj==null) uObj = results.get(i).getFieldValue("meta.source.mediaurl");
-		    	
+
 		    	if (uObj!= null) {
-		    		url  = uObj.toString(); 
+		    		url  = uObj.toString();
 		    	}
 		    	String publisher = "";
 		    	Object pObj = results.get(i).getFieldValue("meta.source.publisher");
@@ -507,15 +508,15 @@ public class SolrDBManager {
 		    	else {
 		    		publisher = "Deutsche Welle";
 		    	}
-		    	
+
 		    	Reference ref =  null;
 		    	if (url != null) {
 		    		ref = new Reference(url, url, publisher);
 		    	}
-		    	
+
 		    	Date date = (Date) results.get(i).getFieldValue("meta.source.datePublished");
 		    	java.sql.Date sqldate = new java.sql.Date(date.getYear(), date.getMonth(), date.getDate());
-		    	
+
 		    	//dbpedia entities
 		    	ArrayList<Entity> dbentities = new ArrayList<Entity> ();
 		    	Collection<Object> entityObject = results.get(i).getFieldValues("meta.extracted.text_nerl.dbpedia.all");
@@ -526,9 +527,9 @@ public class SolrDBManager {
 		    		e.setName(entityName);
 		    		dbentities.add(e);
 		    	}
-		    	
-		    	
-		    	
+
+
+
 		    	Event e = new Event();
 		    	e.setEntities(dbentities);
 		    	e.setDescription(fieldText);
@@ -547,9 +548,9 @@ public class SolrDBManager {
 		}
 	    return itemList;
 	}
-	
-	
-	
+
+
+
 	public String clean(String headline) {
 		int p = headline.indexOf("|");
 		if (p>0) {
@@ -571,7 +572,7 @@ public class SolrDBManager {
 		query.setQuery("*:*");
 		query.addFilterQuery(String.format("meta.source.datePublished:[%sT0:00:00Z TO %sT23:59:59Z]", storyDate, storyDate));
 		query.addFilterQuery("source:" + source);
-		query.setFields(searchfield, "meta.source.datePublished", "meta.source.headline", "meta.source.url", 
+		query.setFields(searchfield, "meta.source.datePublished", "meta.source.headline", "meta.source.url",
 				"meta.source.publisher");
 		query.addFilterQuery("meta.source.inLanguage:\"en\"");
 		query.setSort("meta.source.datePublished", ORDER.desc);
@@ -588,21 +589,21 @@ public class SolrDBManager {
 		    	headline = clean(headline);
 		    	String url = results.get(i).getFieldValue("meta.source.url").toString();
 		    	String publisher = results.get(i).getFieldValue("meta.source.publisher").toString();
-		    	
+
 		    	Reference ref = new Reference(url, url, publisher);
-		    	
+
 		    	Date date = (Date) results.get(i).getFieldValue("meta.source.datePublished");
 		    	java.sql.Date sqldate = new java.sql.Date(date.getYear(), date.getMonth(), date.getDate());
-		    	
-		    	
+
+
 		    	Event e = new Event();
 		    	e.setDescription(fieldText.trim());
 		    	e.setDate(sqldate);
 		    	e.setHeadline(headline.trim());
-		    	
+
 		    	//no need for the references
 		    	///e.addReference(ref);
-		    	
+
 		    	itemList.add(e);
 		    }
 		} catch (SolrServerException ex) {
@@ -611,19 +612,21 @@ public class SolrDBManager {
 	    return itemList;
 	}
 
-	
-	// using solrformated query to get the list of events from the solr db 
+
+	// using solrformated query to get the list of events from the solr db
 	// and the filtering to keep n numebr of events
 	public List<Event> getImportantEvents(int n, String solrFormatedQuery) {
 		ArrayList<Event> itemList = new ArrayList<Event> ();
 		HashSet<String> selectedTitles = new HashSet<String> ();
 		SolrQuery query = new SolrQuery();
-		query.setFields("meta.source.datePublished", "meta.source.headline", "meta.source.url", 
+
+		query.setFields("meta.source.datePublished", "meta.source.headline", "meta.source.url",
 				"meta.source.publisher", "meta.source.text", "meta.extracted.text_nerl.ner.all");
 		query.setQuery(solrFormatedQuery);
-		System.out.println("DEBUG: query=" + solrFormatedQuery);
-		
-		query.setRows(5*n);		
+
+
+		query.setRows(5*n);
+
 		System.out.println("SearchByKeyword" + query.toString());
 		QueryResponse response;
 
@@ -634,33 +637,35 @@ public class SolrDBManager {
 		    	StringBuffer sb = new StringBuffer();
 		    	String headline = null;
 		    	String url = null;
-		    	for (String searchField: new String[] {"meta.source.text", "meta.source.datePublished", 
-		    			"meta.source.headline", "meta.source.url", "meta.source.publisher", 
-		    			"meta.extracted.text_nerl.ner.all"}) 
+
+		    	for (String searchField: new String[] {"meta.source.text", "meta.source.datePublished",
+		    			"meta.source.headline", "meta.source.url", "meta.source.publisher",
+		    			"meta.extracted.text_nerl.ner.all"})
+
 		    	{
 		    		Object fieldVal = results.get(i).getFieldValue(searchField);
 		    		if (fieldVal!=null) {
-			    		
+
 		    			if (searchField.equals("meta.source.text")) {
 			    			sb.append(results.get(i).getFieldValue("meta.source.text").toString());
 			    		}
-		    			
+
 			    		if (searchField.equals("meta.source.headline")) {
 			    			headline = results.get(i).getFieldValue("meta.source.headline").toString();
 			    			headline = clean(headline);
 			    		}
-			    		
+
 			    		if (searchField.equals("meta.source.url")) {
 			    			Object uObj = results.get(i).getFieldValue("meta.source.url");
 			    			if (uObj==null) uObj = results.get(i).getFieldValue("meta.source.mediaurl");
 			    			if (uObj!= null) {
-			    				url  = uObj.toString(); 
+			    				url  = uObj.toString();
 			    			}
 			    		}
 		    		}
 		    	}
 		    	String fieldText = sb.toString().substring(0, Math.min(300, sb.length())) + "..."; // short description
-		    	
+
 		    	String publisher = "";
 		    	Object pObj = results.get(i).getFieldValue("meta.source.publisher");
 		    	if (pObj!=null)
@@ -668,17 +673,17 @@ public class SolrDBManager {
 		    	else {
 		    		publisher = "Deutsche Welle";
 		    	}
-		    	
+
 		    	Reference ref =  null;
 		    	if (url != null) {
 		    		ref = new Reference(url, url, publisher);
 		    	}
-		    	
+
 		    	Date date = (Date) results.get(i).getFieldValue("meta.source.datePublished");
 		    	java.sql.Date sqldate = null;
 		    	if (date!= null )
 		    		sqldate = new java.sql.Date(date.getYear(), date.getMonth(), date.getDate());
-		    	
+
 		    	//dbpedia entities
 		    	ArrayList<Entity> dbentities = new ArrayList<Entity> ();
 		    	HashMap<String, Integer> en_hash = new HashMap<String, Integer> ();
@@ -687,22 +692,22 @@ public class SolrDBManager {
 			    	for (Object oe: entityObject) {
 			    		String entityName = oe.toString();
 			    		Entity e = new Entity();
-			    		
+
 			    		e.setName(entityName);
 			    		if (!en_hash.containsKey(entityName) && dbentities.size()<10)
 			    			dbentities.add(e);
 			    		en_hash.put(entityName, 1);
 			    	}
 		    	}
-		    	
-		    	
+
+
 		    	Event e = new Event();
 		    	e.setEntities(dbentities);
 		    	e.setDescription(fieldText);
 		    	e.setDate(sqldate);
 		    	e.setHeadline(headline);
 		    	if (ref!=null) e.addReference(ref);
-		    	if (e.getDate()!=null && e.getDate().toString().compareTo("2050")<0) { 
+		    	if (e.getDate()!=null && e.getDate().toString().compareTo("2050")<0) {
 		    		//ensure there is not a date mistake when adding events to show
 		    		if (!selectedTitles.contains(headline)) {
 		    			itemList.add(e);
@@ -713,24 +718,24 @@ public class SolrDBManager {
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
-		
-		
+
+
 		System.out.println("successfully returns " + itemList.size());
-	    
+
 		return itemList;
 	}
-	
-	
+
+
 	public List<Event> searchBySolrQuery(int n, String solrFormatedQuery) {
 		ArrayList<Event> itemList = new ArrayList<Event> ();
 		HashSet<String> selectedTitles = new HashSet<String> ();
 		SolrQuery query = new SolrQuery();
-		query.setFields("meta.source.datePublished", "meta.source.headline", "meta.source.url", 
+		query.setFields("meta.source.datePublished", "meta.source.headline", "meta.source.url",
 				"meta.source.publisher", "meta.source.text");
 		query.setQuery(solrFormatedQuery);
-		
-		
-		query.setRows(5*n);		
+
+
+		query.setRows(5*n);
 		System.out.println("SearchByKeyword" + query.toString());
 		QueryResponse response;
 
@@ -741,31 +746,31 @@ public class SolrDBManager {
 		    	StringBuffer sb = new StringBuffer();
 		    	String headline = null;
 		    	String url = null;
-		    	for (String searchField: new String[] {"meta.source.text", "meta.source.datePublished", "meta.source.headline", "meta.source.url", "meta.source.publisher"}) 
+		    	for (String searchField: new String[] {"meta.source.text", "meta.source.datePublished", "meta.source.headline", "meta.source.url", "meta.source.publisher"})
 		    	{
 		    		Object fieldVal = results.get(i).getFieldValue(searchField);
 		    		if (fieldVal!=null) {
-			    		
+
 		    			if (searchField.equals("meta.source.text")) {
 			    			sb.append(results.get(i).getFieldValue("meta.source.text").toString());
 			    		}
-		    			
+
 			    		if (searchField.equals("meta.source.headline")) {
 			    			headline = results.get(i).getFieldValue("meta.source.headline").toString();
 			    			headline = clean(headline);
 			    		}
-			    		
+
 			    		if (searchField.equals("meta.source.url")) {
 			    			Object uObj = results.get(i).getFieldValue("meta.source.url");
 			    			if (uObj==null) uObj = results.get(i).getFieldValue("meta.source.mediaurl");
 			    			if (uObj!= null) {
-			    				url  = uObj.toString(); 
+			    				url  = uObj.toString();
 			    			}
 			    		}
 		    		}
 		    	}
 		    	String fieldText = sb.toString().substring(0, Math.min(300, sb.length())) + "..."; // short description
-		    	
+
 		    	String publisher = "";
 		    	Object pObj = results.get(i).getFieldValue("meta.source.publisher");
 		    	if (pObj!=null)
@@ -773,17 +778,17 @@ public class SolrDBManager {
 		    	else {
 		    		publisher = "Deutsche Welle";
 		    	}
-		    	
+
 		    	Reference ref =  null;
 		    	if (url != null) {
 		    		ref = new Reference(url, url, publisher);
 		    	}
-		    	
+
 		    	Date date = (Date) results.get(i).getFieldValue("meta.source.datePublished");
 		    	java.sql.Date sqldate = null;
 		    	if (date!= null )
 		    		sqldate = new java.sql.Date(date.getYear(), date.getMonth(), date.getDate());
-		    	
+
 		    	//dbpedia entities
 		    	ArrayList<Entity> dbentities = new ArrayList<Entity> ();
 		    	Collection<Object> entityObject = results.get(i).getFieldValues("meta.extracted.text_nerl.dbpedia.all");
@@ -795,15 +800,15 @@ public class SolrDBManager {
 			    		dbentities.add(e);
 			    	}
 		    	}
-		    	
-		    	
+
+
 		    	Event e = new Event();
 		    	e.setEntities(dbentities);
 		    	e.setDescription(fieldText);
 		    	e.setDate(sqldate);
 		    	e.setHeadline(headline);
 		    	if (ref!=null) e.addReference(ref);
-		    	if (e.getDate()!=null && e.getDate().toString().compareTo("2050")<0) { 
+		    	if (e.getDate()!=null && e.getDate().toString().compareTo("2050")<0) {
 		    		//ensure there is not a date mistake when adding events to show
 		    		if (!selectedTitles.contains(headline)) {
 		    			itemList.add(e);
@@ -814,33 +819,33 @@ public class SolrDBManager {
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
-		
-		
+
+
 		System.out.println("successfully returns " + itemList.size());
-	    
+
 		return itemList;
 	}
-	
 
-	public HashMap<String, Integer> getSemanticDistribution(String solrquery, 
+
+	public HashMap<String, Integer> getSemanticDistribution(String solrquery,
 			 String language, String field, String filterValue) {
 		HashMap<String, Integer> distribution = new HashMap<String, Integer> ();
 		ArrayList<Event> itemList = new ArrayList<Event> ();
 		HashSet<String> selectedTitles = new HashSet<String> ();
 		SolrQuery query = new SolrQuery();
 		query.setFields(field);
-//		query.setFields( 
-//				"meta.source.headline", 
-//				"meta.source.text", 
+//		query.setFields(
+//				"meta.source.headline",
+//				"meta.source.text",
 //				"meta.source.keywords",
-//				"meta.extracted.text.dbpedia.all",
-//				"meta.extracted.text.dbpedia.PERSON",
-//				"meta.extracted.text.dbpedia.ORGANIZATION",
-//				"meta.extracted.text.dbpedia.LOCATION",
-//				"meta.extracted.text.ner.PERSON",
-//				"meta.extracted.text.ner.ORGANIZATION",
-//				"meta.extracted.text.ner.LOCATION",
-//				"meta.extracted.text.ner.all"
+//				"meta.extracted.text_nerl.dbpedia.all",
+//				"meta.extracted.text_nerl.dbpedia.PERSON",
+//				"meta.extracted.text_nerl.dbpedia.ORGANIZATION",
+//				"meta.extracted.text_nerl.dbpedia.LOCATION",
+//				"meta.extracted.text_nerl.ner.PERSON",
+//				"meta.extracted.text_nerl.ner.ORGANIZATION",
+//				"meta.extracted.text_nerl.ner.LOCATION",
+//				"meta.extracted.text_nerl.ner.all"
 //				);
 		query.setQuery(solrquery);
 		//query.addFilterQuery("meta.source.inLanguage:\"" + language + "\"");
@@ -854,7 +859,7 @@ public class SolrDBManager {
 			response = solr.query(query);
 			SolrDocumentList results = response.getResults();
 		    for (int i = 0; i < results.size(); ++i) {
-		    
+
 		    	//entity based type
 		    	ArrayList<Entity> dbentities = new ArrayList<Entity> ();
 		    	String sfield = getFieldFromQuery(field);	//to ensure the corrected field
@@ -881,11 +886,11 @@ public class SolrDBManager {
 				    				distribution.put(term, cur+1);
 				    			}
 				    		}
-				    		
+
 				    	}
 			    	}
 		    	}
-		    
+
 		    }
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -894,31 +899,31 @@ public class SolrDBManager {
 	}
 
 /**
- * 	
+ *
  * @param solrquery
  * @param n: number of nodes to keep
  * @param language
  * @param field
  * @return
  */
-	public JSONArray getSemanticGraph(String solrquery, int n, 
+	public JSONArray getSemanticGraph(String solrquery, int n,
 			 String language, String field, String filterValue) {
 		HashMap<String, Integer> distribution = new HashMap<String, Integer> ();
 		HashMap<String, Integer> graph = new HashMap<String, Integer> ();
 		SolrQuery query = new SolrQuery();
 		query.setFields(field);
-//		query.setFields( 
-//				"meta.source.headline", 
-//				"meta.source.text", 
+//		query.setFields(
+//				"meta.source.headline",
+//				"meta.source.text",
 //				"meta.source.keywords",
-//				"meta.extracted.text.dbpedia.all",
-//				"meta.extracted.text.dbpedia.PERSON",
-//				"meta.extracted.text.dbpedia.ORGANIZATION",
-//				"meta.extracted.text.dbpedia.LOCATION",
-//				"meta.extracted.text.ner.PERSON",
-//				"meta.extracted.text.ner.ORGANIZATION",
-//				"meta.extracted.text.ner.LOCATION",
-//				"meta.extracted.text.ner.all"
+//				"meta.extracted.text_nerl.dbpedia.all",
+//				"meta.extracted.text_nerl.dbpedia.PERSON",
+//				"meta.extracted.text_nerl.dbpedia.ORGANIZATION",
+//				"meta.extracted.text_nerl.dbpedia.LOCATION",
+//				"meta.extracted.text_nerl.ner.PERSON",
+//				"meta.extracted.text_nerl.ner.ORGANIZATION",
+//				"meta.extracted.text_nerl.ner.LOCATION",
+//				"meta.extracted.text_nerl.ner.all"
 //				);
 		query.setQuery(solrquery);
 		//query.addFilterQuery("meta.source.inLanguage:\"" + language + "\"");
@@ -931,7 +936,7 @@ public class SolrDBManager {
 			response = solr.query(query);
 			SolrDocumentList results = response.getResults();
 		    for (int i = 0; i < results.size(); ++i) {
-		    
+
 		    	//entity based type
 		    	String sfield = getFieldFromQuery(field);	//to ensure the corrected field
 		    	Collection<Object> entityObject = results.get(i).getFieldValues(sfield);
@@ -939,6 +944,7 @@ public class SolrDBManager {
 		    	
 		    	if (isEntityBasedType(solrquery)|| isEntityBasedType(field)) {
 		    		System.out.println("Is Entity based query");
+
 			    	if (entityObject!=null)  {
 				    	for (Object oe: entityObject) {
 				    		
@@ -947,7 +953,7 @@ public class SolrDBManager {
 				    		distribution.put(entityName, cur+1);
 				    		itemset.add(entityName);
 				    	}
-				    	
+
 			    	}
 		    	}
 		    	else {// text base query
@@ -966,17 +972,17 @@ public class SolrDBManager {
 				    				itemset.add(term);
 				    			}
 				    		}
-				    		
+
 				    	}
 			    	}
 		    	}
-		    	
+
 		    	//co-occurence
 		    	ArrayList<String> entities = new ArrayList<String> ();
 		    	for (String s: itemset) entities.add(s);
 		    	for (int x = 0; x < entities.size()-1; x++) {
 		    		for (int y  = 0; y <x; y++) {
-		    			String graphkey = entities.get(y) + ">>_<<" + entities.get(x); 
+		    			String graphkey = entities.get(y) + ">>_<<" + entities.get(x);
 		    			if (entities.get(x).compareTo(entities.get(y)) <0) {
 		    				graphkey = entities.get(x) + ">>_<<" + entities.get(y);
 		    			}
@@ -988,21 +994,21 @@ public class SolrDBManager {
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
-		
+
 		ArrayList<String> all_items = new ArrayList<String> ();
 		for (String s: graph.keySet()) all_items.add(s);
 		System.out.println(all_items.size());
 		JSONArray jsa = new JSONArray();
 		if (all_items.size()==0) return jsa;
 		sortingMap.qsort(all_items, graph, 0, all_items.size()-1);
-		
+
 		for (int j = 0; j < Math.min(n, graph.size()); j++) {
 			JSONObject o = new JSONObject();
 			String graphkey = all_items.get(j);
 			String[] keysplt  = graphkey.split(">>_<<");
 			int f = graph.get(all_items.get(j));
 			if  (keysplt.length <2) continue;
-			
+
 			try {
 				o.put("source", keysplt[0]);
 				o.put("target", keysplt[1]);
@@ -1012,10 +1018,10 @@ public class SolrDBManager {
 				e.printStackTrace();
 			}
 		}
-		
+
 		return jsa;
 	}
-	
+
 	/**
 	 * 	 * @param solrquery
 	 * @return
@@ -1032,16 +1038,16 @@ public class SolrDBManager {
 				"meta.extracted.text_nerl.ner.ORGANIZATION",
 				"meta.extracted.text_nerl.ner.LOCATION",
 				"meta.extracted.text_nerl.ner.all"};
-		for (String f: fields) 
+		for (String f: fields)
 			if (solrquery.contains(f)) return true;
 		return false;
 	}
-	
-	
+
+
 	private String getFieldFromQuery(String solrquery) {
 		String[] fields = new String[] {
-				"meta.source.headline", 
-				"meta.source.text", 
+				"meta.source.headline",
+				"meta.source.text",
 				"meta.source.keywords",
 				"meta.extracted.text_nerl.dbpedia.all",
 				"meta.extracted.text_nerl.dbpedia.PERSON",
@@ -1051,13 +1057,13 @@ public class SolrDBManager {
 				"meta.extracted.text_nerl.ner.ORGANIZATION",
 				"meta.extracted.text_nerl.ner.LOCATION",
 				"meta.extracted.text_nerl.ner.all"};
-		for (String f: fields) 
+		for (String f: fields)
 			if (solrquery.contains(f)) return f;
 		return "meta.extracted.text_nerl.ner.all"; // by default
 	}
 
-	
-	
+
+
 	public ArrayList<String> getTop(HashMap<String, Integer> h, int n) {
 		ArrayList<String> r = new ArrayList<String> ();
 		for (String k: h.keySet()) r.add(k);
@@ -1074,9 +1080,9 @@ public class SolrDBManager {
 		HashMap<String, Integer> graph = new HashMap<String, Integer> ();
 		SolrQuery query = new SolrQuery();
 		//query.setFields(field);
-		query.setFields( 
-				"meta.source.headline", 
-				"meta.source.text", 
+		query.setFields(
+				"meta.source.headline",
+				"meta.source.text",
 				"meta.source.keywords",
 				"meta.extracted.text_nerl.ner.all"
 				);
@@ -1085,14 +1091,14 @@ public class SolrDBManager {
 		//query.addFilterQuery("meta.source.inLanguage:\"" + language + "\"");
 		query.setRows(500);
 		QueryResponse response;
-		
+
 		try {
 			System.out.println(query);
 			response = solr.query(query);
 			SolrDocumentList results = response.getResults();
 			int dset = results.size();
 			if (dset ==0) return new JSONArray();
-			
+
 			int budget = Math.min(dset, n);
 			boolean found = false;
 			ArrayList<Integer> path = new ArrayList<Integer> ();
@@ -1112,21 +1118,20 @@ public class SolrDBManager {
 				visitted.add(j);
 				path.add(j);
 				found = (checkExist(results.get(j), entity_b)
-									&& visitted.size() >1) 
+									&& visitted.size() >1)
 									||visitted.size() ==Math.min(5*budget, dset);
-				
+
 			}
-			
+
 			System.out.println("Coherence path : " + path.size());
 			SolrDocument startdoc = results.get(path.get(0));
 			HashMap<String, Integer> prekeywords = getDistribution("meta.source.keywords", startdoc);
 			HashMap<String, Integer> preentities = getDistribution("meta.extracted.text_nerl.ner.all", startdoc);
-			
-			
+
 			ArrayList<String> topw = new ArrayList<String> ();
 			for (String tmp: getTop(prekeywords,3)) topw.add(tmp);
 			for (String tmp: getTop(preentities,3)) topw.add(tmp);
-			
+
 			boolean hasA = false;
 			for (String tmp: topw) {
 				if (tmp.equals(entity_a)) {hasA = true; break;}
@@ -1138,13 +1143,12 @@ public class SolrDBManager {
 		    	SolrDocument currentDoc = results.get(path.get(i));
 		    	HashMap<String, Integer> nextkeywords = getDistribution("meta.source.keywords", currentDoc);
 				HashMap<String, Integer> nextentities = getDistribution("meta.extracted.text_nerl.ner.all", currentDoc);
-				
 				ArrayList<String> nexttopk = getTop(nextkeywords, 3);
 				ArrayList<String> nexttope = getTop(nextentities, 3);
 				ArrayList<String> nextw = new ArrayList<String> ();
 				for (String tmp: nexttopk) nextw.add(tmp);
 				for (String tmp: nexttope) nextw.add(tmp);
-				
+
 				if (i==path.size()-1) {
 					boolean hasB= false;
 					for (String tmp: nextw) {
@@ -1152,10 +1156,10 @@ public class SolrDBManager {
 					}
 					if (!hasB) nextw.add(entity_b);
 				}
-				
+
 				for (String w1: topw) {
 					for (String w2: nextw){
-						String graphkey = w1 + ">>_<<" + w2; 
+						String graphkey = w1 + ">>_<<" + w2;
 		    			if (w2.compareTo(w1) <0) {
 		    				graphkey =w2 + ">>_<<" + w1;
 		    			}
@@ -1172,21 +1176,21 @@ public class SolrDBManager {
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
-		
+
 		ArrayList<String> all_items = new ArrayList<String> ();
 		for (String s: graph.keySet()) all_items.add(s);
 		System.out.println(all_items.size());
 		JSONArray jsa = new JSONArray();
 		if (all_items.size()==0) return jsa;
 		sortingMap.qsort(all_items, graph, 0, all_items.size()-1);
-		
+
 		for (int j = 0; j < Math.min(500, graph.size()); j++) {
 			JSONObject o = new JSONObject();
 			String graphkey = all_items.get(j);
 			String[] keysplt  = graphkey.split(">>_<<");
 			int f = graph.get(all_items.get(j));
 			if  (keysplt.length <2) continue;
-			
+
 			try {
 				o.put("source", keysplt[0]);
 				o.put("target", keysplt[1]);
@@ -1198,15 +1202,15 @@ public class SolrDBManager {
 		}
 		System.out.println(jsa.toString());
 		return jsa;
-		
+
 	}
 
-	
-	
+
+
 	private boolean checkExist(SolrDocument solrDocument, String entity) {
 		Collection<Object> entityObject = solrDocument.getFieldValues("meta.extracted.text_nerl.ner.all");
     	HashSet<String> itemset = new HashSet<String> ();
-    	
+
 	    	if (entityObject!=null)  {
 		    	for (Object oe: entityObject) {
 		    		String entityName = oe.toString();
@@ -1215,7 +1219,7 @@ public class SolrDBManager {
 		    			return true;
 		    		}
 		    	}
-		    	
+
 	    	}
 		return false;
 	}
@@ -1248,7 +1252,7 @@ public class SolrDBManager {
 		HashMap<String, Integer> k2 = getDistribution("meta.source.keywords", solrDocumentB);
 		return coherence(e1, e2) + coherence(k1, k2);
 	}
-	
+
 	public double coherence(HashMap<String, Integer> v1, HashMap<String, Integer> v2) {
 		int size = v1.size();
 		if (size ==0) return 0;
@@ -1257,8 +1261,8 @@ public class SolrDBManager {
 			if (v1.containsKey(x)) sc++;
 		return 1.0 * sc / size;
 	}
-	
-	//field: "meta.extracted.text.ner.all" or others
+
+	//field: "meta.extracted.text_nerl.ner.all" or others
 	public HashMap<String, Integer> getDistribution(String field, SolrDocument document) {
 		Collection<Object> entityObject = document.getFieldValues(field);
     	HashMap<String, Integer> itemset = new HashMap<String, Integer> ();
@@ -1268,11 +1272,11 @@ public class SolrDBManager {
 		    		int c = itemset.containsKey(entityName)?itemset.get(entityName):0;
 		    		itemset.put(entityName, c+1);
 		    	}
-		    	
+
 	    	}
 		return itemset;
 	}
-	
+
 	public static void main(String[] args) {
 		SolrDBManager sm = new SolrDBManager();
 		String query = "*:*";
