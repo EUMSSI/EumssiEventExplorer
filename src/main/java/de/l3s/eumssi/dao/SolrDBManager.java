@@ -709,7 +709,7 @@ public class SolrDBManager {
 		    	if (ref!=null) e.addReference(ref);
 		    	if (e.getDate()!=null && e.getDate().toString().compareTo("2050")<0) {
 		    		//ensure there is not a date mistake when adding events to show
-		    		if (!selectedTitles.contains(headline)) {
+		    		if (!selectedTitles.contains(headline) && e.getDescription().length()>100) {
 		    			itemList.add(e);
 		    			selectedTitles.add(headline);
 		    		}
