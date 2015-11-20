@@ -848,7 +848,7 @@ public class SolrDBManager {
 //				"meta.extracted.text_nerl.ner.all"
 //				);
 		query.setQuery(solrquery);
-		//query.addFilterQuery("meta.source.inLanguage:\"" + language + "\"");
+		query.addFilterQuery("meta.source.inLanguage:\"" + language + "\"");
 		query.addFilterQuery(field + ":*" + filterValue + "*");
 		query.setRows(1000);
 		StoryDistribution sd = new StoryDistribution();
