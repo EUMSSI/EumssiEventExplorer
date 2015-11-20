@@ -848,7 +848,8 @@ public class SolrDBManager {
 //				"meta.extracted.text_nerl.ner.all"
 //				);
 		query.setQuery(solrquery);
-		query.addFilterQuery("meta.source.inLanguage:\"" + language + "\"");
+		if (!language.equals("all"))
+			query.addFilterQuery("meta.source.inLanguage:\"" + language + "\"");
 		query.addFilterQuery(field + ":*" + filterValue + "*");
 		query.setRows(1000);
 		StoryDistribution sd = new StoryDistribution();
@@ -926,7 +927,8 @@ public class SolrDBManager {
 //				"meta.extracted.text_nerl.ner.all"
 //				);
 		query.setQuery(solrquery);
-		query.addFilterQuery("meta.source.inLanguage:\"" + language + "\"");
+		if (!language.equals("all"))
+			query.addFilterQuery("meta.source.inLanguage:\"" + language + "\"");
 		query.addFilterQuery(field + ":*" + filterValue + "*");
 		query.setRows(1000);
 		System.out.println("SearchByKeyword\n" + query.toString());
