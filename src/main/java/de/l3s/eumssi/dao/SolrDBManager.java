@@ -626,7 +626,7 @@ public class SolrDBManager {
 
 
 		query.setRows(5*n);
-
+		
 		System.out.println("SearchByKeyword" + query.toString());
 		QueryResponse response;
 
@@ -965,7 +965,8 @@ public class SolrDBManager {
 				    		String text = oe.toString();
 				    		
 				    		for (String term: text.split("\\s+")) {
-				    			term = EventDistribution.truncate(term).toLowerCase();
+				    			//term = EventDistribution.truncate(term).toLowerCase();
+				    			term = EventDistribution.truncate(term);
 				    			if (term.endsWith(":")) term = term.replace(":","");
 				    			if (EventDistribution.isBlackListed(term)) continue;
 				    			if (!Stopwords.isStopword(term)) {
