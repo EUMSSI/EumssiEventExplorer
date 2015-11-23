@@ -833,6 +833,7 @@ public class SolrDBManager {
 		ArrayList<Event> itemList = new ArrayList<Event> ();
 		HashSet<String> selectedTitles = new HashSet<String> ();
 		SolrQuery query = new SolrQuery();
+		System.out.println("test: " + solrquery);
 		query.setFields(field);
 //		query.setFields(
 //				"meta.source.headline",
@@ -860,15 +861,16 @@ public class SolrDBManager {
 			response = solr.query(query);
 			SolrDocumentList results = response.getResults();
 		    for (int i = 0; i < results.size(); ++i) {
-
+		    	
 		    	//entity based type
 		    	ArrayList<Entity> dbentities = new ArrayList<Entity> ();
 		    	String sfield = getFieldFromQuery(field);	//to ensure the corrected field
 		    	Collection<Object> entityObject = results.get(i).getFieldValues(sfield);
-		    	if (isEntityBasedType(solrquery)) {
+		    	if (isEntityBasedType(solrquery) || isEntityBasedType(field)) {
 			    	if (entityObject!=null)  {
 				    	for (Object oe: entityObject) {
 				    		String entityName = oe.toString();
+				    		System.out.println(entityName);
 				    		int cur = distribution.containsKey(entityName)?distribution.get(entityName):0;
 				    		distribution.put(entityName, cur+1);
 				    	}
