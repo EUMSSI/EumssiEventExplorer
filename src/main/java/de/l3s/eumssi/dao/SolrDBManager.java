@@ -62,7 +62,7 @@ public class SolrDBManager {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		solr = new HttpSolrServer("http://eumssi.cloudapp.net/Solr_EUMSSI/content_items/");
+		solr = new HttpSolrServer("http://demo.eumssi.eu/Solr_EUMSSI/content_items/");
 	}
 	
 	

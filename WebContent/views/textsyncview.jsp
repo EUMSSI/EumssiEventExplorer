@@ -12,7 +12,7 @@
         <meta http-equiv="pragma" content="no-cache">
         <meta http-equiv="expires" content="-1">
         <link rel="icon" href="images/favicon.ico"> 
-        <link href="css/default.css" rel="stylesheet">
+         <link href="CSS/default.css" rel="stylesheet">  
         <script src="scripts/bower_components/jquery/dist/jquery.js"></script>
         <script src="scripts/bower_components/jquery-ui/jquery-ui.min.js"></script>        
         <script src="scripts/bower_components/raphael/raphael.js"></script>
@@ -27,7 +27,8 @@
     <body>
         <div class="container">
             <div class="header">
-                <h1>EUMSSI Second Screen Demo</h1>  
+            <img height="108" width="300" src="Images/eumssi-logo.png">
+                <h1>Second Screen Demo</h1>  
             </div>
             <div class="content">           
                 <div class="demo">
@@ -60,7 +61,7 @@
                     </div>
 <s:hidden  name="jsonFileName" id="jsonFileName" />
 <s:hidden  name="videoUrl" id="videoUrl" />
- <s:property value="videoUrl" />
+
                     <script>
                  
                         $( function () {
@@ -105,27 +106,41 @@
         <script>
        
        
+
         setTimeout(function(){$('p.text').each(function(){
+        	var correctAns=0;
             var $this = $(this);
             var t = $this.text();
             $this.html(t.replace("&lt;br&gt;","<br>"));
            
         }); 
-        
+    	var correctAns=0;
         $("input[type='button']").click(function() {
+        	
         	var selected = $(this).siblings("input[type='radio']:checked");
         	if (selected.length > 0) {
         	    selectedVal = selected.val();
         	}
 
-        	if(selected.val()==selected.attr('name'))
+        	if(selected.val()==selected.attr('name')){
         	$(this).val("Correct");
-        	else
+        	$(this).after("<img src=Images/tik.png>");
+        	correctAns++;
+            $('.correct').html("<strong style='background-color: powderblue;'>Correct Answers:"+correctAns+"</strong>");
+        }
+        	else{
         	$(this).val("False");
+        	$(this).after("<img src=Images/cross.png>");
+        }
         	$(this).attr("disabled",true);
         	});
+        var questionCounter = $(':button').length;
+        $('.quize').html("<strong style='background-color: powderblue;'>Number of Questions:"+questionCounter+"</strong>");
+       
         
-        }, 2000);
+        }, 2500);
+        
+
         
        
         
@@ -147,6 +162,17 @@
       
         
         </script>
+        <div class="quize"></div>
+         <div class="correct" ></div>
+        The timing of the information boxes is currently fixed. <br>
+        Our goal is to show them at the exact time that a person appears or a location is mentioned. This is shown in:
+        <br> <a href='<s:url action="video1" includeContext="true">
+	     <s:param name="video" value="jhjb"/>
+        </s:url>'>1. German government approves controversial fracking bill </a> <br>
+          <a href='<s:url action="video2" includeContext="true">
+	     <s:param name="video" value="http://tv-download.dw.de/dwtv_video/flv/ej/ej20140115_polen_sd_avc.mp4"/>
+        </s:url>'>2. Alternative Fracking - Environmental risk or economic opportunity? </a>  
+        <!-- 
         <p>Entities of this video</p>
        <ul>
         <s:iterator value="entities" begin="1" >
@@ -155,5 +181,6 @@
         </li>
       </s:iterator>
       </ul>
+       -->
     </body>
 </html>

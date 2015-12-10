@@ -42,7 +42,7 @@ public class LocationInfoAction implements Action,ServletRequestAware  {
 		DBCollection collection=mongo.getCollection("location");
 		ServletContext context = request.getServletContext();
 		String path = context.getRealPath("/");
-		HttpSolrServer solr = new HttpSolrServer("http://eumssi.cloudapp.net/Solr_EUMSSI/content_items/");
+		HttpSolrServer solr = new HttpSolrServer("http://demo.eumssi.eu//Solr_EUMSSI/content_items/");
 		SolrQuery query = new SolrQuery();
 		query.setQuery("source:\"DW video\"");
 		query.addFilterQuery("meta.extracted.text.dbpedia.LOCATION:*");

@@ -75,10 +75,11 @@ public class textsyncAction implements Action, ServletRequestAware{
 		
 		 if(sec==60){
 			  sec=00;
+			  sec=sec+10;
 			  min=min+1;
 			  }
 		  else
-			  sec=sec+30;
+			  sec=sec+10;
 		  if(min==60){
 			  sec=00;
 		      min=00;
@@ -118,21 +119,21 @@ public class textsyncAction implements Action, ServletRequestAware{
 		Map<String,String> personMapInfo =new HashMap<String,String>();
 		
 		locationMapQuestion.put("currency", "What is the name of the currency?");
-		locationMapQuestion.put("officialLanguage","What is the language?");
-		locationMapQuestion.put("capital","What is the capital name?");
-		locationMapQuestion.put("country","What is the country name?");
+		locationMapQuestion.put("officialLanguage","What language is spoken here?");
+		locationMapQuestion.put("capital","What is the name of the capital?");
+		locationMapQuestion.put("country","In what country is it located?");
 		
-		personMapQuestion.put("birthPlace","What is the birthplace?");
-		personMapQuestion.put("almaMater","Where he/she attended?");
+		personMapQuestion.put("birthPlace","Where was this person born?");
+		personMapQuestion.put("almaMater","Which university or college did this person attend??");
 		
-		locationMapInfo.put("currency", "The currency is ");
-		locationMapInfo.put("officialLanguage","The language is ");
+		locationMapInfo.put("currency", "The local currency is ");
+		locationMapInfo.put("officialLanguage","The language spoken is ");
 		locationMapInfo.put("capital","The capital is ");
-		locationMapInfo.put("country","Situated in ");
+		locationMapInfo.put("country","This city is located in ");
 		
-		personMapInfo.put("birthPlace","Birthplace is ");
-		personMapInfo.put("almaMater","He/She attended ");
-		personMapInfo.put("birthdate","He/she born " );
+		personMapInfo.put("birthPlace","City of birth: ");
+		personMapInfo.put("almaMater","College attended: ");
+		personMapInfo.put("birthdate","Date of birth: " );
 		personMapInfo.put("spouse","Spouse: ");
 		
 	int  dataCounter=0;
@@ -142,9 +143,10 @@ public class textsyncAction implements Action, ServletRequestAware{
 		 ArrayList<String> tempKeyArrayList=new ArrayList<String>(); 
 		
 		 Random ran = new Random();
-		   int x = ran.nextInt(3) + 1;
+		   int x = ran.nextInt(4) + 1;
            if(x==1)dicision="question";
-           else if(x==2)dicision="info";
+           if(x==2)dicision="question";
+           else if(x==3)dicision="info";
            else dicision="abstract"; 
 		 
                  BasicDBObject entity = mainArrayList.get(i); 
@@ -161,6 +163,8 @@ public class textsyncAction implements Action, ServletRequestAware{
 				  }
 				  
 				  if(type.equals("location")){
+					  String locationName= (String) entity.get("name"); 
+						locationName=locationName.replaceAll("[_]"," ");
 					  if(dicision.equals("question")){
 						    for(Iterator iteratorForKeyIntersection = mainArrayList.get(i).keySet().iterator(); iteratorForKeyIntersection.hasNext();){ 
 								  String keyForIntersection= (String) iteratorForKeyIntersection.next(); 				  
@@ -177,12 +181,14 @@ public class textsyncAction implements Action, ServletRequestAware{
                  		String mainKeyValue=(String)entity.get(mainKeyForQuestion);
 						ArrayList options=GetLocationFalseAns(mainKeyForQuestion,mainKeyValue,longi,lat) ;
 						
-						String question="<div>"+(String) entity.get("name")+"<br>"+locationMapQuestion.get(mainKeyForQuestion)+
+						
+						
+						String question="<div><img src=Images"+"//"+"quiz.png><strong>"+locationName+"</strong><br>"+locationMapQuestion.get(mainKeyForQuestion)+
 								"<br><input type='radio' name=\'"+mainKeyValue+"\' value=\'"+options.get(0)+"\'>"+options.get(0)+
 								"<br><input type='radio' name=\'"+mainKeyValue+"\' value=\'"+options.get(1)+"\'>"+options.get(1)+
 								"<br><input type='radio' name=\'"+mainKeyValue+"\' value=\'"+options.get(2)+"\'>"+options.get(2)+
-								"<input type='radio' name=\'"+mainKeyValue+"\' value=\'"+options.get(3)+"\'>"+options.get(3)+
-								"<input type='button'  value='check'></div>";
+								"<br><input type='radio' name=\'"+mainKeyValue+"\' value=\'"+options.get(3)+"\'>"+options.get(3)+
+								"<br><input type='button'  value='check'></div>";
 						
 					//	System.out.println(question);
 						makeData(question,i+1,(String) entity.get("thumbnail"));
@@ -200,7 +206,7 @@ public class textsyncAction implements Action, ServletRequestAware{
 						String mainKeyForInfo=tempKeyArrayList.get(infoSelectorNumber);
 					//	System.out.println("tempkeyarraylist:"+tempKeyArrayList);
 						String mainKeyValue=(String)entity.get(mainKeyForInfo);
-					    String info=(String) entity.get("name")+"<br>"+locationMapInfo.get(mainKeyForInfo)+ mainKeyValue;
+					    String info="<img src=Images"+"/"+"Info.png><strong>"+locationName+"</strong>"+"<br>"+locationMapInfo.get(mainKeyForInfo)+ mainKeyValue;
 					//	System.out.println(info);
 					    makeData(info,i+1,(String) entity.get("thumbnail"));
 					    
@@ -209,7 +215,7 @@ public class textsyncAction implements Action, ServletRequestAware{
 				    if(dicision.equals("abstract")){
 				    	System.out.println("dicision abstract");
 				    	if((String) entity.get("abstract")==null)continue;
-				    	String abs=(String) entity.get("name")+"<br>"+(String) entity.get("abstract");
+				    	String abs="<strong>"+locationName+"</strong>"+"<br>"+(String) entity.get("abstract");
 				    	abs=abs.replaceAll("\\(.+?\\)\\s*", "");
 				    	System.out.println(abs);
 				    	makeData(abs,i+1,(String) entity.get("thumbnail"));
@@ -217,8 +223,9 @@ public class textsyncAction implements Action, ServletRequestAware{
 				  
 				  
 		}
-				  if(type.equals("person")){
-					  
+				  else if(type.equals("person")){
+					  String personName= (String) entity.get("name"); 
+						personName=personName.replaceAll("[_]"," ");
 					  if(dicision.equals("question")){
 						    for(Iterator iteratorForKeyIntersection = mainArrayList.get(i).keySet().iterator(); iteratorForKeyIntersection.hasNext();){ 
 								  String keyForIntersection= (String) iteratorForKeyIntersection.next(); 				  
@@ -233,12 +240,12 @@ public class textsyncAction implements Action, ServletRequestAware{
                		String mainKeyValue=(String)entity.get(mainKeyForQuestion);
 						ArrayList options=GetPersonFalseAns(mainKeyForQuestion,mainKeyValue) ;
 						
-						String question="<div>"+(String) entity.get("name")+"<br>"+personMapQuestion.get(mainKeyForQuestion)+
+						String question="<div><img src=Images"+"//"+"quiz.png><strong>"+personName+"</strong><br>"+personMapQuestion.get(mainKeyForQuestion)+
 								"<br><input type='radio' name=\'"+mainKeyValue+"\' value=\'"+options.get(0)+"\'>"+options.get(0)+
 								"<br><input type='radio' name=\'"+mainKeyValue+"\' value=\'"+options.get(1)+"\'>"+options.get(1)+
 								"<br><input type='radio' name=\'"+mainKeyValue+"\' value=\'"+options.get(2)+"\'>"+options.get(2)+
-								"<input type='radio' name=\'"+mainKeyValue+"\' value=\'"+options.get(3)+"\'>"+options.get(3)+
-								"<input type='button'  value='check'></div>";
+								"<br><input type='radio' name=\'"+mainKeyValue+"\' value=\'"+options.get(3)+"\'>"+options.get(3)+
+								"<br><input type='button'  value='check'></div>";
 						
 						System.out.println(question);
 						makeData(question,i+1,(String) entity.get("thumbnail"));
@@ -254,7 +261,7 @@ public class textsyncAction implements Action, ServletRequestAware{
 						int infoSelectorNumber = ran.nextInt(tempKeyArrayList.size());
 						String mainKeyForInfo=tempKeyArrayList.get(infoSelectorNumber);
 						String mainKeyValue=(String)entity.get(mainKeyForInfo);
-					    String info=(String) entity.get("name")+"<br>"+personMapInfo.get(mainKeyForInfo)+ mainKeyValue;
+					    String info="<img src=Images"+"/"+"Info.png><strong>"+personName+"</strong>"+"<br>"+personMapInfo.get(mainKeyForInfo)+ mainKeyValue;
 						System.out.println(info);
 					    makeData(info,i+1,(String) entity.get("thumbnail"));
 					    
@@ -263,7 +270,7 @@ public class textsyncAction implements Action, ServletRequestAware{
 				    if(dicision.equals("abstract")){
 				    	System.out.println("dicision abstract");
 				    	if((String) entity.get("abstract")==null)continue;
-				    	String abs=(String) entity.get("name")+"<br>"+(String) entity.get("abstract");
+				    	String abs="<strong>"+personName+"</strong>"+"<br>"+(String) entity.get("abstract");
 				    	System.out.println(abs);
 				    	abs=abs.replaceAll("\\(.+?\\)\\s*", "");
 				    	makeData(abs,i+1,(String) entity.get("thumbnail"));
@@ -273,8 +280,10 @@ public class textsyncAction implements Action, ServletRequestAware{
 					  
 				  }
 				  
-				  if(type.equals("other")){
-					  String entityAbstract=(String) entity.get("abstract");
+				  else if(type.equals("other")){
+					  String otherEntityName= (String) entity.get("name"); 
+						otherEntityName=otherEntityName.replaceAll("[_]"," ");
+					  String entityAbstract="<strong>"+otherEntityName+"</strong><br>"+(String) entity.get("abstract");
 					  entityAbstract=entityAbstract.replaceAll("[\"]","");
 					  entityAbstract=entityAbstract.replaceAll("\\(.+?\\)\\s*", "");
 					  makeData(entityAbstract,i+1,(String) entity.get("thumbnail"));
@@ -436,9 +445,10 @@ public class textsyncAction implements Action, ServletRequestAware{
            			  
            			   mainArrayList.add(entity);
          			}
-         			if(locationCursor.count()==0 || personCursor.count()==0){
+         			if(locationCursor.count()==0 && personCursor.count()==0){
          			   BasicDBObject entityOther=abstractFinder((String)entities[entityCounter]);
                         entityOther.put("type", "other");
+                        entityOther.put("name",(String)entities[entityCounter] );
          				mainArrayList.add(entityOther);
          				
          				

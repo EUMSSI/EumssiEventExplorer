@@ -1,0 +1,9 @@
+body {
+    font-family: Verdana,Arial,sans-serif;;
+}
+.quize{
+	height:3px; position: relative;bottom: 86px;
+}
+.correct{
+	height:3px;position: relative;bottom: 67px;
+}
