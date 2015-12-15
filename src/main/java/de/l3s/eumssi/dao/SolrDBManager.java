@@ -616,6 +616,23 @@ public class SolrDBManager {
 	// using solrformated query to get the list of events from the solr db
 	// and the filtering to keep n numebr of events
 	public List<Event> getImportantEvents(int n, String solrFormatedQuery) {
+		ArrayList<String> qfilter = new ArrayList<String> ();		
+
+		qfilter.add("\"News\"");
+		qfilter.add("\"DW article\"");
+
+
+		qfilter.add("\"DW video\"");
+		qfilter.add("\"Youtube\"");
+		qfilter.add("\"DW (Youtube)\"");
+		qfilter.add("\"Guardian (Youtube)\"");
+
+
+		String[] tmp = (String[]) qfilter.toArray(new String[qfilter.size()]);
+		String strqfilter = StringUtils.join(tmp, " OR ");
+		System.out.println("Sources for filter: " + strqfilter);
+		
+		
 		ArrayList<Event> itemList = new ArrayList<Event> ();
 		HashSet<String> selectedTitles = new HashSet<String> ();
 		SolrQuery query = new SolrQuery();
@@ -625,7 +642,7 @@ public class SolrDBManager {
 		query.setQuery(solrFormatedQuery);
 
 
-		query.setRows(5*n);
+		query.setRows(15*n);
 		
 		System.out.println("SearchByKeyword" + query.toString());
 		QueryResponse response;
@@ -889,7 +906,6 @@ public class SolrDBManager {
 				    				distribution.put(term, cur+1);
 				    			}
 				    		}
-
 				    	}
 			    	}
 		    	}
