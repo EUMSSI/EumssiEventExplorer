@@ -47,16 +47,12 @@ public class SolrPersonInfoAction implements Action,ServletRequestAware {
 		String path = context.getRealPath("/");
 		HttpSolrServer solr = new HttpSolrServer("http://demo.eumssi.eu/Solr_EUMSSI/content_items/");
 		SolrQuery query = new SolrQuery();
-<<<<<<< HEAD
-		query.setQuery("meta.extracted.text_nerl.dbpedia.PERSON:*");
-		query.setFields("meta.extracted.text_nerl.dbpedia.PERSON");
-=======
 		query.setQuery("source:\"DW video\"");
-		query.addFilterQuery("meta.extracted.text.dbpedia.PERSON:*");
-		query.setFields("meta.extracted.text.dbpedia.PERSON");
+		query.addFilterQuery("meta.extracted.text_nerl.dbpedia.PERSON:*");
+		query.setFields("meta.extracted.text_nerl.dbpedia.PERSON");
 		query.setStart(0);
 		query.setRows(8065);
->>>>>>> l3sdev
+
 		QueryResponse response = solr.query(query);
 	    SolrDocumentList results = response.getResults();
 	    System.out.println(results.size());
@@ -107,10 +103,6 @@ public class SolrPersonInfoAction implements Action,ServletRequestAware {
    		    			         job2=(JSONObject)(jarray.get(i));
    		    			          if(mainKey.equals("abstract")){
    		    					if(job2.get("lang").equals("en")){
-<<<<<<< HEAD
-   		    						   mainValue=job2.get("value").toString();
-
-=======
    		    						   String abs=job2.get("value").toString();
    		    						   List sentenceList=new ArrayList();
    		    						Pattern re = Pattern.compile("[^.!?\\s][^.!?]*(?:[.!?](?!['\"]?\\s|$)[^.!?]*)*[.!?]?['\"]?(?=\\s|$)", Pattern.MULTILINE | Pattern.COMMENTS);
@@ -125,7 +117,7 @@ public class SolrPersonInfoAction implements Action,ServletRequestAware {
    		    					    	else
    		    					    		mainValue=(String)sentenceList.get(0);
    		    					    }
->>>>>>> l3sdev
+
    		    					   }
    		    				    }
    		    				else if (mainKey.equals("birthPlace"))
@@ -134,22 +126,14 @@ public class SolrPersonInfoAction implements Action,ServletRequestAware {
    		    						String tempValue=job2.get("value").toString();
    		    					    String[] splitKey2=(String[])tempValue.split("/");
    			    			        mainValue=splitKey2[splitKey2.length-1].toString();
-<<<<<<< HEAD
+   			    			        mainValue=mainValue.replaceAll("[_]", " ");   		    					
 
-=======
-   			    			        mainValue=mainValue.replaceAll("[_]", " ");
-   		    					
->>>>>>> l3sdev
    		    					}
    		    					else{
    		    						String tempValue=job2.get("value").toString();
    		    					    String[] splitKey2=(String[])tempValue.split("/");
    			    			        mainValue=mainValue+","+splitKey2[splitKey2.length-1].toString();
-<<<<<<< HEAD
-
-=======
    			    			        mainValue=mainValue.replaceAll("[_]", " ");
->>>>>>> l3sdev
    		    					}
 
    		    				}
@@ -170,11 +154,7 @@ public class SolrPersonInfoAction implements Action,ServletRequestAware {
    		    						String tempValue=job2.get("value").toString();
    		    					    String[] splitKey2=(String[])tempValue.split("/");
    			    			        mainValue=mainValue+","+splitKey2[splitKey2.length-1].toString();
-<<<<<<< HEAD
-
-=======
    			    			        mainValue=mainValue.replaceAll("[_]", " ");
->>>>>>> l3sdev
    		    					}
    		    				}
    		    				else if (mainKey.equals("spouse"))

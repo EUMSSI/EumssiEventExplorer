@@ -320,6 +320,7 @@ public class EventSearchByKeywordInDBOnlyAction  extends ActionSupport implement
 			int maxNumOfEventsToDisplay = Integer.parseInt(db.conf.getProperty("visualization_MaxTimelineSize"));
 			
 			//events = db.searchByKeyword(query, "Eumssi-News-Crawler OR DW-en_GB ", "meta.source.text", maxNumOfEventsToDisplay);
+			System.out.println("\tDebug: " + query);
 			events = db.videoSearch(query, sources, searchField, maxNumOfEventsToDisplay);
 			searchsize = events.size();
 			System.out.println("number of found videos: " + searchsize);
@@ -328,7 +329,6 @@ public class EventSearchByKeywordInDBOnlyAction  extends ActionSupport implement
 				toDate = events.get(0).getDate().toString();
 				fromDate = events.get(events.size()-1).getDate().toString();
 			}			
-			
 			timeline = db.getTimelineJSON(events, contextPath);
 		}catch(Exception e){
 			e.printStackTrace();	

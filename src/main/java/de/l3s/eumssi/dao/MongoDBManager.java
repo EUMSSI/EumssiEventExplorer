@@ -31,7 +31,7 @@ public class MongoDBManager {
 	String host = "127.0.0.1";
 //	String host = "pharos.l3s.uni-hannover.de";
 	//String dbname = "eumssi_db";
-	String dbname = "EumssiEntity";
+	String dbname = "eumssi_secondscreen_db";
 //	String collection = "location";
 	DBCollection coll = null;
 	public MongoDBManager() {

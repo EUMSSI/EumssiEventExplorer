@@ -67,10 +67,6 @@ public class SolrDBManager {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-<<<<<<< HEAD
-
-=======
->>>>>>> l3sdev
 		solr = new HttpSolrServer("http://demo.eumssi.eu/Solr_EUMSSI/content_items/");
 	}
 
@@ -452,40 +448,47 @@ public class SolrDBManager {
 	 * get most recent n items
 	 */
 	public List<Event> videoSearch(String keyword, ArrayList<String> sources, ArrayList<String> searchfields, int n_items) {
+		System.out.println("DEBUG: in video search");
 		HashSet<String> selectedTitles = new HashSet<String> ();
 		ArrayList<Event> itemList = new ArrayList<Event> ();
 		SolrQuery query = new SolrQuery();
-		String source = formulateQuerySimple(sources);
-
+		//String source = formulateQuerySimple(sources);
+		String source = "\"DW video\"";
 		if (keyword==null || keyword.equals("")) {
 			for (String searchField: searchfields) {
 				query.setQuery(String.format("%s:*\t", searchField));
 			}
 			System.out.println("debug: null/empty query");
 		}
+		/*
 		else {
 			String queryString = formulateQueryMultipleFields(searchfields, keyword);
 			query.setQuery(queryString);
 		}
-		query.addFilterQuery("source:" + source);
+		*/
+		query.setQuery("source:" + source);
 		query.addFilterQuery("meta.source.inLanguage:\"en\"");
+		query.addFilterQuery("contentSearch:*" + keyword + "*");
+		query.addFilterQuery("meta.extracted.text_nerl.dbpedia.all:*");
+		
 		//--------------------------------------------------------------------
 
 		query.setFields("meta.source.datePublished", "meta.source.headline", "meta.source.url", "meta.source.mediaurl",
 				"meta.source.publisher", "meta.extracted.text_nerl.dbpedia.all");
 		for (String searchField: searchfields) {query.addField(searchField);}
 
-
-		query.addFilterQuery("meta.source.inLanguage:\"en\"");
+		
 		query.setSort("meta.source.datePublished", ORDER.desc);
 		query.setRows(n_items);
 		System.out.println("SearchByKeyword " + query.toString());
 		QueryResponse response;
 
 		try {
+			
 			response = solr.query(query);
 			 SolrDocumentList results = response.getResults();
-		    for (int i = 0; i < results.size(); ++i) {
+			 System.out.println("DEBUG: in video search - found videos " + results.size());
+			 for (int i = 0; i < results.size(); ++i) {
 		    	StringBuffer sb = new StringBuffer();
 		    	for (String searchField: searchfields) {
 		    		Object fieldVal = results.get(i).getFieldValue(searchField);
@@ -544,11 +547,16 @@ public class SolrDBManager {
 		    			itemList.add(e);
 		    			selectedTitles.add(headline);
 		    		}
+		    		else {
+		    			System.out.println(e.getHeadline());
+		    		}
 		    	}
+		    	
 		    }
 		} catch (SolrServerException ex) {
 			ex.printStackTrace();
 		}
+		System.out.println("item List: " + itemList.size());
 	    return itemList;
 	}
 
