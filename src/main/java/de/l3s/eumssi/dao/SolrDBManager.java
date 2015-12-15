@@ -67,7 +67,10 @@ public class SolrDBManager {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+<<<<<<< HEAD
 
+=======
+>>>>>>> l3sdev
 		solr = new HttpSolrServer("http://demo.eumssi.eu/Solr_EUMSSI/content_items/");
 	}
 

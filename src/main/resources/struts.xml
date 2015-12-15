@@ -15,8 +15,22 @@
         
         <action name="textsync" 
 			class="de.l3s.eumssi.action.textsyncAction">
-            <result name="test">/views/textsyncview.jsp</result>
+              <result name="test">/views/textsyncview.jsp</result>
+          
         </action>
+        
+         <action name="video1" 
+			class="de.l3s.eumssi.action.textsyncvideo1Action">
+              <result name="test">/views/textsyncvideo1View.jsp</result>
+          
+        </action>
+      
+         <action name="video2" 
+			class="de.l3s.eumssi.action.textsyncvideo2Action">
+              <result name="test">/views/textsyncvideo2View.jsp</result>
+          
+        </action>
+           
         
          <action name="secondscreen" 
 			class="de.l3s.eumssi.action.SecondScreenAction">

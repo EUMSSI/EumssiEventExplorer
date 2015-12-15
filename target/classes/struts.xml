@@ -15,7 +15,8 @@
         
         <action name="textsync" 
 			class="de.l3s.eumssi.action.textsyncAction">
-            <result name="test">/views/textsyncview.jsp</result>
+              <result name="test">/views/textsyncview.jsp</result>
+          
         </action>
         
          <action name="secondscreen" 

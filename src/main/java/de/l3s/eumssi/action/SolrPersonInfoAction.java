@@ -1,4 +1,7 @@
 package de.l3s.eumssi.action;
+import de.l3s.eumssi.dao.MongoDBManager;
+
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,6 +9,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.io.BufferedReader;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
@@ -24,19 +29,34 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
+
+
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBCollection;
 import com.opensymphony.xwork2.Action;
 
-public class SolrPersonInfoAction implements Action,ServletRequestAware{
+public class SolrPersonInfoAction implements Action,ServletRequestAware {
 	List person=new ArrayList();
 	HashSet<String> hs;
 	HttpServletRequest request;
 	public String execute() throws Exception{
+		MongoDBManager mongo=new MongoDBManager(); 
+		BasicDBObject document = new BasicDBObject();
+		DBCollection collection=mongo.getCollection("person");
 		ServletContext context = request.getServletContext();
 		String path = context.getRealPath("/");
 		HttpSolrServer solr = new HttpSolrServer("http://demo.eumssi.eu/Solr_EUMSSI/content_items/");
 		SolrQuery query = new SolrQuery();
+<<<<<<< HEAD
 		query.setQuery("meta.extracted.text_nerl.dbpedia.PERSON:*");
 		query.setFields("meta.extracted.text_nerl.dbpedia.PERSON");
+=======
+		query.setQuery("source:\"DW video\"");
+		query.addFilterQuery("meta.extracted.text.dbpedia.PERSON:*");
+		query.setFields("meta.extracted.text.dbpedia.PERSON");
+		query.setStart(0);
+		query.setRows(8065);
+>>>>>>> l3sdev
 		QueryResponse response = solr.query(query);
 	    SolrDocumentList results = response.getResults();
 	    System.out.println(results.size());
@@ -87,8 +107,25 @@ public class SolrPersonInfoAction implements Action,ServletRequestAware{
    		    			         job2=(JSONObject)(jarray.get(i));
    		    			          if(mainKey.equals("abstract")){
    		    					if(job2.get("lang").equals("en")){
+<<<<<<< HEAD
    		    						   mainValue=job2.get("value").toString();
 
+=======
+   		    						   String abs=job2.get("value").toString();
+   		    						   List sentenceList=new ArrayList();
+   		    						Pattern re = Pattern.compile("[^.!?\\s][^.!?]*(?:[.!?](?!['\"]?\\s|$)[^.!?]*)*[.!?]?['\"]?(?=\\s|$)", Pattern.MULTILINE | Pattern.COMMENTS);
+   		    					    Matcher reMatcher = re.matcher(abs);
+   		    					    while (reMatcher.find()) {
+   		    					        sentenceList.add(reMatcher.group());
+   		    					    }
+   		    					    if(!sentenceList.isEmpty()){
+   		    					    
+   		    					    	if(sentenceList.size()>1)
+   		    			 			mainValue=(String)sentenceList.get(0)+(String)sentenceList.get(1);
+   		    					    	else
+   		    					    		mainValue=(String)sentenceList.get(0);
+   		    					    }
+>>>>>>> l3sdev
    		    					   }
    		    				    }
    		    				else if (mainKey.equals("birthPlace"))
@@ -97,13 +134,22 @@ public class SolrPersonInfoAction implements Action,ServletRequestAware{
    		    						String tempValue=job2.get("value").toString();
    		    					    String[] splitKey2=(String[])tempValue.split("/");
    			    			        mainValue=splitKey2[splitKey2.length-1].toString();
+<<<<<<< HEAD
 
+=======
+   			    			        mainValue=mainValue.replaceAll("[_]", " ");
+   		    					
+>>>>>>> l3sdev
    		    					}
    		    					else{
    		    						String tempValue=job2.get("value").toString();
    		    					    String[] splitKey2=(String[])tempValue.split("/");
    			    			        mainValue=mainValue+","+splitKey2[splitKey2.length-1].toString();
+<<<<<<< HEAD
 
+=======
+   			    			        mainValue=mainValue.replaceAll("[_]", " ");
+>>>>>>> l3sdev
    		    					}
 
    		    				}
@@ -118,12 +164,17 @@ public class SolrPersonInfoAction implements Action,ServletRequestAware{
    		    						String tempValue=job2.get("value").toString();
 		    					    String[] splitKey2=(String[])tempValue.split("/");
 			    			        mainValue=splitKey2[splitKey2.length-1].toString();
+			    			        mainValue=mainValue.replaceAll("[_]", " ");
    		    					}
    		    					else{
    		    						String tempValue=job2.get("value").toString();
    		    					    String[] splitKey2=(String[])tempValue.split("/");
    			    			        mainValue=mainValue+","+splitKey2[splitKey2.length-1].toString();
+<<<<<<< HEAD
 
+=======
+   			    			        mainValue=mainValue.replaceAll("[_]", " ");
+>>>>>>> l3sdev
    		    					}
    		    				}
    		    				else if (mainKey.equals("spouse"))
@@ -132,11 +183,23 @@ public class SolrPersonInfoAction implements Action,ServletRequestAware{
    		    						String tempValue=job2.get("value").toString();
 		    					    String[] splitKey2=(String[])tempValue.split("/");
 			    			        mainValue=splitKey2[splitKey2.length-1].toString();
+			    			        if(mainValue.equals(personName)){
+   			    			        	String[] splitKey3=(String[])key.split("/");
+   	   			    			        mainValue=splitKey3[splitKey3.length-1].toString();
+   	   			    			        mainValue=mainValue.replaceAll("[_]", " ");
+   			    			        }
+			    			       
+			    			        	mainValue=mainValue.replaceAll("[_]", " ");
    		    					}
    		    					else{
    		    						String tempValue=job2.get("value").toString();
 		    					    String[] splitKey2=(String[])tempValue.split("/");
 			    			        mainValue=mainValue+","+splitKey2[splitKey2.length-1].toString();
+			    			        if(mainValue.equals(personName)){
+   			    			        	String[] splitKey3=(String[])key.split("/");
+   	   			    			        mainValue=splitKey3[splitKey3.length-1].toString();	
+   			    			        }
+			    			        mainValue=mainValue.replaceAll("[_]", " ");
    		    					}
    		    				}
    		    				else if (mainKey.equals("thumbnail"))
@@ -146,6 +209,7 @@ public class SolrPersonInfoAction implements Action,ServletRequestAware{
    		    				}
    		    			}
 		    			        innerJsonObject.put(mainKey, mainValue);
+		    			       // document.put(mainKey, mainValue);
    		    		 }
 
    		    		 }
@@ -153,8 +217,13 @@ public class SolrPersonInfoAction implements Action,ServletRequestAware{
 
    	 }
      //System.out.println(innerJsonObject);
-   	 outerJsonObject.put(personName, innerJsonObject);
+   	// outerJsonObject.put(personName, innerJsonObject);
+   	innerJsonObject.put("name", personName);
+   	innerJsonObject.put("type", "person");
+    collection.insert(new BasicDBObject(innerJsonObject));
+   	 //document.put("name", personName);
 	    }
+	   /*
 	    System.out.println(outerJsonObject);
 		FileWriter file = new FileWriter(path+"scripts\\personinfo.json");
 		System.out.println(path);
@@ -163,6 +232,8 @@ public class SolrPersonInfoAction implements Action,ServletRequestAware{
 
 		file.flush();
 		file.close();
+		*/
+	  System.out.println("THE END");
 		return "success";
 
 	}
