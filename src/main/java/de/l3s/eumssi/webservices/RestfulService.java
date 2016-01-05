@@ -283,6 +283,45 @@ public class RestfulService {
 		return tfjson.toString();
 	}
 	
+	
+	/**
+	 * 
+	 * @param solrformatedQuery
+	 * @param n: number of items to return
+	 * @param type: entity keyword
+	 * @param language: filter by en, de, es, fr language
+	 * @param query: solr based query
+	 * @return json style of [{item, frequency}]
+	 
+	 */
+	@GET
+	@Path("/getSemanticCloudPivot/json/{n}/{query}/{language}/{field}/{filterValue}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String getSemanticCloudPivot(@PathParam("query") String solrformatedQuery, 
+			@PathParam("n") int n,
+			@PathParam("language") String language,
+			@PathParam("field") String field,
+			@PathParam("filterValue") String filterValue) {
+	
+		SolrDBManager db = new SolrDBManager();
+		JSONArray tfjson = null;
+		
+		try{
+			
+			HashMap<String, Integer> distr = db.getSemanticDistributionPivot(solrformatedQuery, language, field, filterValue);
+			tfjson =  StoryDistribution.getTermFrequencies(distr, n);
+			
+			System.out.println("Finish generating cloud");
+			
+		}catch(Exception e){
+			e.printStackTrace();	
+		}finally{
+			
+		}
+		return tfjson.toString();
+	}
+	
+	
 	/**
 	 * 
 	 * @param solrformatedQuery

@@ -627,20 +627,17 @@ public class SolrDBManager {
 	// using solrformated query to get the list of events from the solr db
 	// and the filtering to keep n numebr of events
 	public List<Event> getImportantEvents(int n, String solrFormatedQuery) {
+		System.out.println("input query= " + solrFormatedQuery);
 		ArrayList<String> qfilter = new ArrayList<String> ();		
 
 		qfilter.add("\"News\"");
 		qfilter.add("\"DW article\"");
-
-
-		qfilter.add("\"DW video\"");
-		qfilter.add("\"Youtube\"");
-		qfilter.add("\"DW (Youtube)\"");
-		qfilter.add("\"Guardian (Youtube)\"");
-
-
+		//qfilter.add("\"DW video\"");
+		//qfilter.add("\"Youtube\"");
+		
 		String[] tmp = (String[]) qfilter.toArray(new String[qfilter.size()]);
-		String strqfilter = StringUtils.join(tmp, " OR ");
+		String strqfilter = "(source: " + StringUtils.join(tmp, " OR ") + " )";
+		strqfilter += "+(meta.source.description:/.{1}.*/)";  
 		System.out.println("Sources for filter: " + strqfilter);
 		
 		
@@ -649,11 +646,11 @@ public class SolrDBManager {
 		SolrQuery query = new SolrQuery();
 
 		query.setFields("meta.source.datePublished", "meta.source.headline", "meta.source.url",
-				"meta.source.publisher", "meta.source.text", "meta.extracted.text_nerl.ner.all");
+				"meta.source.publisher", "meta.source.text", "meta.extracted.text_nerl.dbpedia.all");
 		query.setQuery(solrFormatedQuery);
+		query.setFilterQueries(strqfilter);
 
-
-		query.setRows(15*n);
+		query.setRows(5 * n);
 		
 		System.out.println("SearchByKeyword" + query.toString());
 		QueryResponse response;
@@ -668,7 +665,7 @@ public class SolrDBManager {
 
 		    	for (String searchField: new String[] {"meta.source.text", "meta.source.datePublished",
 		    			"meta.source.headline", "meta.source.url", "meta.source.publisher",
-		    			"meta.extracted.text_nerl.ner.all"})
+		    			"meta.extracted.text_nerl.dbpedia.all"})
 
 		    	{
 		    		Object fieldVal = results.get(i).getFieldValue(searchField);
@@ -715,7 +712,7 @@ public class SolrDBManager {
 		    	//dbpedia entities
 		    	ArrayList<Entity> dbentities = new ArrayList<Entity> ();
 		    	HashMap<String, Integer> en_hash = new HashMap<String, Integer> ();
-		    	Collection<Object> entityObject = results.get(i).getFieldValues("meta.extracted.text_nerl.ner.all");
+		    	Collection<Object> entityObject = results.get(i).getFieldValues("meta.extracted.text_nerl.dbpedia.all");
 		    	if (entityObject!=null)  {
 			    	for (Object oe: entityObject) {
 			    		String entityName = oe.toString();
@@ -1313,5 +1310,76 @@ public class SolrDBManager {
 		SolrDBManager sm = new SolrDBManager();
 		String query = "*:*";
 		sm.getStoryTellingGraph("Angela_Merkel", "Barack_Obama", 20, "en");
+	}
+
+
+	/**
+	 * get general word distribution
+	 * @param solrformatedQuery
+	 * @param language
+	 * @param field
+	 * @param filterValue
+	 * @return
+	 */
+	public HashMap<String, Integer> getSemanticDistributionPivot(
+			String solrquery, String language, String field,
+			String filterValue) {
+		
+		HashMap<String, Integer> distribution = new HashMap<String, Integer> ();
+		ArrayList<Event> itemList = new ArrayList<Event> ();
+		HashSet<String> selectedTitles = new HashSet<String> ();
+		SolrQuery query = new SolrQuery();
+		System.out.println("test: " + solrquery);
+		query.setFields(field);
+		query.setQuery(solrquery);
+		if (!language.equals("all"))
+			query.addFilterQuery("meta.source.inLanguage:\"" + language + "\"");
+		query.addFilterQuery(field + ":*" + filterValue + "*");
+		query.setRows(1000);
+		StoryDistribution sd = new StoryDistribution();
+		System.out.println("SearchByKeyword\n" + query.toString());
+		QueryResponse response;
+
+		try {
+			response = solr.query(query);
+			SolrDocumentList results = response.getResults();
+		    for (int i = 0; i < results.size(); ++i) {
+		    	
+		    	//entity based type
+		    	ArrayList<Entity> dbentities = new ArrayList<Entity> ();
+		    	String sfield = getFieldFromQuery(field);	//to ensure the corrected field
+		    	Collection<Object> entityObject = results.get(i).getFieldValues(sfield);
+		    	if (isEntityBasedType(solrquery) || isEntityBasedType(field)) {
+			    	if (entityObject!=null)  {
+				    	for (Object oe: entityObject) {
+				    		String entityName = oe.toString();
+				    		System.out.println(entityName);
+				    		int cur = distribution.containsKey(entityName)?distribution.get(entityName):0;
+				    		distribution.put(entityName, cur+1);
+				    	}
+			    	}
+		    	}
+		    	else {// text base query
+			    	if (entityObject!=null)  {
+				    	for (Object oe: entityObject) {
+				    		String text = oe.toString();
+				    		for (String term: text.split("\\s+")) {
+				    			term = EventDistribution.truncate(term);
+				    			if (term.endsWith(":")) term = term.replace(":","");
+				    			if (EventDistribution.isBlackListed(term)) continue;
+				    			if (!Stopwords.isStopword(term)) {
+				    				int cur = distribution.containsKey(term)?distribution.get(term):0;
+				    				distribution.put(term, cur+1);
+				    			}
+				    		}
+				    	}
+			    	}
+		    	}
+
+		    }
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return distribution;
 	}
 }

@@ -6,3 +6,5 @@
 
 *.class
 /target/
+
+target/classes/struts.xml
