@@ -682,7 +682,7 @@ public class SolrDBManager {
 			    		}
 		    			
 		    			if (searchField.equals("meta.source.description")) {
-			    			text = results.get(i).getFieldValue("meta.source.text").toString();
+			    			text = results.get(i).getFieldValue("meta.source.description").toString();
 			    		}
 
 			    		if (searchField.equals("meta.source.headline")) {
