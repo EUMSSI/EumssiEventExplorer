@@ -24,7 +24,6 @@ public class Event implements Comparable<Event>, Serializable{
 	private String eventId;
 	
 	@XmlElement
-	@XmlJavaTypeAdapter(DateXMLAdapter.class)
 	private Date date;
 	
 	@XmlElement
@@ -43,10 +42,7 @@ public class Event implements Comparable<Event>, Serializable{
 	@XmlElement
 	private Location location = null;
 	
-	private Story story = null;
 	
-	@XmlElement(name="belongsToStory")
-	private StoryCompact storyCompact = null;
     
 	@XmlElement(name="entity")
 	private ArrayList<Entity> entities = new ArrayList<Entity> ();
@@ -65,8 +61,7 @@ public class Event implements Comparable<Event>, Serializable{
     	this.date = null;
     	this.category = null;
     	this.location = null;
-    	this.story = null;
-    	this.storyCompact = null;
+    	
     	this.entities = new ArrayList<Entity> ();
     	this.references = new ArrayList<Reference> ();
     	this.storyRelationConfidence = 1;
@@ -80,30 +75,14 @@ public class Event implements Comparable<Event>, Serializable{
     	this.date = e.date;
     	this.category = e.category;
     	this.location = e.location;
-    	this.story = e.story;
-    	if (story == null)
-			this.storyCompact = null;
-		else
-			this.storyCompact = new StoryCompact(story);
+    	
     	this.entities = e.entities;
     	this.references = e.references;
     	this.storyRelationConfidence = e.storyRelationConfidence;
     }
  
     
-    public Story getStory() {
-		return story;
-	}
-
-	public void setStory(Story story) {
-		this.story = story;
-		if (story == null)
-			this.storyCompact = null;
-		else
-			this.storyCompact = new StoryCompact(story);
-	}
-
-	public ArrayList<Reference> getReferences() {
+    	public ArrayList<Reference> getReferences() {
 		return references;
 	}
 
@@ -263,11 +242,7 @@ public class Event implements Comparable<Event>, Serializable{
 		out+= ", Description: " + qoutationMark + getDescription().replace('"', '\'') + qoutationMark;
 		if (getAnnotatedDescription()!=null) 
 			out+= ", AnnotatedDescription: " + qoutationMark + getAnnotatedDescription().replace('"', '\'') + qoutationMark;
-		if (getStory()!=null){
-			out+= ", Story: {";
-			out+= "Name: " +  qoutationMark + getStory().getName() + qoutationMark;
-			out+= ", URL: " + qoutationMark + getStory().getWikipediaUrl() + qoutationMark + "}";
-		}
+		
 		if (getCategory()!=null){
 			out+= ", Category: " + qoutationMark + getCategory().getName() + qoutationMark;
 		}
@@ -309,12 +284,6 @@ public class Event implements Comparable<Event>, Serializable{
 		return out;
 	}
 
-	public StoryCompact getStoryCompact() {
-		return storyCompact;
-	}
-
-	public void setStoryCompact(StoryCompact storyCompact) {
-		this.storyCompact = storyCompact;
-	}
+	
     
 }

@@ -13,8 +13,6 @@ import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 
-import de.l3s.eumssi.core.EventDistribution;
-import de.l3s.eumssi.core.StoryDistribution;
 import de.l3s.lemma.lemma;
 
 import java.net.UnknownHostException;
@@ -63,47 +61,5 @@ public class MongoDBManager {
 		System.out.println(myDoc);
 	}
 	
-	
-	/**
-	 * field name can be headline, description or text
-	 * @param language
-	 * @param fieldName
-	 * @return
-	 */
-	public ArrayList<Pair<String, Short>> getTermFrequencyFromNews(String language, String fieldName) {
-		BasicDBObject query = new BasicDBObject("source", "Eumssi-News-Crawler")
-								.append("meta.source.inLanguage", language);
-		
-		BasicDBObject fields = new BasicDBObject().append("meta.source." + fieldName, 1);
-		DBCursor cursor = coll.find(query, fields);
-		StoryDistribution distr = new StoryDistribution();
-		int count = 0;
-		try {
-			   while(cursor.hasNext()) {
-				   count+=1;
-				   DBObject c = cursor.next();
-				   BasicDBObject _meta = (BasicDBObject) c.get("meta");
-				   BasicDBObject _source = (BasicDBObject) _meta.get("source");
-				   String fieldVal = _source.getString(fieldName).toString();
-				   EventDistribution e = new EventDistribution(fieldVal, null);
-				   distr.index(e);
-			   }
-			} finally {
-			   cursor.close();
-			}
-		System.out.println(count + " items found");
-		return null;
-	}
-	
-	
-	public static void main(String[] args) {
-		MongoDBManager mongodb = new MongoDBManager();
-		ArrayList<Pair<String, Short>> tf = mongodb.getTermFrequencyFromNews("EN", "headline");
-		for (Pair p : tf) {
-			System.out.println(p.getKey() + " " + p.getValue());
-		}
-	}
-	
-	//write more function here
 
 }

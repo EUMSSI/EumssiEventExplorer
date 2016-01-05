@@ -15,16 +15,11 @@ import org.json.JSONObject;
 
 import com.opensymphony.xwork2.ActionSupport;
 
-import de.l3s.eumssi.core.CoOccurence;
-import de.l3s.eumssi.core.StoryDistribution;
-import de.l3s.eumssi.dao.DatabaseManager;
 import de.l3s.eumssi.dao.SolrDBManager;
 import de.l3s.eumssi.model.*;
-import de.l3s.eumssi.service.ContentHandling;
+
 
 public class EventSearchByKeywordInDBOnlyAction  extends ActionSupport implements ServletRequestAware {
-	private ContentHandling helper = new ContentHandling();
-	private DatabaseManager dbmysql = new DatabaseManager();
 	private static final long serialVersionUID = 1L;
 	private SolrDBManager db = new SolrDBManager();
 	private String query;
@@ -59,20 +54,15 @@ public class EventSearchByKeywordInDBOnlyAction  extends ActionSupport implement
 	private JSONObject timeline;
 	private org.json.JSONArray tfjson, coocc;
 	
-	private List<Category> relatedCategories = null;
-	private List<Location> relatedLocations = null;
-	private List<Story> relatedStories=null;
-	private List<Story> stories=null;
+	
 	private List<Event> events;
 	private List<Entity> entities = null;
-	private List<Entity> topEntities = null;
-	
-	
+
 	
 	private javax.servlet.http.HttpServletRequest request;
 	
 	//Distribution
-	StoryDistribution distr = null;
+	
 	ArrayList<Pair<String, Short>> tf = null;
 	
 	@Override
@@ -108,184 +98,7 @@ public class EventSearchByKeywordInDBOnlyAction  extends ActionSupport implement
 		return searchFields;
 	}
 	
-	
-	public String WCEPeventSearch() throws Exception {
-		System.out.println(db.toString());
-		
-		if (ServletActionContext.getRequest().getServerName().equals(db.conf.getProperty("domainName"))){
-			contextPath = null;
-			useContextPath = false;
-		}else{
-			contextPath = ServletActionContext.getServletContext().getContextPath();
-			useContextPath = true;
-		}
-//		
-		infer = Boolean.valueOf(db.conf.getProperty("display_infered_relations"));
-		
-		
-		try{
-			fromDate = "2000-01-01";
-			toDate = "2015-05-31";
-			itemType = "Query";
-			itemId = null;
-			if(query!=null){
-				itemName = query;
-			}else{
-				itemName = " show all events between " + fromDate + " and " + toDate;
-			}
-			System.out.println("Infor:" + itemName);
-			
-			hasWikipediaUrl = false;
-			wikipediaUrl = "";
-	
-			List<Event> eventsTmp = new ArrayList<Event>();
-			if(query == null){
-				eventsTmp = dbmysql.getEvents(fromDate, toDate);
-			}else if (query.isEmpty()){
-				eventsTmp = dbmysql.getEvents(fromDate, toDate);
-			}else{
-				eventsTmp = dbmysql.searchEventsByKeyword(query, fromDate, toDate);
-			}
-			System.out.println("INFOR: number of events found: " + eventsTmp.size());
-			
-			
-/*			if (infer) 
-				events_tmp = helper.addInferedInformation(events_tmp);
-*/			
-			// apply filters, if exist (e.g. show only events from a specific story, category, or entity)
-			if(filterType != null && filterItemId != null){
-				events = helper.filterEvents(eventsTmp, filterType, filterItemId);	
-			}else{
-				events = eventsTmp;
-			}
-							
-			searchsize = events.size();
-					
-			
-			// 1. add the links for each entity mention
-			// and remove double montion of references
-			for (Event e: events){
-//				if (e.getAnnotatedDescription() != null)
-					e = helper.addEntityLinks(e, contextPath);
-//				else
-//					e = helper.addEntityLinks_Old(e, contextPath);
-				
-//				e = helper.removeDoubleReferences(e);
-			}
-			
-			
-			
-			// reverse the order of events to show latest events first
-			Collections.sort(events, Collections.reverseOrder());
 
-			// get the dates of the first and last events to show on results page:
-			if (!events.isEmpty()){
-				toDate = events.get(0).getDate().toString();
-				fromDate = events.get(events.size()-1).getDate().toString();
-			}			
-			
-			
-			int maxItems = Integer.valueOf(db.conf.getProperty("maxItemsInLeftSide"));
-			
-			// 2. get related categories
-			relatedCategories = helper.getCategoryList(events);
-//			if(relatedCategories.size() > maxItems)
-//				relatedCategories = (ArrayList<Category>) relatedCategories.subList(0, maxItems-1);
-			
-			// 3. get related stories
-			relatedStories = helper.getStoryList(events);
-//			if(relatedStories.size() > maxItems)
-//				relatedStories = (ArrayList<Story>) relatedStories.subList(0, maxItems-1);
-			
-			//4. get top entities
-			topEntities = helper.getEntities(events, maxItems);
-			
-			// 5. get related locations
-			relatedLocations = helper.getLocationList(events);
-			
-			
-			// For performance purpose, only show the last x events:
-			//
-			int maxNumOfEventsToDisplay = Integer.parseInt(db.conf.getProperty("visualization_MaxTimelineSize"));
-			if (events.size() > maxNumOfEventsToDisplay ){
-				List<Event> eventsToDisplay = new ArrayList<>();
-				for(int i=0; i< maxNumOfEventsToDisplay; i++){
-					eventsToDisplay.add(new Event (events.get(i)));
-				}
-				events = eventsToDisplay;
-			}
-			timeline = helper.getTimelineJSON(events, contextPath);
-			
-			
-		}catch(Exception e){
-			e.printStackTrace();	
-		}finally{
-			dbmysql.closeConnection();
-		}
-			
-		return "WCEPEventsView";
-	}
-	
-	
-	public String eventSearch() throws Exception {
-		ArrayList<String> searchField = formSearchField();						//search field
-		contextPath = ServletActionContext.getServletContext().getContextPath();
-		useContextPath = true;
-		
-		//Debug
-		System.out.println("Use Text:" + this.useText);
-		System.out.println("Use Headline:" + this.useHeadline);
-		System.out.println("Use Transcript:" + this.useTranscript);
-		System.out.println("---------------------------");
-		System.out.println("Use Video:" + this.useVideo);
-		System.out.println("Use News:" + this.useNewsArticle);
-		
-		ArrayList<String> sources = new ArrayList<String> ();
-		if (this.useVideo) sources.add("Video");
-		if (this.useNewsArticle) sources.add("NewsArticle");
-		for (String s: sources) System.out.println(s);
-		try{
-			
-			itemType = "Query";
-			itemId = null;
-			if(query!=null && !query.equals("")){
-				itemName = query;
-			}else{
-				itemName = " show all events";
-			}
-			
-			hasWikipediaUrl = false;
-			wikipediaUrl = "";
-	
-			int maxNumOfEventsToDisplay = Integer.parseInt(db.conf.getProperty("visualization_MaxTimelineSize"));
-			
-			//events = db.searchByKeyword(query, "Eumssi-News-Crawler OR DW-en_GB ", "meta.source.text", maxNumOfEventsToDisplay);
-			events = db.searchByKeyword(query, sources, searchField, maxNumOfEventsToDisplay);
-			searchsize = events.size();
-			HashMap<String, Integer> c = new HashMap<String, Integer> ();
-			// get the dates of the first and last events to show on results page:
-			if (!events.isEmpty()){
-				toDate = events.get(0).getDate().toString();
-				fromDate = events.get(events.size()-1).getDate().toString();
-				int currentcount = c.containsKey(toDate)?c.get(toDate):0;
-				c.put(toDate, currentcount+1);
-			}			
-			
-			for (Event e: events) {
-				e.setDescription(e.getDescription().substring(0, Math.min(150, e.getDescription().length())) + " ...");
-			}
-			
-			
-			
-			timeline = db.getTimelineJSON(events, contextPath);
-		}catch(Exception e){
-			e.printStackTrace();	
-		}finally{
-			
-		}
-			
-		return "QueryTimelineView";
-	}
 	
 	
 	/** video contextualization with entities information taken from solr **/
@@ -337,89 +150,6 @@ public class EventSearchByKeywordInDBOnlyAction  extends ActionSupport implement
 		}
 		System.out.println("Successfully action performed");
 		return "VideoContextualizeView";
-	}
-	
-	
-	/**
-	 * get the word clous
-	 * @return
-	 * @throws Exception
-	 */
-	public String wordCloud() throws Exception {
-		ArrayList<String> searchField = formSearchField();	
-		contextPath = ServletActionContext.getServletContext().getContextPath();
-		useContextPath = true;
-		ArrayList<String> sources = new ArrayList<String> ();
-		if (this.useVideo) sources.add("Video");
-		if (this.useNewsArticle) sources.add("NewsArticle");
-		
-		try{
-			
-			itemType = "Word Cloud";
-			itemId = null;
-			if(query!=null && !query.equals("")){
-				itemName = " Visualize " + query;
-			}else{
-				itemName = " Visualize by word cloud";
-			}
-			
-			int maxNumOfWordsToDisplay = Integer.parseInt(db.conf.getProperty("visualization_MaxWordCloudSize"));
-			int maxNumOfEvents = Integer.parseInt(db.conf.getProperty("visualization_MaxDocForClouds"));
-			
-			distr = db.getDistribution(query, sources, searchField, maxNumOfEvents);
-			tfjson =  distr.getTermFrequencies(maxNumOfWordsToDisplay);
-			coocc = distr.getCoOccurenceOfTopTerms(maxNumOfWordsToDisplay);
-			
-			System.out.println("Finish generating wordcloud");
-			System.out.println(tfjson.toString());
-			System.out.println(coocc.toString());
-			
-		}catch(Exception e){
-			e.printStackTrace();	
-		}finally{
-			
-		}
-			
-		return "QueryWordCloudView";
-	}
-	
-	/**
-	 * get the word cooccurence graph
-	 * @throws Exception
-	 */
-	public String forceDirectedLayout() throws Exception {
-		ArrayList<String> searchField = formSearchField();	
-		contextPath = ServletActionContext.getServletContext().getContextPath();
-		useContextPath = true;
-		ArrayList<String> sources = new ArrayList<String> ();
-		if (this.useVideo) sources.add("Video");
-		if (this.useNewsArticle) sources.add("NewsArticle");
-		
-		try{
-			
-			itemType = "Force-Directed Layout";
-			itemId = null;
-			if(query!=null && !query.equals("")){
-				itemName = " Visualize " + query;
-			}else{
-				itemName = " Visualize by Force-Directed Layout";
-			}
-			
-			int maxNumOfWordsToDisplay = Integer.parseInt(db.conf.getProperty("visualization_MaxWordCloudSize"));
-			int maxNumOfEvents = Integer.parseInt(db.conf.getProperty("visualization_MaxDocForClouds"));
-			
-			distr = db.getDistribution(query, sources, searchField, maxNumOfEvents);
-			tfjson =  distr.getTermFrequencies(maxNumOfWordsToDisplay);
-			coocc = distr.getCoOccurenceOfTopTerms(maxNumOfWordsToDisplay);
-			System.out.println(coocc.toString());
-			
-		}catch(Exception e){
-			e.printStackTrace();	
-		}finally{
-			
-		}
-			
-		return "ForceDirectedLayoutView";
 	}
 	
 	
@@ -478,33 +208,7 @@ public class EventSearchByKeywordInDBOnlyAction  extends ActionSupport implement
 
 
 
-	public List<Category> getRelatedCategories() {
-		return relatedCategories;
-	}
-
 	
-
-
-	public void setRelatedCategories(List<Category> categories) {
-		this.relatedCategories = categories;
-	}
-
-	public List<Story> getRelatedStories() {
-		return relatedStories;
-	}
-
-	public void setRelatedStories(List<Story> mystories) {
-		this.relatedStories = mystories;
-	}
-
-	public List<Story> getStories() {
-		return stories;
-	}
-
-	public void setStories(List<Story> stories) {
-		this.stories = stories;
-	}
-
 	public javax.servlet.http.HttpServletRequest getRequest() {
 		return request;
 	}
@@ -568,14 +272,6 @@ public class EventSearchByKeywordInDBOnlyAction  extends ActionSupport implement
 
 	public void setLocation(String loc) {
 		location = loc;
-	}
-
-	public List<Entity> getTopEntities() {
-		return topEntities;
-	}
-
-	public void setTopEntities(List<Entity> topentity) {
-		this.topEntities = topentity;
 	}
 
 	public boolean isHasWikipediaUrl() {
@@ -671,16 +367,6 @@ public class EventSearchByKeywordInDBOnlyAction  extends ActionSupport implement
 	}
 
 
-
-	public List<Location> getRelatedLocations() {
-		return relatedLocations;
-	}
-
-
-
-	public void setRelatedLocations(List<Location> relatedLocations) {
-		this.relatedLocations = relatedLocations;
-	}
 	
 	public String getTfjson() {
 		return tfjson.toString().replace("'", "\\'");

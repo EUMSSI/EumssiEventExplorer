@@ -7,12 +7,8 @@
 	<constant name="struts.devMode" value="true"></constant>
     <constant name="struts.action.excludePattern" value="/webresources/.*?"/>
 	<package name="root" namespace="/" extends="struts-default">
-		<default-action-ref name="Index"></default-action-ref>
-		<action name="Index" 
-			class="de.l3s.eumssi.action.IndexAction">
-            <result name="success">/views/index.jsp</result>
-        </action>
-        
+		<default-action-ref name="secondscreen"></default-action-ref>
+		
         <action name="textsync" 
 			class="de.l3s.eumssi.action.textsyncAction">
               <result name="test">/views/textsyncview.jsp</result>
@@ -56,59 +52,8 @@
         
 		<action name="EventSearchByKeywordInDBOnlyAction"
 			class="de.l3s.eumssi.action.EventSearchByKeywordInDBOnlyAction">
-			<result name="QueryTimelineView">/views/TimelineView.jsp</result>
-			<result name="QueryWordCloudView">/views/WordCloudView.jsp</result>
-			<result name="ForceDirectedLayoutView">/views/ForceDirectedLayoutView.jsp</result>
 			<result name="VideoContextualizeView">/views/VideoContextualizeView.jsp</result>
-			<result name="WCEPEventsView">/views/WCEPTimelineView.jsp</result>
-		</action>
-		
-		
-		<action name="storyTimeline"
-			class="de.l3s.eumssi.action.StoryTimelineAction">
-			<result name="StoryTimelineView">/views/WCEPTimelineView.jsp</result>
-		</action>
-		
-		
-		<action name="entityTimeline"
-			class="de.l3s.eumssi.action.EntityTimelineAction">
-			<result name="EntityTimelineView">/views/WCEPTimelineView.jsp</result>
-		</action>
-		
-<!-- 
-		<action name="storyList"
-			class="de.l3s.eumssi.action.StoryListAction">
-			<result name="StoryListView">/views/StoryListView.jsp</result>
-		</action>
-		
-		
-		<action name="entityList"
-			class="de.l3s.eumssi.action.EntityListAction">
-			<result name="EntityListView">/views/EntityListView.jsp</result>
-		</action>
-		
- -->		
-		<action name="WCEPShowEventByDate"
-			class="de.l3s.eumssi.action.WCEPShowEventByDateAction">
-			<result name="WCEPTimelineView">/views/WCEPTimelineView.jsp</result>
-		</action>
-
-		<action name="StoryListByCategory"
-			class="de.l3s.eumssi.action.StoryListByCategoryAction">
-			<result name="StoryListView">/views/StoryListView.jsp</result>
-		</action>
-		
-		<action name="StoryListByLocation"
-			class="de.l3s.eumssi.action.StoryListByLocationAction">
-			<result name="StoryListView">/views/StoryListView.jsp</result>
-		</action>
-		
-<!-- 
-			<action name="ShowAllCategory"
-				class="de.l3s.eumssi.action.ShowAllCategoryAction">
-				<result name="ShowCategory">/views/ShowAllCategory.jsp</result>
-			</action>
--->		
+		</action>		
 			
 	</package>
 
