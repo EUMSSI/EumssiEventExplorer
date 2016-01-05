@@ -630,14 +630,18 @@ public class SolrDBManager {
 		System.out.println("input query= " + solrFormatedQuery);
 		ArrayList<String> qfilter = new ArrayList<String> ();		
 
+		/** using manually filters for sources to avoid mismatches in format which is designed for timeline libs*/ 
+		/*
 		qfilter.add("\"News\"");
 		qfilter.add("\"DW article\"");
-		//qfilter.add("\"DW video\"");
-		//qfilter.add("\"Youtube\"");
+		qfilter.add("\"DW video\"");
+		qfilter.add("\"Youtube\"");
 		
 		String[] tmp = (String[]) qfilter.toArray(new String[qfilter.size()]);
 		String strqfilter = "(source: " + StringUtils.join(tmp, " OR ") + " )";
-		strqfilter += "+(meta.source.description:/.{1}.*/)";  
+		*/
+		String strqfilter = "(meta.source.description:/.{1}.*/) OR (meta.source.text:/.{1}.*/)";  
+		//String strqfilter = "(meta.source.text:/.{1}.*/)";
 		System.out.println("Sources for filter: " + strqfilter);
 		
 		
@@ -646,7 +650,7 @@ public class SolrDBManager {
 		SolrQuery query = new SolrQuery();
 
 		query.setFields("meta.source.datePublished", "meta.source.headline", "meta.source.url",
-				"meta.source.publisher", "meta.source.text", "meta.extracted.text_nerl.dbpedia.all");
+				"meta.source.publisher", "meta.source.description", "meta.source.text", "meta.extracted.text_nerl.dbpedia.all");
 		query.setQuery(solrFormatedQuery);
 		query.setFilterQueries(strqfilter);
 
@@ -662,17 +666,23 @@ public class SolrDBManager {
 		    	StringBuffer sb = new StringBuffer();
 		    	String headline = null;
 		    	String url = null;
-
-		    	for (String searchField: new String[] {"meta.source.text", "meta.source.datePublished",
+		    	String text = "";
+    			String description = "";
+		    	for (String searchField: new String[] {"meta.source.text", "meta.source.description", "meta.source.datePublished",
 		    			"meta.source.headline", "meta.source.url", "meta.source.publisher",
 		    			"meta.extracted.text_nerl.dbpedia.all"})
 
 		    	{
 		    		Object fieldVal = results.get(i).getFieldValue(searchField);
+		    		
 		    		if (fieldVal!=null) {
-
+		    			
 		    			if (searchField.equals("meta.source.text")) {
-			    			sb.append(results.get(i).getFieldValue("meta.source.text").toString());
+			    			text = results.get(i).getFieldValue("meta.source.text").toString();
+			    		}
+		    			
+		    			if (searchField.equals("meta.source.description")) {
+			    			text = results.get(i).getFieldValue("meta.source.text").toString();
 			    		}
 
 			    		if (searchField.equals("meta.source.headline")) {
@@ -683,12 +693,16 @@ public class SolrDBManager {
 			    		if (searchField.equals("meta.source.url")) {
 			    			Object uObj = results.get(i).getFieldValue("meta.source.url");
 			    			if (uObj==null) uObj = results.get(i).getFieldValue("meta.source.mediaurl");
+			    			if (uObj==null) uObj = results.get(i).getFieldValue("meta.source.websiteUrl");
 			    			if (uObj!= null) {
 			    				url  = uObj.toString();
 			    			}
 			    		}
 		    		}
 		    	}
+		    	if (description.length() > text.length()) sb.append(description);
+		    	else sb.append(text);
+		    	
 		    	String fieldText = sb.toString().substring(0, Math.min(300, sb.length())) + "..."; // short description
 
 		    	String publisher = "";
@@ -734,7 +748,8 @@ public class SolrDBManager {
 		    	if (ref!=null) e.addReference(ref);
 		    	if (e.getDate()!=null && e.getDate().toString().compareTo("2050")<0) {
 		    		//ensure there is not a date mistake when adding events to show
-		    		if (!selectedTitles.contains(headline) && e.getDescription().length()>100) {
+		    		if (e.getDescription().length()>0 && (headline==null || headline.length()==0  ||
+		    				(headline!=null &&headline.length()>0 && !selectedTitles.contains(headline)))) {
 		    			itemList.add(e);
 		    			selectedTitles.add(headline);
 		    		}
