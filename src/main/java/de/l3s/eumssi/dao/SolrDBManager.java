@@ -412,7 +412,10 @@ public class SolrDBManager {
 	public List<Event> getImportantEvents(int n, String solrFormatedQuery) {
 		System.out.println("input query= " + solrFormatedQuery);
 		ArrayList<String> qfilter = new ArrayList<String> ();		
-
+		
+		HashMap<String, Integer> datehash = new HashMap<String, Integer> (); 					// date count
+		HashMap<String, ArrayList<Event>> eventhash = new HashMap<String, ArrayList<Event>> (); // event hash
+ 
 		/** using manually filters for sources to avoid mismatches in format which is designed for timeline libs*/ 
 		/*
 		qfilter.add("\"News\"");
@@ -423,8 +426,8 @@ public class SolrDBManager {
 		String[] tmp = (String[]) qfilter.toArray(new String[qfilter.size()]);
 		String strqfilter = "(source: " + StringUtils.join(tmp, " OR ") + " )";
 		*/
+		
 		String strqfilter = "(meta.source.description:/.{1}.*/) OR (meta.source.text:/.{1}.*/)";  
-		//String strqfilter = "(meta.source.text:/.{1}.*/)";
 		System.out.println("Sources for filter: " + strqfilter);
 		
 		
@@ -432,12 +435,12 @@ public class SolrDBManager {
 		HashSet<String> selectedTitles = new HashSet<String> ();
 		SolrQuery query = new SolrQuery();
 
-		query.setFields("meta.source.datePublished", "meta.source.headline", "meta.source.url",
+		query.setFields("source", "meta.source.datePublished", "meta.source.headline", "meta.source.url",
 				"meta.source.publisher", "meta.source.description", "meta.source.text", "meta.extracted.text_nerl.dbpedia.all");
 		query.setQuery(solrFormatedQuery);
 		query.setFilterQueries(strqfilter);
 
-		query.setRows(5 * n);
+		query.setRows(20 * n);
 		
 		System.out.println("SearchByKeyword" + query.toString());
 		QueryResponse response;
@@ -445,13 +448,15 @@ public class SolrDBManager {
 		try {
 			response = solr.query(query);
 			SolrDocumentList results = response.getResults();
+			System.out.println(" Number of results "  + results.size());
 		    for (int i = 0; i < results.size(); ++i) {
 		    	StringBuffer sb = new StringBuffer();
 		    	String headline = null;
 		    	String url = null;
 		    	String text = "";
     			String description = "";
-		    	for (String searchField: new String[] {"meta.source.text", "meta.source.description", "meta.source.datePublished",
+    			String source = "";
+		    	for (String searchField: new String[] {"source", "meta.source.text", "meta.source.description", "meta.source.datePublished",
 		    			"meta.source.headline", "meta.source.url", "meta.source.publisher",
 		    			"meta.extracted.text_nerl.dbpedia.all"})
 
@@ -459,7 +464,9 @@ public class SolrDBManager {
 		    		Object fieldVal = results.get(i).getFieldValue(searchField);
 		    		
 		    		if (fieldVal!=null) {
-		    			
+		    			if (searchField.equals("source")) {
+		    				source = results.get(i).getFieldValue("source").toString();
+		    			}
 		    			if (searchField.equals("meta.source.text")) {
 			    			text = results.get(i).getFieldValue("meta.source.text").toString();
 			    		}
@@ -505,7 +512,7 @@ public class SolrDBManager {
 		    	java.sql.Date sqldate = null;
 		    	if (date!= null )
 		    		sqldate = new java.sql.Date(date.getYear(), date.getMonth(), date.getDate());
-
+		    	else continue;
 		    	//dbpedia entities
 		    	ArrayList<Entity> dbentities = new ArrayList<Entity> ();
 		    	HashMap<String, Integer> en_hash = new HashMap<String, Integer> ();
@@ -522,22 +529,50 @@ public class SolrDBManager {
 			    	}
 		    	}
 
-
+		    	//form the event object
 		    	Event e = new Event();
+		    	e.setSource(source);
 		    	e.setEntities(dbentities);
 		    	e.setDescription(fieldText);
 		    	e.setDate(sqldate);
 		    	e.setHeadline(headline);
+		    	String sqldstr = sqldate.toString();
+		    	
 		    	if (ref!=null) e.addReference(ref);
 		    	if (e.getDate()!=null && e.getDate().toString().compareTo("2050")<0) {
 		    		//ensure there is not a date mistake when adding events to show
 		    		if (e.getDescription().length()>0 && (headline==null || headline.length()==0  ||
 		    				(headline!=null &&headline.length()>0 && !selectedTitles.contains(headline)))) {
-		    			itemList.add(e);
+		    			
 		    			selectedTitles.add(headline);
+		    			
+		    			int c = datehash.containsKey(sqldstr)? datehash.get(sqldstr):0;
+		    			//update counting for datehash
+		    			datehash.put(sqldstr, c+1);
+		    			
+		    			ArrayList<Event> eventsOdate = eventhash.containsKey(sqldstr)? eventhash.get(sqldstr): new ArrayList<Event> ();
+		    			eventsOdate.add(e);
+		    			eventhash.put(sqldstr, eventsOdate);
+		    			
 		    		}
 		    	}
 		    }
+		    
+
+	    	//selection of important dates
+	    	ArrayList<String> dates = new ArrayList<String> ();
+	    	dates.addAll(datehash.keySet());
+	    	
+	    	sortingMap.qsort(dates, datehash, 0, dates.size()-1);
+	    	
+	    	int number_of_dates = Math.min(n, dates.size());
+	    	System.out.println("Number of dates: " + number_of_dates);
+	    	//selection of important events
+	    	for (int id = 0; id < number_of_dates; id++) {
+	    		String datestr = dates.get(id);
+	    		ArrayList<Event> imprtEvents = getImportantEvents(eventhash.get(datestr));
+	    		itemList.addAll(imprtEvents);
+	    	}
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -546,6 +581,27 @@ public class SolrDBManager {
 		System.out.println("successfully returns " + itemList.size());
 
 		return itemList;
+	}
+
+
+	/**
+	 * using diversity factor to select top events of the day
+	 * @param arrayList
+	 * @return
+	 */
+	private ArrayList<Event> getImportantEvents(ArrayList<Event> allevents) {
+		//System.out.println("Number of events on this date: " + allevents.size() + " on " + allevents.get(0).getDate());
+		ArrayList<Event> r = new ArrayList<Event> ();
+		HashSet<String> hasSelected = new HashSet<String> ();
+		for (Event e: allevents) {
+			String source = e.sourceData;
+			if (!hasSelected.contains(source)) {
+				r.add(e);
+				hasSelected.add(source);
+			}
+		}
+		//System.out.println("Has selected : " + hasSelected.size() + " sources  with " + r.size() + " events");
+		return r;
 	}
 
 

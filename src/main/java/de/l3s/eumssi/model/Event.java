@@ -42,7 +42,8 @@ public class Event implements Comparable<Event>, Serializable{
 	@XmlElement
 	private Location location = null;
 	
-	
+	@XmlElement
+	public String sourceData = "";
     
 	@XmlElement(name="entity")
 	private ArrayList<Entity> entities = new ArrayList<Entity> ();
@@ -282,6 +283,11 @@ public class Event implements Comparable<Event>, Serializable{
 		}
 		out+= "}";
 		return out;
+	}
+
+	public void setSource(String _source) {
+		sourceData = _source;
+		
 	}
 
 	
