@@ -1,6 +1,7 @@
 package de.l3s.eumssi.action;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -28,6 +29,7 @@ import org.json.simple.parser.JSONParser;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
+import com.mongodb.DBCursor;
 import com.opensymphony.xwork2.Action;
 
 import de.l3s.eumssi.dao.MongoDBManager;
@@ -40,9 +42,24 @@ public class LocationInfoAction implements Action,ServletRequestAware  {
 		MongoDBManager mongo=new MongoDBManager(); 
 		BasicDBObject document = new BasicDBObject();
 		DBCollection collection=mongo.getCollection("location");
+		
+		DBCollection location1Collection=mongo.getCollection("location1");
+		
+		BasicDBObject whereQuery = new BasicDBObject();
+		BasicDBObject projectionQuery = new BasicDBObject();
+		projectionQuery.put("_id", 0);
+		projectionQuery.put("name", 1);
+		DBCursor nameCursor = location1Collection.find(whereQuery, projectionQuery);
+		System.out.println(nameCursor.size());
+		while (nameCursor.hasNext()) {
+			BasicDBObject nameObject = (BasicDBObject) nameCursor.next();
+			String name  = nameObject.getString("name");
+			person.add(name);
+		}
+		
 		ServletContext context = request.getServletContext();
 		String path = context.getRealPath("/");
-
+/*
 		HttpSolrServer solr = new HttpSolrServer("http://demo.eumssi.eu/Solr_EUMSSI/content_items/");
 		SolrQuery query = new SolrQuery();
 		query.setFields("meta.extracted.text_nerl.dbpedia.LOCATION");
@@ -61,7 +78,7 @@ public class LocationInfoAction implements Action,ServletRequestAware  {
 	    	  person.add(tempPerson.get(j));
 	      }
 	    }
-
+*/
 	    hs=new HashSet<>(person);
 	    System.out.println(hs.size());
 	    System.out.println(hs);
@@ -74,6 +91,7 @@ public class LocationInfoAction implements Action,ServletRequestAware  {
 	    while(it.hasNext()){
 	    	JSONObject innerJsonObject=new JSONObject();
 	    String personName=(String) it.next();
+	  
    	 String outputString=readUrl("http://dbpedia.org/data/"+personName+".json");
    	 Object ob;
    	 JSONObject job1;
@@ -97,6 +115,10 @@ public class LocationInfoAction implements Action,ServletRequestAware  {
    		    			 String demoMainValue;
                            String[] splitKey1=(String[])key1.split("/");
 		    			    mainKey=splitKey1[splitKey1.length-1].toString();
+		    			    if(personName.equals("Belgium") && mainKey.equals("officialLanguage"))
+		    			    {
+		    			    	System.out.println("got it");
+		    			    }
                               if(mainKey.equals("abstract") || mainKey.equals("country") || mainKey.equals("officialLanguage") || mainKey.equals("currency") || mainKey.equals("populationTotal") || mainKey.equals("thumbnail")||mainKey.equals("capital")||mainKey.equals("wgs84_pos#lat")||mainKey.equals("wgs84_pos#long")){
 		    			        for( int i=0;i<jarray.size(); i++){
    		    			         job2=(JSONObject)(jarray.get(i));
@@ -174,7 +196,11 @@ public class LocationInfoAction implements Action,ServletRequestAware  {
 			    			        String mainValueTemp=splitKey2[splitKey2.length-1].toString();
 			    			 //    String[] splitKey3=(String[])mainValueTemp.split("_");
 		    			       //  mainValue=splitKey3[splitKey3.length-1].toString();
-			    			        mainValue=mainValueTemp.replaceAll("[_]"," ");
+			    			        String  mainValueTemp1=mainValueTemp.replaceAll("[_]"," ");
+			    			        if(mainValue==null)
+			    			        	mainValue=mainValueTemp1;
+			    			        else
+			    			        	mainValue=mainValue+","+mainValueTemp1;
    		    				}
    		    				else if (mainKey.equals("populationTotal"))
    		    				{
