@@ -116,6 +116,7 @@
         }); 
     	var correctAns=0;
         $("input[type='button']").click(function() {
+        	if($(selected).is(':checkbox')){
         	var selected = $(this).siblings("input[type='hidden']");
         	var correctans=selected.val();
             if( $(this).siblings("input[type='checkbox']:checked").map(function(i,v) { return v.id; }).get().join(',') == correctans ) {
@@ -123,9 +124,13 @@
             }
             else
             	$(this).after("<img src=Images/cross.png>");
+        	}
+        	else
         	
-        /*	
         	var selected = $(this).siblings("input[type='radio']:checked");
+        	
+        	
+        
         	if (selected.length > 0) {
         	    selectedVal = selected.val();
         	}
@@ -141,7 +146,7 @@
         	$(this).after("<img src=Images/cross.png>");
         }
         	$(this).attr("disabled",true);
-        	*/
+        	
         	});
         var questionCounter = $(':button').length;
         $('.quize').html("<strong style='background-color: powderblue;'>Number of Questions:"+questionCounter+"</strong>");
