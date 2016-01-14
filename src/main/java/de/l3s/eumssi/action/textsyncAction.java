@@ -131,13 +131,13 @@ public class textsyncAction implements Action, ServletRequestAware {
         
 		//template for questions of locations
 	//	locationMapQuestion.put("currency", "What is the name of the currency?");
-	//	locationMapQuestion.put("officialLanguage", "What language is spoken here?");
+		locationMapQuestion.put("officialLanguage", "What language is spoken here?");
 	//	locationMapQuestion.put("languages", "Which language/languages are spoken?");
 	//	locationMapQuestion.put("neighbours", "Which countries are the neighbours?");
 	//	locationMapQuestion.put("timezone", "which is the correct timezone for this city?");
 	//	locationMapQuestion.put("capital", "What is the name of the capital?");
 	//	locationMapQuestion.put("country", "In what country is it located?");
-		locationMapQuestion.put("adminArea", "Under which this city located?");
+	//	locationMapQuestion.put("adminArea", "Under which this city located?");
 		
 		//template for questions of persons
 		personMapQuestion.put("birthPlace", "Where was this person born?");
@@ -323,6 +323,13 @@ public class textsyncAction implements Action, ServletRequestAware {
 	}
 
 	private String CorrectAnsOrderFinder(String[] correctAns, ArrayList options) {
+		  for(int i=0;i<correctAns.length;i++){
+		        if (correctAns[i].contains("language")) {
+					// tempValue = tempValue.replace("language", "");
+					String[] splitTempValue = correctAns[i].split("\\s+");
+					correctAns[i]= splitTempValue[0];
+				}
+			}
 		Map<Integer, String> indexToAns = new HashMap<Integer, String>();
 		List<Integer> index = new<Integer> ArrayList();
 		String correctOrder = null;
@@ -409,7 +416,24 @@ public class textsyncAction implements Action, ServletRequestAware {
 		ArrayList optionList = new ArrayList();
 		DBCollection collectionName = null;
 		int falseAnsNum = (4 - keyValue.length);
-
+        String where;
+        String projection;
+        for(int i=0;i<keyValue.length;i++){
+        if (keyValue[i].contains("language")) {
+			// tempValue = tempValue.replace("language", "");
+			String[] splitTempValue = keyValue[i].split("\\s+");
+			keyValue[i]= splitTempValue[0];
+		}
+	}
+        
+		if(keyName.equals("neighbours")){
+			where="capital";
+			projection="name";
+		}
+		else{
+			where=keyName;
+			projection=keyName;
+		}
 		for (String keyvalue : keyValue)
 			optionList.add(keyvalue);
 
@@ -420,10 +444,10 @@ public class textsyncAction implements Action, ServletRequestAware {
 		Map<Double, String> distanceToKeyValue = new HashMap<Double, String>();
 		BasicDBObject whereQuery = new BasicDBObject();
 
-		whereQuery.put(keyName, java.util.regex.Pattern.compile("."));
+		whereQuery.put(where, java.util.regex.Pattern.compile("."));
 		BasicDBObject projectionQuery = new BasicDBObject();
 		projectionQuery.put("_id", 0);
-		projectionQuery.put(keyName, 1);
+		projectionQuery.put(projection, 1);
 		projectionQuery.put("longitude", 1);
 		projectionQuery.put("latitude", 1);
 		DBCursor locationCursor = locationCollection.find(whereQuery, projectionQuery);
@@ -435,7 +459,7 @@ public class textsyncAction implements Action, ServletRequestAware {
 				double falseLong = Double.parseDouble((String) entity.get("longitude"));
 				double distance = getDistance(falseLat, falseLong, lat, longi);
 				distances.add(distance);
-				String tempValue = (String) entity.get(keyName);
+				String tempValue = (String) entity.get(projection);
 				if (tempValue.contains("language")) {
 					// tempValue = tempValue.replace("language", "");
 					String[] splitTempValue = tempValue.split("\\s+");
