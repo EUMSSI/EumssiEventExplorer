@@ -131,14 +131,14 @@ public class textsyncAction implements Action, ServletRequestAware {
         
 		//template for questions of locations
 	//	locationMapQuestion.put("currency", "What is the name of the currency?");
-		locationMapQuestion.put("officialLanguage", "What language is spoken here?");
+	//	locationMapQuestion.put("officialLanguage", "What language is spoken here?");
 	//	locationMapQuestion.put("languages", "Which language/languages are spoken?");
 	//	locationMapQuestion.put("neighbours", "Which countries are the neighbours?");
 	//	locationMapQuestion.put("timezone", "which is the correct timezone for this city?");
 	//	locationMapQuestion.put("capital", "What is the name of the capital?");
 	//	locationMapQuestion.put("country", "In what country is it located?");
 	//	locationMapQuestion.put("adminArea", "Under which this city located?");
-		
+		locationMapQuestion.put("population", "Which is the most populated city?");
 		//template for questions of persons
 		personMapQuestion.put("birthPlace", "Where was this person born?");
 		personMapQuestion.put("almaMater", "Which university or college did this person attend??");
@@ -217,6 +217,21 @@ public class textsyncAction implements Action, ServletRequestAware {
 					int questionSelectorNumber = ran.nextInt(questionableKeyList.size());
 					String mainKeyForQuestion = questionableKeyList.get(questionSelectorNumber);
 					String mainKeyValue = (String) entity.get(mainKeyForQuestion);
+					if(mainKeyForQuestion.equals("population") && type.equals("city")){
+						String country =entity.getString("country");
+						String cityName=entityName;
+						Long population=Long.valueOf(entity.getString("population"));
+						ArrayList comparedOption=CityCompareByPopulation(cityName, country, population);
+						 question = "<div><img src=Images" + "//" + "quiz.png><strong>" + entityName + "</strong><br>"
+									+ locationMapQuestion.get(mainKeyForQuestion) + "<br><input type='radio' name=\'"
+									+ comparedOption.get(2) + "\' value=\'" + comparedOption.get(0) + "\'>" + comparedOption.get(0)
+									+ "<br><input type='radio' name=\'" + comparedOption.get(2) + "\' value=\'" + comparedOption.get(1) + "\'>"
+									+ comparedOption.get(1) 
+									+ "<br><input type='button'  value='check'></div>";
+						 String thumbnail=(String) entity.get("thumbnail");
+							makeData(question, i + 1, thumbnail);
+							continue;
+					}
 					correctAns = mainKeyValue;
 			        //for locations
 					if(type.equals("city") || type.equals("country") || type.equals("location")){
@@ -244,7 +259,7 @@ public class textsyncAction implements Action, ServletRequestAware {
 							+ "\' id=\'" + options.get(3) + "\'>" + options.get(3)
 							+ "<br><input type='button'  value='check'></div>";
 
-				
+					
 					}else{
 					 options = GetPersonFalseAns(mainKeyForQuestion, mainKeyValue);
 
@@ -320,6 +335,41 @@ public class textsyncAction implements Action, ServletRequestAware {
 		bw.write(mainContent);
 		bw.close();
 
+	}
+	
+	private ArrayList CityCompareByPopulation(String cityName, String countryName, Long population){
+		ArrayList returnList=new ArrayList();
+		int numberOfDigitOfCity=String.valueOf(population).length();
+		BasicDBObject whereQuery = new BasicDBObject();
+
+		whereQuery.put("country", countryName);
+		BasicDBObject projectionQuery = new BasicDBObject();
+		projectionQuery.put("_id", 0);
+		projectionQuery.put("name", 1);
+		projectionQuery.put("population", 1);
+		DBCursor cityCursor = locationCollection.find(whereQuery, projectionQuery);
+	//	mainloop:
+	//	for(int i=0;i<numberOfDigitOfCity;i++){
+		while(cityCursor.hasNext()){
+			BasicDBObject cityObject=(BasicDBObject) cityCursor.next();
+			String name=cityObject.getString("name");
+			Long ComparingPopulation=Long.valueOf(cityObject.getString("population"));
+			int numberOfDigitOfComparingCity=String.valueOf(ComparingPopulation).length();
+			if(numberOfDigitOfCity==numberOfDigitOfComparingCity && !name.equals(cityName)){
+			  	returnList.add(name);
+			    returnList.add(cityName);
+			    Collections.shuffle(returnList);
+			    if(ComparingPopulation>population)
+			    	returnList.add(name);
+			    else if(ComparingPopulation<population)
+			    	returnList.add(cityName);
+			    break ;
+			}
+			
+		}
+	//	}
+		
+		return returnList;
 	}
 
 	private String CorrectAnsOrderFinder(String[] correctAns, ArrayList options) {
