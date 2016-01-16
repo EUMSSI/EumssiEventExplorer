@@ -113,7 +113,7 @@ public class textsyncAction implements Action, ServletRequestAware {
 			dataContent = dataContentDemo;
 		}
 
-		System.out.println(dataContent);
+	//	System.out.println(dataContent);
 	}
 	
     /* function responsible for finding which question should be asked or which info should be shown according to defined templates. Inputs
@@ -130,15 +130,15 @@ public class textsyncAction implements Action, ServletRequestAware {
 		Map<String, String> personMapInfo = new HashMap<String, String>();
         
 		//template for questions of locations
-	//	locationMapQuestion.put("currency", "What is the name of the currency?");
-	//	locationMapQuestion.put("officialLanguage", "What language is spoken here?");
+		locationMapQuestion.put("currency", "What is the name of the currency?");
+		locationMapQuestion.put("officialLanguage", "What is the official language spoken here?");
 	//	locationMapQuestion.put("languages", "Which language/languages are spoken?");
-	//	locationMapQuestion.put("neighbours", "Which countries are the neighbours?");
-	//	locationMapQuestion.put("timezone", "which is the correct timezone for this city?");
-	//	locationMapQuestion.put("capital", "What is the name of the capital?");
-	//	locationMapQuestion.put("country", "In what country is it located?");
-	//	locationMapQuestion.put("adminArea", "Under which this city located?");
-		locationMapQuestion.put("population", "Which is the most populated city?");
+		locationMapQuestion.put("neighbours", "Which countries are the neighbours?");
+		locationMapQuestion.put("timezone", "In which timezone is this city located?");
+		locationMapQuestion.put("capital", "What is the name of the capital?");
+		locationMapQuestion.put("country", "In which country is this city located?");
+		locationMapQuestion.put("adminArea", "In which region is this city located?");
+		locationMapQuestion.put("population", "Which is the most populated city in this country?");
 		//template for questions of persons
 		personMapQuestion.put("birthPlace", "Where was this person born?");
 		personMapQuestion.put("almaMater", "Which university or college did this person attend??");
@@ -200,7 +200,10 @@ public class textsyncAction implements Action, ServletRequestAware {
 			if(hasAbstract==true)
                dicisionList.add("abstract");			
 			// take dicision randomly
+			if(dicisionList.size()==0)
+				continue;
 			Random ran = new Random();
+			System.out.println(dicisionList);
 			int x = ran.nextInt(dicisionList.size());
 			dicision=dicisionList.get(0);
 
@@ -296,7 +299,7 @@ public class textsyncAction implements Action, ServletRequestAware {
 						continue;
 					String abs = "<strong>" + entityName + "</strong>" + "<br>" + (String) entity.get("abstract");
 					abs = abs.replaceAll("\\(.+?\\)\\s*", "");
-					System.out.println(abs);
+			//		System.out.println(abs);
 					makeData(abs, i + 1, (String) entity.get("thumbnail"));
 				}
 
@@ -324,7 +327,7 @@ public class textsyncAction implements Action, ServletRequestAware {
 
 		File file = new File(path + File.separator + "scripts" + File.separator + jsonFileName + ".json");
 
-		System.out.println("Local filename to write: " + file.getAbsolutePath());
+	//	System.out.println("Local filename to write: " + file.getAbsolutePath());
 		// if file doesnt exists, then create it
 		if (!file.exists()) {
 			file.createNewFile();
@@ -383,11 +386,19 @@ public class textsyncAction implements Action, ServletRequestAware {
 		Map<Integer, String> indexToAns = new HashMap<Integer, String>();
 		List<Integer> index = new<Integer> ArrayList();
 		String correctOrder = null;
-		for (String ans : correctAns) {
-			if (options.indexOf(ans) < 0)
-				continue;
-			index.add(options.indexOf(ans));
-			indexToAns.put(options.indexOf(ans), ans);
+		
+		System.out.println(options);
+		try {
+			for (String ans: correctAns) {
+				System.out.println("Ans=" + ans);
+				if (options.indexOf(ans) < 0)
+					continue;
+				index.add(options.indexOf(ans));
+				indexToAns.put(options.indexOf(ans), ans);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println(options);
 		}
 		Collections.sort(index);
 		for (int i = 0; i < index.size(); i++) {
@@ -529,7 +540,7 @@ public class textsyncAction implements Action, ServletRequestAware {
 
 		} else
 			checkList = optionList;
-		System.out.println(distanceToKeyValue);
+	//	System.out.println(distanceToKeyValue);
 		for (int i = 0; i < distances.size(); i++) {
 
 			if (!checkList.contains((String) distanceToKeyValue.get(distances.get(i)))) {
@@ -596,7 +607,7 @@ public class textsyncAction implements Action, ServletRequestAware {
 	}
 
 	public String execute() throws FileNotFoundException, IOException, ParseException {
-		System.out.println(videoUrl);
+	//	System.out.println(videoUrl);
 
 		ArrayList<String> subSubArray;
 		ArrayList<ArrayList<String>> subArray;

@@ -125,6 +125,7 @@
             }
             else
             	$(this).after("<img src=Images/cross.png>");
+            $(this).attr("disabled",true);
         	}
         	
         	else
