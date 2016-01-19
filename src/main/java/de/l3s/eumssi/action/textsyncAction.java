@@ -1,3 +1,7 @@
+/*
+ *Composed by Mainul Quraishi
+ * 
+ */
 package de.l3s.eumssi.action;
 
 import java.io.BufferedReader;
@@ -7,15 +11,12 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.opensymphony.xwork2.Action;
-
 import de.l3s.eumssi.dao.MongoDBManager;
-
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -29,10 +30,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.struts2.interceptor.ServletRequestAware;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -42,12 +41,11 @@ import org.json.simple.parser.ParseException;
 public class textsyncAction implements Action, ServletRequestAware {
 
 	MongoDBManager mongo = new MongoDBManager();
+	//get the collection of all person
 	DBCollection personCollection = mongo.getCollection("person");
-	DBCollection locationCollection = mongo.getCollection("location");
-	DBCollection countryInfoCollection = mongo.getCollection("countryInfo");
-	DBCollection cityCollection = mongo.getCollection("cities15000");
-	DBCollection languagecodesCollection = mongo.getCollection("languagecodes");
-	DBCollection timezoneCollection = mongo.getCollection("timeZones");
+	//get the collection of all locations. 
+	DBCollection locationCollection = mongo.getCollection("allLocations");
+
 	private String myparam;
 	private String videoUrl;
 	private String url;
@@ -59,21 +57,17 @@ public class textsyncAction implements Action, ServletRequestAware {
 	public String dataContent = null;
 	public String content1 = "{\"localisation\": [{ \"sublocalisations\": { \"localisation\": [";
 	public String content8 = "]},\"type\": \"text\",\"tcin\": \"00:00:00.0000\",\"tcout\": \"02:00:00.0000\",\"tclevel\": 0}],\"id\": \"text-amalia01\",\"type\": \"text\",\"algorithm\": \"demo-video-generator\",\"processor\": \"Ina Research Department - N. HERVE\", \"processed\": 1421141589288, \"version\": 1}";
-	public ArrayList<BasicDBObject> mainArrayList = new ArrayList<BasicDBObject>(); // 3d
-																					// Array
-																					// for
-																					// holding
-																					// all
-																					// the
-																					// property-value
-																					// pair
-																					// of
-																					// entities.
+	// Hold the List of all the details of all entities extracted from mongoDB
+	public ArrayList<BasicDBObject> mainArrayList = new ArrayList<BasicDBObject>();
 	public ArrayList<String> thumbNailsList = new ArrayList<String>();
 	HttpServletRequest request;
 
-	// function for making data to write in json file for amalia player
+	// function for making data(by inserting image and time) to write in json file for amalia player
+	//input is data and the image that should be shown 
 	private void makeData(String data, int dataCounter, String thumbNailUrl) {
+		if(thumbNailUrl==null){
+			thumbNailUrl="Images/blank_image.png";
+		}
 		String content2 = "{\"data\": {\"text\": [";
 		String content3 = "]},";
 		String content4 = "\"tcin\":";
@@ -119,10 +113,14 @@ public class textsyncAction implements Action, ServletRequestAware {
 			dataContent = dataContentDemo;
 		}
 
-		System.out.println(dataContent);
+	//	System.out.println(dataContent);
 	}
-	// Function for writting to json file for Amalia player
-
+	
+    /* function responsible for finding which question should be asked or which info should be shown according to defined templates. Inputs
+    * is the main ArrayList which holds the all the details of the matched entities. Decisions(whether questions or info or abstract
+    * and which question or info) are made randomly.    
+    */
+	
 	private void jsonWriter(ArrayList<BasicDBObject> mainArrayList) throws IOException {
 		String mainContent;
 		Map<String, String> locationMapQuestion = new HashMap<String, String>();
@@ -130,24 +128,27 @@ public class textsyncAction implements Action, ServletRequestAware {
 
 		Map<String, String> locationMapInfo = new HashMap<String, String>();
 		Map<String, String> personMapInfo = new HashMap<String, String>();
-
+        
+		//template for questions of locations
 		locationMapQuestion.put("currency", "What is the name of the currency?");
-		locationMapQuestion.put("officialLanguage", "What language is spoken here?");
-		locationMapQuestion.put("languages", "Which language/languages are spoken?");
+		locationMapQuestion.put("officialLanguage", "What is the official language spoken here?");
+	//	locationMapQuestion.put("languages", "Which language/languages are spoken?");
 		locationMapQuestion.put("neighbours", "Which countries are the neighbours?");
-		// locationMapQuestion.put("ISO", "variable");
-		locationMapQuestion.put("timezone", "which is the correct timezone for this city?");
+		locationMapQuestion.put("timezone", "In which timezone is this city located?");
 		locationMapQuestion.put("capital", "What is the name of the capital?");
-		locationMapQuestion.put("country", "In what country is it located?");
-
+		locationMapQuestion.put("country", "In which country is this city located?");
+		locationMapQuestion.put("adminArea", "In which region is this city located?");
+		locationMapQuestion.put("population", "Which is the most populated city in this country?");
+		//template for questions of persons
 		personMapQuestion.put("birthPlace", "Where was this person born?");
 		personMapQuestion.put("almaMater", "Which university or college did this person attend??");
-
+		//template for info of locations
 		locationMapInfo.put("currency", "The local currency is ");
 		locationMapInfo.put("officialLanguage", "The language spoken is ");
 		locationMapInfo.put("capital", "The capital is ");
 		locationMapInfo.put("country", "This city is located in ");
-
+		locationMapInfo.put("languages", "language spoken ");
+		//template for info of locations
 		personMapInfo.put("birthPlace", "City of birth: ");
 		personMapInfo.put("almaMater", "College attended: ");
 		personMapInfo.put("birthdate", "Date of birth: ");
@@ -155,111 +156,102 @@ public class textsyncAction implements Action, ServletRequestAware {
 
 		int dataCounter = 0;
 		for (int i = 0; i < mainArrayList.size(); i++) {
-			String dicision;
-			String type = null;
-			ArrayList<String> tempKeyArrayList = new ArrayList<String>();
-
-			// take dicision randomly
-			Random ran = new Random();
-			int x = ran.nextInt(4) + 1;
-			if (x == 1)
-				dicision = "question";
-			if (x == 2)
-				dicision = "question";
-			else if (x == 3)
-				dicision = "question";
-			else
-				dicision = "question";
 
 			BasicDBObject entity = mainArrayList.get(i);
-			// determine the type
-			if ((boolean) mainArrayList.get(i).get("type").equals("location")) {
-				type = "location";
-			} else if ((boolean) mainArrayList.get(i).get("type").equals("person")) {
-				type = "person";
-			} else if ((boolean) mainArrayList.get(i).get("type").equals("other")) {
-				type = "other";
+			String dicision;
+			String type = null;
+			boolean hasAbstract=false;
+			ArrayList<String> questionableKeyList = new ArrayList<String>();
+			ArrayList<String> infoableKeyList = new ArrayList<String>();
+			
+			for (Iterator iteratorForKeyIntersection = mainArrayList.get(i).keySet()
+					.iterator(); iteratorForKeyIntersection.hasNext();) {
+				String keyForIntersection = (String) iteratorForKeyIntersection.next();
+				if (locationMapQuestion.containsKey(keyForIntersection)) {
+					questionableKeyList.add(keyForIntersection);
+				}
+				else if (personMapQuestion.containsKey(keyForIntersection)) {
+					questionableKeyList.add(keyForIntersection);
+				}
+				if (locationMapInfo.containsKey(keyForIntersection)) {
+					infoableKeyList.add(keyForIntersection);
+				}
+				else if (personMapInfo.containsKey(keyForIntersection)) {
+					infoableKeyList.add(keyForIntersection);
+				}
+				
+				if(keyForIntersection.equals("abstract"))
+					hasAbstract=true;
+				
 			}
+			ArrayList<String> dicisionList=new ArrayList<String>();
+			//options for the dicision
+			
+			if(entity.get("type").equals("location") || entity.get("type").equals("city") || entity.get("type").equals("country")){
+			if(questionableKeyList.size()>0 && entity.containsKey("longitude"))
+				dicisionList.add("question");
+			}
+			else{
+				if(questionableKeyList.size()>0)
+					dicisionList.add("question");
+			}
+			if(infoableKeyList.size()>0)
+				dicisionList.add("info");
+			if(hasAbstract==true)
+               dicisionList.add("abstract");			
+			// take dicision randomly
+			if(dicisionList.size()==0)
+				continue;
+			Random ran = new Random();
+			System.out.println(dicisionList);
+			int x = ran.nextInt(dicisionList.size());
+			dicision=dicisionList.get(0);
 
+			type=entity.getString("type");
 			// questions and info about location
-			if (type.equals("location")) {
-				String locationName = (String) entity.get("name");
-				locationName = locationName.replaceAll("[_]", " ");
+		
+				String entityName = (String) entity.get("name");
+				entityName = entityName.replaceAll("[_]", " ");
 				if (dicision.equals("question")) {
 					String correctAns = null;
-					for (Iterator iteratorForKeyIntersection = mainArrayList.get(i).keySet()
-							.iterator(); iteratorForKeyIntersection.hasNext();) {
-						String keyForIntersection = (String) iteratorForKeyIntersection.next();
-						if (locationMapQuestion.containsKey(keyForIntersection)) {
-							tempKeyArrayList.add(keyForIntersection);
-						}
-					}
-					if (tempKeyArrayList.size() == 0)
-						continue;
-
-					int questionSelectorNumber = ran.nextInt(tempKeyArrayList.size());
-					String mainKeyForQuestion = tempKeyArrayList.get(questionSelectorNumber);
+					String correctOrderAns;
+					ArrayList options;
+					String question ;
+					int questionSelectorNumber = ran.nextInt(questionableKeyList.size());
+					String mainKeyForQuestion = questionableKeyList.get(questionSelectorNumber);
 					String mainKeyValue = (String) entity.get(mainKeyForQuestion);
-					if (mainKeyForQuestion.equals("languages")) {
-						String languagenames = null;
-						if (mainKeyValue.contains(",")) {
-							String[] languages = mainKeyValue.split("[,]");
-							for (String languageCode : languages) {
-								if (languageCode.contains("-")) {
-									String[] SplitLanguage = languageCode.split("[-]");
-									if (languagenames == null)
-										languagenames = LanguageNameFinder(SplitLanguage[0]);
-									else
-										languagenames = languagenames + "," + LanguageNameFinder(SplitLanguage[0]);
-								} else {
-									if (languagenames == null)
-										languagenames = LanguageNameFinder(languageCode);
-									else
-										languagenames = languagenames + "," + LanguageNameFinder(languageCode);
-								}
-
-							}
-						} else {
-							if (mainKeyValue.contains("-")) {
-								String[] SplitLanguage = mainKeyValue.split("[-]");
-								if (languagenames == null)
-									languagenames = LanguageNameFinder(SplitLanguage[0]);
-								correctAns = languagenames;
-							} else
-								languagenames = LanguageNameFinder(mainKeyValue);
-						}
-						correctAns = languagenames;
-					} else if (mainKeyForQuestion.equals("neighbours")) {
-						String neighboursnames = null;
-						if (mainKeyValue.contains(",")) {
-							String[] neighbours = mainKeyValue.split("[,]");
-							for (String neighbourCode : neighbours) {
-								if (neighboursnames == null)
-									neighboursnames = CountryNameFinder(neighbourCode);
-								else
-									neighboursnames = neighboursnames + "," + CountryNameFinder(neighbourCode);
-
-							}
-						} else {
-							neighboursnames = CountryNameFinder(mainKeyValue);
-						}
-						correctAns = neighboursnames;
-					} else
-						correctAns = mainKeyValue;
-					if (!entity.containsKey("long"))
-						continue;
-					double longi = Double.parseDouble((String) entity.get("long"));
-					double lat = Double.parseDouble((String) entity.get("lat"));
-
-					ArrayList options = GetLocationFalseAns(mainKeyForQuestion, correctAns.split("[,]"), longi, lat);
-
+					if(mainKeyForQuestion.equals("population") && type.equals("city")){
+						String country =entity.getString("country");
+						String cityName=entityName;
+						Long population=Long.valueOf(entity.getString("population"));
+						ArrayList comparedOption=CityCompareByPopulation(cityName, country, population);
+						 question = "<div><img src=Images" + "//" + "quiz.png><strong>" + entityName + "</strong><br>"
+									+ locationMapQuestion.get(mainKeyForQuestion) + "<br><input type='radio' name=\'"
+									+ comparedOption.get(2) + "\' value=\'" + comparedOption.get(0) + "\'>" + comparedOption.get(0)
+									+ "<br><input type='radio' name=\'" + comparedOption.get(2) + "\' value=\'" + comparedOption.get(1) + "\'>"
+									+ comparedOption.get(1) 
+									+ "<br><input type='button'  value='check'></div>";
+						 String thumbnail=(String) entity.get("thumbnail");
+							makeData(question, i + 1, thumbnail);
+							continue;
+					}
+					correctAns = mainKeyValue;
+			        //for locations
+					if(type.equals("city") || type.equals("country") || type.equals("location")){
+					double longitude = Double.parseDouble((String) entity.get("longitude"));
+					double latitude = Double.parseDouble((String) entity.get("latitude"));
+					options = GetLocationFalseAns(mainKeyForQuestion, correctAns.split("[,]"), longitude, latitude);
+                    
 					// in the options the order of answer may change, which is
 					// important for the logic of quize. The
 					// CorrectAnsOrderFinder() will retrieve and return ordered
 					// correct ans.
-					String correctOrderAns = CorrectAnsOrderFinder(correctAns.split("[,]"), options);
-
-					String question = "<div><img src=Images" + "//" + "quiz.png><strong>" + locationName
+					
+					correctOrderAns = CorrectAnsOrderFinder(correctAns.split("[,]"), options);
+			        
+					
+					
+					 question = "<div><img src=Images" + "//" + "quiz.png><strong>" + entityName
 							+ "</strong><br>" + locationMapQuestion.get(mainKeyForQuestion)
 							+ "<input type='hidden' value=\'" + correctOrderAns + "\'>"
 							+ "<br><input type='checkbox' name=\'" + correctOrderAns + "\' id=\'" + options.get(0)
@@ -270,61 +262,11 @@ public class textsyncAction implements Action, ServletRequestAware {
 							+ "\' id=\'" + options.get(3) + "\'>" + options.get(3)
 							+ "<br><input type='button'  value='check'></div>";
 
-					// System.out.println(question);
-					makeData(question, i + 1, (String) entity.get("thumbnail"));
-				}
-				if (dicision.equals("info")) {
-					for (Iterator iteratorForKeyIntersection = mainArrayList.get(i).keySet()
-							.iterator(); iteratorForKeyIntersection.hasNext();) {
-						String keyForIntersection = (String) iteratorForKeyIntersection.next();
-						if (locationMapQuestion.containsKey(keyForIntersection)) {
-							tempKeyArrayList.add(keyForIntersection);
-						}
-					}
-					if (tempKeyArrayList.size() == 0)
-						continue;
+					
+					}else{
+					 options = GetPersonFalseAns(mainKeyForQuestion, mainKeyValue);
 
-					int infoSelectorNumber = ran.nextInt(tempKeyArrayList.size());
-					String mainKeyForInfo = tempKeyArrayList.get(infoSelectorNumber);
-					// System.out.println("tempkeyarraylist:"+tempKeyArrayList);
-					String mainKeyValue = (String) entity.get(mainKeyForInfo);
-					String info = "<img src=Images" + "/" + "Info.png><strong>" + locationName + "</strong>" + "<br>"
-							+ locationMapInfo.get(mainKeyForInfo) + mainKeyValue;
-					// System.out.println(info);
-					makeData(info, i + 1, (String) entity.get("thumbnail"));
-
-				}
-				if (dicision.equals("abstract")) {
-					System.out.println("dicision abstract");
-					if ((String) entity.get("abstract") == null)
-						continue;
-					String abs = "<strong>" + locationName + "</strong>" + "<br>" + (String) entity.get("abstract");
-					abs = abs.replaceAll("\\(.+?\\)\\s*", "");
-					System.out.println(abs);
-					makeData(abs, i + 1, (String) entity.get("thumbnail"));
-				}
-
-			} else if (type.equals("person")) {
-				String personName = (String) entity.get("name");
-				personName = personName.replaceAll("[_]", " ");
-				if (dicision.equals("question")) {
-
-					for (Iterator iteratorForKeyIntersection = mainArrayList.get(i).keySet()
-							.iterator(); iteratorForKeyIntersection.hasNext();) {
-						String keyForIntersection = (String) iteratorForKeyIntersection.next();
-						if (personMapQuestion.containsKey(keyForIntersection)) {
-							tempKeyArrayList.add(keyForIntersection);
-						}
-					}
-					if (tempKeyArrayList.size() == 0)
-						continue;
-					int questionSelectorNumber = ran.nextInt(tempKeyArrayList.size());
-					String mainKeyForQuestion = tempKeyArrayList.get(questionSelectorNumber);
-
-					String mainKeyValue = (String) entity.get(mainKeyForQuestion);
-					ArrayList options = GetPersonFalseAns(mainKeyForQuestion, mainKeyValue);
-
-					String question = "<div><img src=Images" + "//" + "quiz.png><strong>" + personName + "</strong><br>"
+					 question = "<div><img src=Images" + "//" + "quiz.png><strong>" + entityName + "</strong><br>"
 							+ personMapQuestion.get(mainKeyForQuestion) + "<br><input type='radio' name=\'"
 							+ mainKeyValue + "\' value=\'" + options.get(0) + "\'>" + options.get(0)
 							+ "<br><input type='radio' name=\'" + mainKeyValue + "\' value=\'" + options.get(1) + "\'>"
@@ -333,40 +275,35 @@ public class textsyncAction implements Action, ServletRequestAware {
 							+ "\' value=\'" + options.get(3) + "\'>" + options.get(3)
 							+ "<br><input type='button'  value='check'></div>";
 
-					System.out.println(question);
-					makeData(question, i + 1, (String) entity.get("thumbnail"));
+					}
+					String thumbnail=(String) entity.get("thumbnail");
+					makeData(question, i + 1, thumbnail);
 				}
 				if (dicision.equals("info")) {
-					for (Iterator iteratorForKeyIntersection = mainArrayList.get(i).keySet()
-							.iterator(); iteratorForKeyIntersection.hasNext();) {
-						String keyForIntersection = (String) iteratorForKeyIntersection.next();
-						if (personMapQuestion.containsKey(keyForIntersection)) {
-							tempKeyArrayList.add(keyForIntersection);
-						}
-					}
-					if (tempKeyArrayList.size() == 0)
-						continue;
-					int infoSelectorNumber = ran.nextInt(tempKeyArrayList.size());
-					String mainKeyForInfo = tempKeyArrayList.get(infoSelectorNumber);
+				 	int infoSelectorNumber = ran.nextInt(infoableKeyList.size());
+					String mainKeyForInfo = infoableKeyList.get(infoSelectorNumber);
 					String mainKeyValue = (String) entity.get(mainKeyForInfo);
-					String info = "<img src=Images" + "/" + "Info.png><strong>" + personName + "</strong>" + "<br>"
-							+ personMapInfo.get(mainKeyForInfo) + mainKeyValue;
-					System.out.println(info);
-					makeData(info, i + 1, (String) entity.get("thumbnail"));
+					String info;
+					if(type.equals("city")|| type.equals("country") || type.equals("location"))
+				      info = "<img src=Images" + "/" + "Info.png><strong>" + entityName + "</strong>" + "<br>"
+							+ locationMapInfo.get(mainKeyForInfo) + mainKeyValue;
+					else
+					  info = "<img src=Images" + "/" + "Info.png><strong>" + entityName + "</strong>" + "<br>"
+								+ locationMapInfo.get(mainKeyForInfo) + mainKeyValue;
+					String thumbnail=(String) entity.get("thumbnail");
+					makeData(info, i + 1, thumbnail);
 
 				}
 				if (dicision.equals("abstract")) {
-					System.out.println("dicision abstract");
 					if ((String) entity.get("abstract") == null)
 						continue;
-					String abs = "<strong>" + personName + "</strong>" + "<br>" + (String) entity.get("abstract");
-					System.out.println(abs);
+					String abs = "<strong>" + entityName + "</strong>" + "<br>" + (String) entity.get("abstract");
 					abs = abs.replaceAll("\\(.+?\\)\\s*", "");
+			//		System.out.println(abs);
 					makeData(abs, i + 1, (String) entity.get("thumbnail"));
 				}
 
-			}
-
+			} /*
 			else if (type.equals("other")) {
 				String otherEntityName = (String) entity.get("name");
 				otherEntityName = otherEntityName.replaceAll("[_]", " ");
@@ -376,8 +313,9 @@ public class textsyncAction implements Action, ServletRequestAware {
 				entityAbstract = entityAbstract.replaceAll("\\(.+?\\)\\s*", "");
 				makeData(entityAbstract, i + 1, (String) entity.get("thumbnail"));
 			}
+			*/
 
-		}
+		
 
 		mainContent = content1 + dataContent + content8;
 		// File file = new
@@ -389,7 +327,7 @@ public class textsyncAction implements Action, ServletRequestAware {
 
 		File file = new File(path + File.separator + "scripts" + File.separator + jsonFileName + ".json");
 
-		System.out.println("Local filename to write: " + file.getAbsolutePath());
+	//	System.out.println("Local filename to write: " + file.getAbsolutePath());
 		// if file doesnt exists, then create it
 		if (!file.exists()) {
 			file.createNewFile();
@@ -401,16 +339,66 @@ public class textsyncAction implements Action, ServletRequestAware {
 		bw.close();
 
 	}
+	
+	private ArrayList CityCompareByPopulation(String cityName, String countryName, Long population){
+		ArrayList returnList=new ArrayList();
+		int numberOfDigitOfCity=String.valueOf(population).length();
+		BasicDBObject whereQuery = new BasicDBObject();
+
+		whereQuery.put("country", countryName);
+		BasicDBObject projectionQuery = new BasicDBObject();
+		projectionQuery.put("_id", 0);
+		projectionQuery.put("name", 1);
+		projectionQuery.put("population", 1);
+		DBCursor cityCursor = locationCollection.find(whereQuery, projectionQuery);
+	//	mainloop:
+	//	for(int i=0;i<numberOfDigitOfCity;i++){
+		while(cityCursor.hasNext()){
+			BasicDBObject cityObject=(BasicDBObject) cityCursor.next();
+			String name=cityObject.getString("name");
+			Long ComparingPopulation=Long.valueOf(cityObject.getString("population"));
+			int numberOfDigitOfComparingCity=String.valueOf(ComparingPopulation).length();
+			if(numberOfDigitOfCity==numberOfDigitOfComparingCity && !name.equals(cityName)){
+			  	returnList.add(name);
+			    returnList.add(cityName);
+			    Collections.shuffle(returnList);
+			    if(ComparingPopulation>population)
+			    	returnList.add(name);
+			    else if(ComparingPopulation<population)
+			    	returnList.add(cityName);
+			    break ;
+			}
+			
+		}
+	//	}
+		
+		return returnList;
+	}
 
 	private String CorrectAnsOrderFinder(String[] correctAns, ArrayList options) {
+		  for(int i=0;i<correctAns.length;i++){
+		        if (correctAns[i].contains("language")) {
+					// tempValue = tempValue.replace("language", "");
+					String[] splitTempValue = correctAns[i].split("\\s+");
+					correctAns[i]= splitTempValue[0];
+				}
+			}
 		Map<Integer, String> indexToAns = new HashMap<Integer, String>();
 		List<Integer> index = new<Integer> ArrayList();
 		String correctOrder = null;
-		for (String ans : correctAns) {
-			if (options.indexOf(ans) < 0)
-				continue;
-			index.add(options.indexOf(ans));
-			indexToAns.put(options.indexOf(ans), ans);
+		
+		System.out.println(options);
+		try {
+			for (String ans: correctAns) {
+				System.out.println("Ans=" + ans);
+				if (options.indexOf(ans) < 0)
+					continue;
+				index.add(options.indexOf(ans));
+				indexToAns.put(options.indexOf(ans), ans);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println(options);
 		}
 		Collections.sort(index);
 		for (int i = 0; i < index.size(); i++) {
@@ -422,7 +410,7 @@ public class textsyncAction implements Action, ServletRequestAware {
 		return correctOrder;
 
 	}
-
+/*
 	// find language name by language code from mongodb
 	private String LanguageNameFinder(String languagecode) {
 		String language;
@@ -457,7 +445,7 @@ public class textsyncAction implements Action, ServletRequestAware {
 			country = "not found";
 		return country;
 	}
-
+*/
 	private ArrayList GetPersonFalseAns(String keyName, String keyValue) {
 		ArrayList<String> options = new ArrayList<String>();
 		BasicDBObject whereQuery = new BasicDBObject();
@@ -487,57 +475,52 @@ public class textsyncAction implements Action, ServletRequestAware {
 	@SuppressWarnings("unchecked")
 	private ArrayList GetLocationFalseAns(String keyName, String[] keyValue, double longi, double lat) {
 		ArrayList optionList = new ArrayList();
-		if (keyName.equals("timezone")) {
-			optionList = timezoneFinder(keyValue[0]);
-			return optionList;
-		}
 		DBCollection collectionName = null;
 		int falseAnsNum = (4 - keyValue.length);
-
+        String where;
+        String projection;
+        for(int i=0;i<keyValue.length;i++){
+        if (keyValue[i].contains("language")) {
+			// tempValue = tempValue.replace("language", "");
+			String[] splitTempValue = keyValue[i].split("\\s+");
+			keyValue[i]= splitTempValue[0];
+		}
+	}
+        
+		if(keyName.equals("neighbours")){
+			where="capital";
+			projection="name";
+		}
+		else{
+			where=keyName;
+			projection=keyName;
+		}
 		for (String keyvalue : keyValue)
 			optionList.add(keyvalue);
 
 		if (optionList.size() >= 4)
 			optionList = new ArrayList(optionList.subList(0, 3));
-
-		String keyNameWhere;
-		String keyNameProjection;
-		if (keyName.equals("languages")) {
-			keyNameWhere = "officialLanguage";
-			keyNameProjection = "officialLanguage";
-
-		} else if (keyName.equals("neighbours")) {
-			keyNameWhere = "officialLanguage";
-			keyNameProjection = "name";
-
-		}
-
-		else {
-			keyNameWhere = keyName;
-			keyNameProjection = keyName;
-
-		}
-
+	
 		ArrayList distances = new ArrayList();
 		Map<Double, String> distanceToKeyValue = new HashMap<Double, String>();
 		BasicDBObject whereQuery = new BasicDBObject();
 
-		whereQuery.put(keyNameWhere, java.util.regex.Pattern.compile("."));
+		whereQuery.put(where, java.util.regex.Pattern.compile("."));
 		BasicDBObject projectionQuery = new BasicDBObject();
 		projectionQuery.put("_id", 0);
-		projectionQuery.put(keyNameProjection, 1);
-		projectionQuery.put("long", 1);
-		projectionQuery.put("lat", 1);
+		projectionQuery.put(projection, 1);
+		projectionQuery.put("longitude", 1);
+		projectionQuery.put("latitude", 1);
 		DBCursor locationCursor = locationCollection.find(whereQuery, projectionQuery);
 
 		while (locationCursor.hasNext()) {
 			BasicDBObject entity = (BasicDBObject) locationCursor.next();
-			if (entity.containsField("lat") && entity.containsField("long")) {
-				double falseLat = Double.parseDouble((String) entity.get("lat"));
-				double falseLong = Double.parseDouble((String) entity.get("long"));
+			if (entity.containsField("latitude") && entity.containsField("longitude")) {
+				double falseLat = Double.parseDouble((String) entity.get("latitude"));
+				double falseLong = Double.parseDouble((String) entity.get("longitude"));
 				double distance = getDistance(falseLat, falseLong, lat, longi);
 				distances.add(distance);
-				String tempValue = (String) entity.get(keyNameProjection);
+				String tempValue = (String) entity.get(projection);
 				if (tempValue.contains("language")) {
 					// tempValue = tempValue.replace("language", "");
 					String[] splitTempValue = tempValue.split("\\s+");
@@ -557,7 +540,7 @@ public class textsyncAction implements Action, ServletRequestAware {
 
 		} else
 			checkList = optionList;
-		System.out.println(distanceToKeyValue);
+	//	System.out.println(distanceToKeyValue);
 		for (int i = 0; i < distances.size(); i++) {
 
 			if (!checkList.contains((String) distanceToKeyValue.get(distances.get(i)))) {
@@ -571,7 +554,7 @@ public class textsyncAction implements Action, ServletRequestAware {
 		return optionList;
 
 	}
-
+/*
 	@SuppressWarnings("unchecked")
 	private ArrayList timezoneFinder(String realTimeZone) {
 		BasicDBObject whereQuery = new BasicDBObject();
@@ -600,6 +583,7 @@ public class textsyncAction implements Action, ServletRequestAware {
 			return subTimeZones;
 		}
 	}
+*/
 
 	private double getDistance(double submittedCountryLat, double submittedCountryLong, double countryLat,
 			double countryLong) {
@@ -623,7 +607,7 @@ public class textsyncAction implements Action, ServletRequestAware {
 	}
 
 	public String execute() throws FileNotFoundException, IOException, ParseException {
-		System.out.println(videoUrl);
+	//	System.out.println(videoUrl);
 
 		ArrayList<String> subSubArray;
 		ArrayList<ArrayList<String>> subArray;
@@ -649,63 +633,7 @@ public class textsyncAction implements Action, ServletRequestAware {
 				while (locationCursor.hasNext()) {
 
 					BasicDBObject entity = (BasicDBObject) locationCursor.next();
-					// assumption is if a location has a capital that means its
-					// a country, then query to countryInfo collection for more
-					// info.if it has country then it's a city.
-					if (entity.containsKey("capital") || entity.containsKey("officialLanguage")
-							|| entity.containsKey("currency")) {
-						BasicDBObject whereQueryforCountry = new BasicDBObject();
-						whereQueryforCountry.put("country", entities[entityCounter]);
-						BasicDBObject projectionQueryforCountry = new BasicDBObject();
-						projectionQueryforCountry.put("_id", 0);
-						projectionQueryforCountry.put("languages", 1);
-						projectionQueryforCountry.put("ISO", 1);
-						projectionQueryforCountry.put("neighbours", 1);
 
-						DBCursor countryCursor = countryInfoCollection.find(whereQueryforCountry,
-								projectionQueryforCountry);
-						BasicDBObject tempCountryEntity;
-						if (countryCursor.hasNext())
-							tempCountryEntity = (BasicDBObject) countryCursor.next();
-						else
-							continue;
-						for (String key : tempCountryEntity.keySet()) {
-
-							entity.put(key, tempCountryEntity.get(key));
-							/*
-							 * add the new info from countryInfo collection
-							 * entity.put(key, tempCountryEntity.get(key) ); to
-							 * previous info of location collection
-							 */
-						}
-					} else {
-						BasicDBObject whereQueryforCity = new BasicDBObject();
-						whereQueryforCity.put("asciiname", entities[entityCounter]);
-						BasicDBObject projectionQueryforCity = new BasicDBObject();
-						projectionQueryforCity.put("_id", 0);
-						projectionQueryforCity.put("dem", 1);
-						projectionQueryforCity.put("timezone", 1);
-						BasicDBObject tempCityEntity;
-						DBCursor cityCursor = cityCollection.find(whereQueryforCity, projectionQueryforCity);
-						if (cityCursor.hasNext())
-							tempCityEntity = (BasicDBObject) cityCursor.next();
-						else
-							continue;
-						for (String key : tempCityEntity.keySet()) { // add the
-																		// new
-																		// info
-																		// from
-																		// city
-																		// collection
-							entity.put(key, tempCityEntity.get(key)); // to
-																		// previous
-																		// info
-																		// of
-																		// location
-																		// collection
-						}
-
-					}
 
 					mainArrayList.add(entity);
 
