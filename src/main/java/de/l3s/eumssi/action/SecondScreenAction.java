@@ -8,13 +8,13 @@ import org.apache.struts2.ServletActionContext;
 
 import com.opensymphony.xwork2.Action;
 
-import de.l3s.eumssi.dao.DatabaseManager;
+
 import de.l3s.eumssi.dao.SolrDBManager;
 import de.l3s.eumssi.model.Category;
 import de.l3s.eumssi.model.Entity;
 import de.l3s.eumssi.model.Event;
-import de.l3s.eumssi.model.Story;
-import de.l3s.eumssi.service.ContentHandling;
+
+
 
 public class SecondScreenAction implements Action{
 	
@@ -34,7 +34,7 @@ public class SecondScreenAction implements Action{
 	private ArrayList<Event> events=new ArrayList<Event>();
 	private int searchsize;
 	private ArrayList<Category> relatedCategories;
-	private ArrayList<Story> relatedStories;
+	
 	private ArrayList<Entity> topEntities = null;	
 	
 	// for auto complete of entities
@@ -315,16 +315,6 @@ public class SecondScreenAction implements Action{
 	}
 
 
-
-	public ArrayList<Story> getRelatedStories() {
-		return relatedStories;
-	}
-
-
-
-	public void setRelatedStories(ArrayList<Story> relatedStories) {
-		this.relatedStories = relatedStories;
-	}
 
 
 

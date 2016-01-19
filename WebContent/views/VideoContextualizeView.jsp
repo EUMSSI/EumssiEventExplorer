@@ -135,19 +135,7 @@
 					    	<div class="change">	
 															   
 					    			<font color="#0040FF" >
-					    				<a href="
-					    					<s:if test="useContextPath != false">
-												<s:url action="ShowEventByDate" includeContext="true">
-													<s:param name="storyDate" value="#event.date" > </s:param>
-												</s:url>
-											</s:if>
-											<s:else>
-												<s:url action="ShowEventByDate" includeContext="false">
-													<s:param name="storyDate" value="#event.date" > </s:param>
-												</s:url>
-											</s:else>">
-											<strong><s:date name="#event.date" format="dd-MM-yyyy" /></strong>
-										</a>
+										<strong><s:date name="#event.date" format="dd-MM-yyyy" /></strong>
 					    			</font>								
 									<s:div style="width:95%; margin-left: auto; margin-right: auto; position: relative;">
 											<s:property escape = "true"  value="#event.headline"/>
