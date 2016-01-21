@@ -132,7 +132,7 @@ public class textsyncAction implements Action, ServletRequestAware {
 		//template for questions of locations
 		locationMapQuestion.put("currency", "What is the name of the currency?");
 		locationMapQuestion.put("officialLanguage", "What is the official language spoken here?");
-	//	locationMapQuestion.put("languages", "Which language/languages are spoken?");
+		locationMapQuestion.put("languages", "Which language/languages are spoken?");
 		locationMapQuestion.put("neighbours", "Which countries are the neighbours?");
 		locationMapQuestion.put("timezone", "In which timezone is this city located?");
 		locationMapQuestion.put("capital", "What is the name of the capital?");
@@ -235,6 +235,9 @@ public class textsyncAction implements Action, ServletRequestAware {
 							makeData(question, i + 1, thumbnail);
 							continue;
 					}
+					else if(mainKeyForQuestion.equals("population") && type.equals("country"))
+						continue;
+					
 					correctAns = mainKeyValue;
 			        //for locations
 					if(type.equals("city") || type.equals("country") || type.equals("location")){
