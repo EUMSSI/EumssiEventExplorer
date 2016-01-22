@@ -235,6 +235,9 @@ public class textsyncAction implements Action, ServletRequestAware {
 							makeData(question, i + 1, thumbnail);
 							continue;
 					}
+					else if(mainKeyForQuestion.equals("population") && type.equals("country"))
+						continue;
+					
 					correctAns = mainKeyValue;
 			        //for locations
 					if(type.equals("city") || type.equals("country") || type.equals("location")){
