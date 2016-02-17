@@ -35,7 +35,7 @@
                     <div style=" clear: both;">
 
                         <div style="width: 50%;float: left;">
-                            <div style="height: 350px;">
+                            <div style="height: 600px;">
                                 <div id="defaultPlayer"></div>
                             </div>
  <!--                           <div>
@@ -56,7 +56,7 @@
                             </div> -->
                         </div>
                         <div style="width: 50%; float: left;">
-                            <div id="text_sync_plugin" style="height: 500px;"></div>
+                            <div id="text_sync_plugin" style="height:600px;"></div>
                         </div>
                     </div>
 <s:hidden  name="jsonFileName" id="jsonFileName" />
