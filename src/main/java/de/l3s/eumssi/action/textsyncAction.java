@@ -413,42 +413,7 @@ public class textsyncAction implements Action, ServletRequestAware {
 		return correctOrder;
 
 	}
-/*
-	// find language name by language code from mongodb
-	private String LanguageNameFinder(String languagecode) {
-		String language;
-		BasicDBObject whereQuery = new BasicDBObject();
-		whereQuery.put("$or", Arrays.asList(new BasicDBObject("iso-639-3", languagecode),
-				new BasicDBObject("iso-639-2", languagecode), new BasicDBObject("iso-639-1", languagecode)));
-		BasicDBObject projectionQuery = new BasicDBObject();
-		projectionQuery.put("_id", 0);
-		projectionQuery.put("language", 1);
-		DBCursor languageCursor = languagecodesCollection.find(whereQuery, projectionQuery);
-		if (languageCursor.hasNext()) {
-			BasicDBObject languageObject = (BasicDBObject) languageCursor.next();
-			language = languageObject.getString("language");
-		} else
-			language = "not found";
-		return language;
-	}
 
-	private String CountryNameFinder(String countrycode) {
-		String country;
-		BasicDBObject whereQuery = new BasicDBObject();
-		whereQuery.put("$or",
-				Arrays.asList(new BasicDBObject("ISO", countrycode), new BasicDBObject("ISO3", countrycode)));
-		BasicDBObject projectionQuery = new BasicDBObject();
-		projectionQuery.put("_id", 0);
-		projectionQuery.put("country", 1);
-		DBCursor countryCursor = countryInfoCollection.find(whereQuery, projectionQuery);
-		if (countryCursor.hasNext()) {
-			BasicDBObject countryObject = (BasicDBObject) countryCursor.next();
-			country = countryObject.getString("country");
-		} else
-			country = "not found";
-		return country;
-	}
-*/
 	private ArrayList GetPersonFalseAns(String keyName, String keyValue) {
 		ArrayList<String> options = new ArrayList<String>();
 		BasicDBObject whereQuery = new BasicDBObject();
@@ -557,36 +522,7 @@ public class textsyncAction implements Action, ServletRequestAware {
 		return optionList;
 
 	}
-/*
-	@SuppressWarnings("unchecked")
-	private ArrayList timezoneFinder(String realTimeZone) {
-		BasicDBObject whereQuery = new BasicDBObject();
 
-		whereQuery.put("timezone", java.util.regex.Pattern.compile("."));
-		BasicDBObject projectionQuery = new BasicDBObject();
-		projectionQuery.put("_id", 0);
-		projectionQuery.put("timezone", 1);
-
-		Random ran = new Random();
-		int x = ran.nextInt(412);
-		DBCursor timezoneCursor = timezoneCollection.find(whereQuery, projectionQuery).limit(4).skip(x);
-		ArrayList timezones = new ArrayList();
-		ArrayList subTimeZones = null;
-		while (timezoneCursor.hasNext()) {
-			DBObject a = timezoneCursor.next();
-			String b = (String) a.get("timezone");
-			timezones.add(b);
-		}
-		if (timezones.contains(realTimeZone))
-			return timezones;
-		else {
-			subTimeZones = new ArrayList(timezones.subList(0, 3));
-			subTimeZones.add(realTimeZone);
-			Collections.shuffle(subTimeZones);
-			return subTimeZones;
-		}
-	}
-*/
 
 	private double getDistance(double submittedCountryLat, double submittedCountryLong, double countryLat,
 			double countryLong) {
