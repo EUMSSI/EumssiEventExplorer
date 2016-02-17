@@ -24,7 +24,7 @@
         <script src="scripts/js/amalia.js-plugin-text-sync.min.js"></script>        
         <!-- /script-player -->
     </head>
-    <body>
+    <body style="background-color:#e6e6e6;">
         <div class="container">
             <div class="header">
             <img height="108" width="300" src="Images/eumssi-logo.png">
@@ -35,7 +35,7 @@
                     <div style=" clear: both;">
 
                         <div style="width: 50%;float: left;">
-                            <div style="height: 350px;">
+                            <div style="height: 600px;">
                                 <div id="defaultPlayer"></div>
                             </div>
  <!--                           <div>
@@ -56,7 +56,7 @@
                             </div> -->
                         </div>
                         <div style="width: 50%; float: left;">
-                            <div id="text_sync_plugin" style="height: 500px;"></div>
+                            <div id="text_sync_plugin" style="height:600px;"></div>
                         </div>
                     </div>
 <s:hidden  name="jsonFileName" id="jsonFileName" />
@@ -85,7 +85,7 @@
                                             'parameters' : {
                                                 metadataId : 'text-amalia01',
                                                 title : 'Information Sidebar',
-                                                description : 'Some Informations about the entites of this video',
+                                                description : 'Second Screen - Information and questions on this video',
                                                 level : 1,
                                                 displayLevel : 1,
                                                 scrollAuto : true
@@ -116,16 +116,26 @@
         }); 
     	var correctAns=0;
         $("input[type='button']").click(function() {
+        	
         	var selected = $(this).siblings("input[type='hidden']");
+        	if($(selected).is(':hidden')){
         	var correctans=selected.val();
             if( $(this).siblings("input[type='checkbox']:checked").map(function(i,v) { return v.id; }).get().join(',') == correctans ) {
             	$(this).after("<img src=Images/tik.png>");
+            	correctAns++;
+                $('.correct').html("<strong>Correct Answers:"+correctAns+"</strong>");
             }
             else
             	$(this).after("<img src=Images/cross.png>");
+            $(this).attr("disabled",true);
+        	}
         	
-        /*	
+        	else
+        	{
         	var selected = $(this).siblings("input[type='radio']:checked");
+        	
+        	
+        
         	if (selected.length > 0) {
         	    selectedVal = selected.val();
         	}
@@ -134,17 +144,17 @@
         	$(this).val("Correct");
         	$(this).after("<img src=Images/tik.png>");
         	correctAns++;
-            $('.correct').html("<strong style='background-color: powderblue;'>Correct Answers:"+correctAns+"</strong>");
+            $('.correct').html("<strong>Correct Answers:"+correctAns+"</strong>");
         }
         	else{
         	$(this).val("False");
         	$(this).after("<img src=Images/cross.png>");
         }
         	$(this).attr("disabled",true);
-        	*/
-        	});
+        	
+        	}});
         var questionCounter = $(':button').length;
-        $('.quize').html("<strong style='background-color: powderblue;'>Number of Questions:"+questionCounter+"</strong>");
+        $('.quize').html("<strong>Number of Questions:"+questionCounter+"</strong>");
        
         
         }, 3000);
