@@ -205,7 +205,7 @@ public class textsyncAction implements Action, ServletRequestAware {
 			Random ran = new Random();
 			System.out.println(dicisionList);
 			int x = ran.nextInt(dicisionList.size());
-			dicision=dicisionList.get(0);
+			dicision=dicisionList.get(1);
 
 			type=entity.getString("type");
 			// questions and info about location
@@ -292,7 +292,7 @@ public class textsyncAction implements Action, ServletRequestAware {
 							+ locationMapInfo.get(mainKeyForInfo) + mainKeyValue;
 					else
 					  info = "<img src=Images" + "/" + "Info.png><strong>" + entityName + "</strong>" + "<br>"
-								+ locationMapInfo.get(mainKeyForInfo) + mainKeyValue;
+								+ personMapInfo.get(mainKeyForInfo) + mainKeyValue;
 					String thumbnail=(String) entity.get("thumbnail");
 					makeData(info, i + 1, thumbnail);
 
@@ -306,8 +306,8 @@ public class textsyncAction implements Action, ServletRequestAware {
 					makeData(abs, i + 1, (String) entity.get("thumbnail"));
 				}
 
-			} /*
-			else if (type.equals("other")) {
+			 
+			 if (type.equals("other")) {
 				String otherEntityName = (String) entity.get("name");
 				otherEntityName = otherEntityName.replaceAll("[_]", " ");
 				String entityAbstract = "<strong>" + otherEntityName + "</strong><br>"
@@ -316,7 +316,7 @@ public class textsyncAction implements Action, ServletRequestAware {
 				entityAbstract = entityAbstract.replaceAll("\\(.+?\\)\\s*", "");
 				makeData(entityAbstract, i + 1, (String) entity.get("thumbnail"));
 			}
-			*/
+		}
 
 		
 
