@@ -86,13 +86,14 @@ public class LocationContentGenerator extends ContentGenerator {
 		if(hasAbstract==true)
            dicisionList.add("abstract");
 		dicisionList.add("map");
+		dicisionList.add("wordGraph");
 		// take dicision randomly
 		if(dicisionList.size()==0)
 		   return null;
 		Random ran = new Random();
 		System.out.println(dicisionList);
 		int x = ran.nextInt(dicisionList.size());
-		dicision=dicisionList.get(3);
+		dicision=dicisionList.get(dicisionList.size()-1);
 		
 		return dicision;
 	}
@@ -188,6 +189,15 @@ public class LocationContentGenerator extends ContentGenerator {
 			abs = abs.replaceAll("\\(.+?\\)\\s*", "");
 		    return abs;
 		   }
+		   
+		  
+	   }
+	   public String wordGraphGenerator(String entityName){
+		   entityName=entityName.replaceAll("_", " ");
+		   String entityNameForId=entityName.replace(" ", "-");
+		   String wordgraph= "<div id='my-genericgraph-"+entityNameForId+"' class='genericgraph'><script type='text/javascript'>"
+		   +"EUMSSI.Manager.addWidget(new AjaxSolr.GenericGraphWidget({id: 'my-genericgraph-"+entityNameForId+"\',target: '#my-genericgraph-"+entityNameForId+"'})); EUMSSI.Manager.doRequest(\'"+entityName+"\'); </script></div>" ;
+		   return wordgraph;
 	   }
 	
 	private ArrayList GetLocationFalseAns(String keyName, String[] keyValue, double longi, double lat) {

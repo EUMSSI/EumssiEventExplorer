@@ -78,14 +78,15 @@ public class PersonContentGenerator extends ContentGenerator {
 		if(infoableKeyList.size()>0)
 			dicisionList.add("info");
 		if(hasAbstract==true)
-           dicisionList.add("abstract");			
+           dicisionList.add("abstract");
+		dicisionList.add("wordGraph");
 		// take dicision randomly
 		if(dicisionList.size()==0)
 		   return null;
 		Random ran = new Random();
 		System.out.println(dicisionList);
 		int x = ran.nextInt(dicisionList.size());
-		dicision=dicisionList.get(x);
+		dicision=dicisionList.get(dicisionList.size()-1);
 		
 		return dicision;
 	}
@@ -139,6 +140,13 @@ public class PersonContentGenerator extends ContentGenerator {
 		    return abs;
 		   }
 	}
+	   public String wordGraphGenerator(String entityName){
+		   entityName=entityName.replaceAll("_", " ");
+		   String entityNameForId=entityName.replace(" ", "-");
+		   String wordgraph= "<div id='my-genericgraph-"+entityNameForId+"' class='genericgraph'><script type='text/javascript'>"
+		   +"EUMSSI.Manager.addWidget(new AjaxSolr.GenericGraphWidget({id: 'my-genericgraph-"+entityNameForId+"\',target: '#my-genericgraph-"+entityNameForId+"'})); EUMSSI.Manager.doRequest(\'"+entityName+"\'); </script></div>" ;
+		   return wordgraph;
+	   }
 	private ArrayList GetPersonFalseAns(String keyName, String keyValue) {
 		ArrayList<String> options = new ArrayList<String>();
 		BasicDBObject whereQuery = new BasicDBObject();

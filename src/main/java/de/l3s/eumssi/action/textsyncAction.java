@@ -24,14 +24,22 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.solr.client.solrj.SolrQuery;
+import org.apache.solr.client.solrj.SolrServerException;
+import org.apache.solr.client.solrj.impl.HttpSolrServer;
+import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.common.SolrDocumentList;
 import org.apache.struts2.interceptor.ServletRequestAware;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -70,12 +78,36 @@ public class textsyncAction implements Action, ServletRequestAware{
     * and which question or info) are made randomly.    
     */
 	
-
-
-	public String execute() throws FileNotFoundException, IOException, ParseException {
+private String[] getEntitiesFromSolr() throws SolrServerException{
+	
+	HttpSolrServer solr = new HttpSolrServer("http://demo.eumssi.eu/Solr_EUMSSI/content_items/");
+	SolrQuery query = new SolrQuery();
+	 System.out.println(videoUrl);
+	query.setQuery( "meta.source.mediaurl:"+"\""+videoUrl+"\"");
+	query.setFields("meta.extracted.text_nerl.dbpedia.all");
+	QueryResponse response = solr.query(query);
+    SolrDocumentList results = response.getResults();
+    System.out.println(results.size());
+    ArrayList entities=null;
+    for (int i = 0; i < results.size(); ++i) {
+       entities= (ArrayList) results.get(i).getFieldValue("meta.extracted.text_nerl.dbpedia.all");
+    }
+    Set<String> hs = new HashSet<>();
+    hs.addAll(entities);
+    entities.clear();
+    entities.addAll(hs);
+    
+    String[] entitiesArray=(String[]) entities.toArray(new String[entities.size()] );
+    
+ System.out.println(entitiesArray);
+ return entitiesArray;
+}
+	public String execute() throws FileNotFoundException, IOException, ParseException, SolrServerException {
         ArrayList<String> subSubArray;
 		ArrayList<ArrayList<String>> subArray;
-		entities = myparam.split(",");
+		
+		//entities = myparam.split(",");
+		entities=getEntitiesFromSolr();
 		AmaliaSidebarContent sidebarContent=new AmaliaSidebarContent();
 
 		for (int entityCounter = 1; entityCounter <= entities.length; entityCounter++) {
@@ -87,7 +119,7 @@ public class textsyncAction implements Action, ServletRequestAware{
 
 		JSONParser parser = new JSONParser();
 		try {
-			for (int entityCounter = 1; entityCounter < entities.length; entityCounter++) {
+			for (int entityCounter = 0; entityCounter < entities.length; entityCounter++) {
 				BasicDBObject whereQuery = new BasicDBObject();
 				whereQuery.put("name", entities[entityCounter]);
 				BasicDBObject projectionQuery = new BasicDBObject();
@@ -121,7 +153,7 @@ public class textsyncAction implements Action, ServletRequestAware{
 			for (int i = 0; i < mainArrayList.size(); i++) {
 		           
 				BasicDBObject entity = mainArrayList.get(i);
-				String dicision;
+			
 				String type = entity.getString("type");
 				if(type.equals("city") || type.equals("country") || type.equals("location")){
 					LocationContentGenerator locationObject=new LocationContentGenerator(entity);
@@ -165,6 +197,11 @@ public class textsyncAction implements Action, ServletRequestAware{
 						sidebarContent.makeData(googleMap, thumbnail);
 					}
 					
+					else if (decision.equals("wordGraph")){
+						String wordGraph=locationObject.wordGraphGenerator(entity.getString("name"));
+						String thumbnail=entity.getString("thumbnail");
+						sidebarContent.makeData(wordGraph, thumbnail);
+					}	
 				}
 				
 				else if(type.equals("person")){
@@ -202,6 +239,11 @@ public class textsyncAction implements Action, ServletRequestAware{
 							sidebarContent.makeData(abs, thumbnail);
 						}
 							
+					}
+					else if (decision.equals("wordGraph")){
+						String wordGraph=personObject.wordGraphGenerator(entity.getString("name"));
+						String thumbnail=entity.getString("thumbnail");
+						sidebarContent.makeData(wordGraph, thumbnail);
 					}
 					
 				}
