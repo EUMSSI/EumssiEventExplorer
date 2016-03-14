@@ -84,13 +84,26 @@ private String[] getEntitiesFromSolr() throws SolrServerException{
 	SolrQuery query = new SolrQuery();
 	 System.out.println(videoUrl);
 	query.setQuery( "meta.source.mediaurl:"+"\""+videoUrl+"\"");
-	query.setFields("meta.extracted.text_nerl.dbpedia.all");
+	query.setFields("meta.extracted.text_nerl.dbpedia.all","meta.extracted.text_nerl.dbpedia.Country","meta.extracted.text_nerl.dbpedia.PERSON","meta.extracted.text_nerl.dbpedia.LOCATION");
 	QueryResponse response = solr.query(query);
     SolrDocumentList results = response.getResults();
     System.out.println(results.size());
     ArrayList entities=null;
+    ArrayList tempEntities=null;
     for (int i = 0; i < results.size(); ++i) {
        entities= (ArrayList) results.get(i).getFieldValue("meta.extracted.text_nerl.dbpedia.all");
+       
+       tempEntities= (ArrayList) results.get(i).getFieldValue("meta.extracted.text_nerl.dbpedia.Country");
+       if(tempEntities!=null)
+       entities.addAll(tempEntities);
+       tempEntities= (ArrayList) results.get(i).getFieldValue("meta.extracted.text_nerl.dbpedia.PERSON");
+       if(tempEntities!=null)
+       entities.addAll(tempEntities);
+       tempEntities= (ArrayList) results.get(i).getFieldValue("meta.extracted.text_nerl.dbpedia.LOCATION");
+       if(tempEntities!=null)
+       entities.addAll(tempEntities);
+       
+       
     }
     Set<String> hs = new HashSet<>();
     hs.addAll(entities);

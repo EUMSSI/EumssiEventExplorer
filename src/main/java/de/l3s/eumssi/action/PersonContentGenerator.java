@@ -86,7 +86,7 @@ public class PersonContentGenerator extends ContentGenerator {
 		Random ran = new Random();
 		System.out.println(dicisionList);
 		int x = ran.nextInt(dicisionList.size());
-		dicision=dicisionList.get(dicisionList.size()-1);
+		dicision=dicisionList.get(x);
 		
 		return dicision;
 	}
