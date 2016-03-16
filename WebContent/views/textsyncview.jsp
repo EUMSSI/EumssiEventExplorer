@@ -23,6 +23,28 @@
         <script src="scripts/js/amalia.js.min.js"></script>
         <script src="scripts/js/amalia.js-plugin-text-sync.min.js"></script>        
         <!-- /script-player -->
+        <!-- script for wordgraph -->
+        
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.js"></script>
+    <script src="scripts/lib/d3/d3.layout.cloud.js"></script>
+    <script src="scripts/lib/d3/nv/nv.d3.min.js"></script>
+    <link href="scripts/lib/d3/nv/nv.d3.min.css" rel="stylesheet">
+    <script src="scripts/lib/underscore/underscore-min.js"></script>
+    <script src="scripts/js/Utils.js"></script>
+    <script src="scripts/js/EventManager.js"></script>
+    <script src="scripts/js/FilterManager.js"></script>
+    <script src="scripts/js/eumssiSolr.js"></script>
+    <script src="scripts/lib/ajax-solr/Core.js"></script>
+    <script src="scripts/lib/ajax-solr/AbstractManager.js"></script>
+    <script src="scripts/lib/ajax-solr/Parameter.js"></script>
+    <script src="scripts/lib/ajax-solr/ParameterStore.js"></script>
+    <script src="scripts/lib/ajax-solr/AbstractWidget.js"></script>
+    <script src="scripts/lib/ajax-solr/AbstractFacetWidget.js"></script>
+    <script src="scripts/lib/ajax-solr/AbstractTextWidget.js"></script>
+     <script src="scripts/js/Manager.jquery.js"></script>
+    <script src="scripts/js/widgets/GenericGraphWidget.js"></script>
+    
+        
     </head>
     <body style="background-color:#e6e6e6;">
         <div class="container">
@@ -35,7 +57,7 @@
                     <div style=" clear: both;">
 
                         <div style="width: 50%;float: left;">
-                            <div style="height: 350px;">
+                            <div style="height: 600px;">
                                 <div id="defaultPlayer"></div>
                             </div>
  <!--                           <div>
@@ -56,9 +78,10 @@
                             </div> -->
                         </div>
                         <div style="width: 50%; float: left;">
-                            <div id="text_sync_plugin" style="height: 500px;"></div>
+                            <div id="text_sync_plugin" style="height:600px;"></div>
                         </div>
                     </div>
+                    
 <s:hidden  name="jsonFileName" id="jsonFileName" />
 <s:hidden  name="videoUrl" id="videoUrl" />
 
@@ -201,5 +224,6 @@
       </s:iterator>
       </ul>
        -->
+       <div id="my-genericgraph" class="genericgraph"></div> 
     </body>
 </html>
