@@ -29,7 +29,7 @@ public class LocationContentGenerator extends ContentGenerator {
 	  
 	LocationContentGenerator(BasicDBObject locationObjectConstructor){
 		 locationObject= locationObjectConstructor;
-		 System.out.println(locationObject);
+	
 			
 		 locationMapQuestion.put("currency", "What is the name of the currency?");
 		 locationMapQuestion.put("officialLanguage", "What is the official language spoken here?");
@@ -57,7 +57,7 @@ public class LocationContentGenerator extends ContentGenerator {
 		String dicision;
 		boolean hasAbstract=false;
 		
-		System.out.println(this.locationObject);
+	
 
 		for (Iterator iteratorForKeyIntersection = locationObject.keySet()
 				.iterator(); iteratorForKeyIntersection.hasNext();) {
@@ -91,7 +91,7 @@ public class LocationContentGenerator extends ContentGenerator {
 		if(dicisionList.size()==0)
 		   return null;
 		Random ran = new Random();
-		System.out.println(dicisionList);
+	
 		int x = ran.nextInt(dicisionList.size());
 		dicision=dicisionList.get(x);
 		
@@ -267,7 +267,7 @@ public class LocationContentGenerator extends ContentGenerator {
 
 		} else
 			checkList = optionList;
-	//	System.out.println(distanceToKeyValue);
+
 		for (int i = 0; i < distances.size(); i++) {
 
 			if (!checkList.contains((String) distanceToKeyValue.get(distances.get(i)))) {

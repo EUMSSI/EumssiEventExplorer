@@ -84,7 +84,7 @@ public class PersonContentGenerator extends ContentGenerator {
 		if(dicisionList.size()==0)
 		   return null;
 		Random ran = new Random();
-		System.out.println(dicisionList);
+
 		int x = ran.nextInt(dicisionList.size());
 		dicision=dicisionList.get(x);
 		
@@ -160,7 +160,6 @@ public class PersonContentGenerator extends ContentGenerator {
 		int x = ran.nextInt(440) + 1;
 		DBCursor randomPersonCursor = personCollection.find(whereQuery, projectionQuery).limit(3).skip(x);
 
-		// System.out.println("location cursor size:"+locationCursor);
 		while (randomPersonCursor.hasNext()) {
 			BasicDBObject entity = (BasicDBObject) randomPersonCursor.next();
 			String tempValue = (String) entity.get(keyName);
