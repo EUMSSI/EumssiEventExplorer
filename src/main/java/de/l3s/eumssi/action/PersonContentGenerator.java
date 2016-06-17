@@ -28,22 +28,16 @@ public class PersonContentGenerator extends ContentGenerator {
 	PersonContentGenerator(BasicDBObject personObjectConstructor){
 		 personObject= personObjectConstructor;
 			
-		 personMapQuestion.put("currency", "What is the name of the currency?");
-		 personMapQuestion.put("officialLanguage", "What is the official language spoken here?");
-	//	 personMapQuestion.put("languages", "Which language/languages are spoken?");
-		 personMapQuestion.put("neighbours", "Which countries are the neighbours?");
-		 personMapQuestion.put("timezone", "In which timezone is this city located?");
-		 personMapQuestion.put("capital", "What is the name of the capital?");
-		 personMapQuestion.put("country", "In which country is this city located?");
-		 personMapQuestion.put("adminArea", "In which region is this city located?");
-		 personMapQuestion.put("population", "Which is the most populated city in this country?");
+		 //template for person question 
+		 personMapQuestion.put("birthPlace","Where was this person born?");
+		 personMapQuestion.put("almaMater","Which university or college did this person attend??");
+
 		 
 		//template for info of persons
-	     personMapInfo.put("currency", "The local currency is ");
-		 personMapInfo.put("officialLanguage", "The language spoken is ");
-		 personMapInfo.put("capital", "The capital is ");
-		 personMapInfo.put("country", "This city is located in ");
-		 personMapInfo.put("languages", "language spoken ");
+		 personMapInfo.put("birthPlace","City of birth: ");
+		 personMapInfo.put("almaMater","College attended: ");
+		 personMapInfo.put("birthdate","Date of birth: " );
+		 personMapInfo.put("spouse","Spouse: ");
 		
 }
 	
