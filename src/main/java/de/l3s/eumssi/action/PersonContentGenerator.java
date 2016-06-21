@@ -29,9 +29,9 @@ public class PersonContentGenerator extends ContentGenerator {
 		 personObject= personObjectConstructor;
 			
 		 //template for person question 
-		 personMapQuestion.put("birthPlace","Where was this person born?");
-		 personMapQuestion.put("almaMater","Which university or college did this person attend??");
-
+	//	 personMapQuestion.put("birthPlace","Where was this person born?");
+	//	 personMapQuestion.put("almaMater","Which university or college did this person attend??");
+		 personMapQuestion.put("birthDate","When does this person born?");
 		 
 		//template for info of persons
 		 personMapInfo.put("birthPlace","City of birth: ");
@@ -65,15 +65,16 @@ public class PersonContentGenerator extends ContentGenerator {
 		//options for the dicision
 		
 	
-		if(questionableKeyList.size()>0 && personObject.containsKey("longitude"))
+		if(questionableKeyList.size()>0)
 			dicisionList.add("question");
 		
-	
+	/*
 		if(infoableKeyList.size()>0)
 			dicisionList.add("info");
 		if(hasAbstract==true)
            dicisionList.add("abstract");
 		dicisionList.add("wordGraph");
+		*/
 		// take dicision randomly
 		if(dicisionList.size()==0)
 		   return null;
@@ -81,7 +82,7 @@ public class PersonContentGenerator extends ContentGenerator {
 
 		int x = ran.nextInt(dicisionList.size());
 		dicision=dicisionList.get(x);
-		
+		System.out.println("decision "+dicision);
 		return dicision;
 	}
 
@@ -143,9 +144,22 @@ public class PersonContentGenerator extends ContentGenerator {
 	   }
 	private ArrayList GetPersonFalseAns(String keyName, String keyValue) {
 		ArrayList<String> options = new ArrayList<String>();
+		if(keyName.equals("birthDate")){
+		String[] birthDatesSplit=keyValue.split("-");
+		int birthYear=Integer.valueOf(birthDatesSplit[0]);
+		int falseBirthYear1=birthYear+2;
+		int falseBirthYear2=birthYear+3;
+		int falseBirthYear3=birthYear+1;
+		String falseBirthDate1=falseBirthYear1+"-"+birthDatesSplit[1]+"-"+birthDatesSplit[2];
+		String falseBirthDate2=falseBirthYear2+"-"+birthDatesSplit[1]+"-"+birthDatesSplit[2];
+		String falseBirthDate3=falseBirthYear3+"-"+birthDatesSplit[1]+"-"+birthDatesSplit[2];
+		options.add(falseBirthDate1);
+		options.add(falseBirthDate2);
+		options.add(falseBirthDate3);
+		}
+		else{
 		BasicDBObject whereQuery = new BasicDBObject();
-
-		whereQuery.put(keyName, java.util.regex.Pattern.compile("."));
+        whereQuery.put(keyName, java.util.regex.Pattern.compile("."));
 		BasicDBObject projectionQuery = new BasicDBObject();
 		projectionQuery.put("_id", 0);
 		projectionQuery.put(keyName, 1);
@@ -161,8 +175,10 @@ public class PersonContentGenerator extends ContentGenerator {
 
 			options.add(value[0]);
 		}
+		}
 		options.add(keyValue);
 		Collections.shuffle(options);
+		
 		return options;
 	}
 

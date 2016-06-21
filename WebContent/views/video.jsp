@@ -3,12 +3,22 @@
     <%@ taglib uri="/struts-tags" prefix="s"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <head>
-
-<script src="scripts/bower_components/jquery/dist/jquery.js"> </script>
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+ <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 </head>
 <body>
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+     <ul class="nav navbar-nav">
+      <li><a><img src="Images/eumssi_logo.png"></a></li>
+      <li><a><h3 style="font-family:serif;">First Screen</h3></a></li>
+   
+     </ul>
+  </div>
+</nav>
 <video width="1000" height="600" controls>
   <source id="videoSrc" src=scripts/sample.mp4 type="video/mp4">
   <track id="videoTrack" src="scripts/text.vtt" kind="subtitles" srclang="en" label="English" default/>

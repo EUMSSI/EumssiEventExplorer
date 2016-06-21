@@ -5,6 +5,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Insert title here</title>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
        
@@ -26,25 +27,27 @@
     <script src="scripts/lib/ajax-solr/AbstractTextWidget.js"></script>
      <script src="scripts/js/Manager.jquery.js"></script>
     <script src="scripts/js/widgets/GenericGraphWidget.js"></script>
-    
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 </head>
 <body>
-
-<br/>
-<!-- 
-<form id="videoList">
-<s:iterator value="videoMap" status="statusVar">
-  <input type="button" name="videoName" value=<s:property value="key"/> /> <br /><br />
-  </s:iterator>
-</form>
- -->
-<br />
-
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+     <ul class="nav navbar-nav">
+      <li><a><img src="Images/eumssi_logo.png"></a></li>
+      <li><a><h4 style="font-family:serif;">Second Screen</h4></a></li>
+       <li >
+       <a>
+    <form action="logout">
+        <input type="submit" value="logout">
+    </form></a>
+    </li>
+    </ul>
+  </div>
+</nav>
+  <div class="container-fluid">
 <div id="second_screen_content"></div>
-<form action="logout">
-  <br>
-  <input type="submit" value="logout">
-  </form>
+</div>
 </body>
 <script>
 	 $.post("chat1",
@@ -62,8 +65,5 @@
 			    		}
 			    	
 			    });
-	
-
-
 </script>
 </html>
