@@ -15,7 +15,8 @@
      <ul class="nav navbar-nav">
       <li><a><img src="Images/eumssi_logo.png"></a></li>
       <li><a><h3 style="font-family:serif;">First Screen</h3></a></li>
-   
+      <li><a><button type="button" class='btn btn-primary'  id="close">Close</button></a></li>
+      <li><a><form action="logout"> <input type="submit" class='btn btn-primary'  value="logout"></form></a><li>
      </ul>
   </div>
 </nav>
@@ -30,9 +31,9 @@
 <div id="asdf"></div><br>
 <div>The timing of the information boxes is currently fixed. <br>
         Our goal is to show them at the exact time that a person appears or a location is mentioned. This is shown in:</div>
-        <a href='<s:url action="video1" includeContext="true">
+        <a href='<s:url action="video1"  includeContext="true">
 	     </s:url>'>1. Alternative Fracking - Environmental risk or economic opportunity? </a><br>
-<button type="button" id="close">Close</button><br>
+
 <form action="logout">
   <br>
   <input type="submit" value="logout">

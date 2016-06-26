@@ -34,12 +34,18 @@ public class Second_screen_contentAction{
  private String headLine;
  
  HttpServletRequest request;
-MongoDBManager mongo = new MongoDBManager();
+ public MongoDBManager mongo= MongoDBManager.getInstance() ;
 	//get the collection of all person
-DBCollection personCollection = mongo.getCollection("person");
+DBCollection personCollection=mongo.getCollection("person");
 	//get the collection of all locations. 
-DBCollection locationCollection = mongo.getCollection("allLocations");
-
+DBCollection locationCollection=mongo.getCollection("allLocations");
+/*
+public Second_screen_contentAction(MongoDBManager mongoClient){
+	mongo=mongoClient;
+	personCollection = mongo.getCollection("person");
+	 locationCollection = mongo.getCollection("allLocations");
+}
+*/
 	public String contentGenerator(String entityName ) throws Exception {
 		System.out.println(entityName);
 		

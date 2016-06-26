@@ -1,5 +1,6 @@
 package de.l3s.eumssi.action;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -10,11 +11,11 @@ import de.l3s.eumssi.dao.MongoDBManager;
 
 public abstract class ContentGenerator {
 	
- public	MongoDBManager mongo = new MongoDBManager();
+ public	MongoDBManager mongo = MongoDBManager.getInstance();
     
    public abstract String makeDicision(); 
  
-   public abstract String questionGenerator();
+   public abstract String questionGenerator() throws ParseException;
    
    public abstract String infoGenerator();
  

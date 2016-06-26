@@ -36,20 +36,25 @@
      <ul class="nav navbar-nav">
       <li><a><img src="Images/eumssi_logo.png"></a></li>
       <li><a><h4 style="font-family:serif;">Second Screen</h4></a></li>
+        <li><a><div id="correct"></div></a></li>
+        <li><a><div id="wrong"></div></a></li>
        <li >
        <a>
     <form action="logout">
-        <input type="submit" value="logout">
+        <input type="submit" class='btn btn-primary' value="logout">
     </form></a>
     </li>
+
     </ul>
   </div>
 </nav>
   <div class="container-fluid">
 <div id="second_screen_content"></div>
 </div>
+<div id="interval"></div>
 </body>
 <script>
+//function interval() {
 	 $.post("chat1",
 			    {
 			        requestType: "second_screen"
@@ -59,11 +64,64 @@
 			    	if(data!=""){
 			    		
 			    		$("#second_screen_content").html(data);
-			    		$.get(this);
-			    	
-			    			
+			    		
+			    		
+			    		 $.get(this);	
 			    		}
-			    	
+			    	else{
+			    		 $.get(this);
+			    	}
+			      
 			    });
+	 
+//}
+//interval();
+ 	var correctAns=0;
+ 	var wrongAns=0;
+    $(document.body).on("click","#check",function() {
+    	var selected = $(this).siblings("input[type='hidden']");
+    	if($(selected).is(':hidden')){
+    	var correctans=selected.val();
+        if( $(this).siblings("input[type='checkbox']:checked").map(function(i,v) { return v.id; }).get().join(',') == correctans ) {
+        	$(this).after("<img src=Images/tik.png>");
+        	correctAns++;
+            $('#correct').html("<img src=Images/tik.png>&nbsp;"+correctAns);
+        }
+        else{
+        	$(this).after("<img src=Images/cross.png>");
+        wrongAns++;
+        $('#wrong').html("<img src=Images/cross.png>&nbsp;"+wrongAns);
+    	}
+        $(this).attr("disabled",true);
+        
+    	}
+    	
+    	else
+    	{
+    	var selected = $(this).siblings("input[type='radio']:checked");
+    	
+    	
+    
+    	if (selected.length > 0) {
+    	    selectedVal = selected.val();
+    	}
+
+    	if(selected.val()==selected.attr('name')){
+    	$(this).val("Correct");
+    	$(this).after("<img src=Images/tik.png>");
+    	correctAns++;
+        $('#correct').html("<img src=Images/tik.png>&nbsp;"+correctAns);
+    }
+    	else{
+    	$(this).val("False");
+    	$(this).after("<img src=Images/cross.png>");
+    	wrongAns++;
+    	$('#wrong').html("<img src=Images/cross.png>&nbsp;"+wrongAns);
+    }
+    	$(this).attr("disabled",true);
+    	
+    	}
+    	});
+    
 </script>
 </html>

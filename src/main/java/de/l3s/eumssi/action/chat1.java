@@ -10,6 +10,8 @@ import java.util.Map;
 import org.apache.catalina.comet.CometEvent;
 import org.apache.catalina.comet.CometProcessor;
 
+import de.l3s.eumssi.dao.MongoDBManager;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -27,6 +29,7 @@ public class chat1
     protected Map<String,HttpServletResponse> connections = 
         new HashMap<String, HttpServletResponse>();
     protected MessageSender messageSender = null;
+ //   public MongoDBManager mongo; 
     
     public void init() throws ServletException {
     //	System.out.println("in the init");
@@ -35,6 +38,7 @@ public class chat1
             new Thread(messageSender, "MessageSender[" + getServletContext().getContextPath() + "]");
         messageSenderThread.setDaemon(true);
         messageSenderThread.start();
+     //   mongo= new MongoDBManager();
     }
 
     public void destroy() {

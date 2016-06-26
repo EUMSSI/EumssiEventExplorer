@@ -4,11 +4,22 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-
-<script src="scripts/bower_components/jquery/dist/jquery.js"> </script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+ <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 
 </head>
 <body>
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+     <ul class="nav navbar-nav">
+      <li><a><img src="Images/eumssi_logo.png"></a></li>
+      <li><a><h3 style="font-family:serif;">First Screen</h3></a></li>
+      <li><a><button type="button" class='btn btn-primary' id="close">Close</button></a></li>
+      <li><a><form action="logout"> <input type="submit" class='btn btn-primary' value="logout"></form></a><li>
+     </ul>
+  </div>
+</nav>
 <video width="1100" height="600" controls>
   <source id="videoSrc" src="http://tv-download.dw.de/dwtv_video/flv/me/me20140513_fracking_sd_avc.mp4" type="video/mp4">
   <track id="videoTrack" src="scripts/text.vtt" kind="subtitles" srclang="en" label="English" default/>
@@ -18,11 +29,7 @@
 
 <div id="asdf"></div><br>
 
-<button type="button" id="close">Close</button><br>
-<form action="logout">
-  <br>
-  <input type="submit" value="logout">
-  </form>
+
 <script>
 
 
@@ -36,7 +43,7 @@ trackElement.addEventListener("load", function() {
 	  document.getElementById("asdf").innerHTML=cue.text;
 	
 	
-	  $.post("second_screen_content",
+	  $.post("chat1",
 		        {
 		          entityName: cue.text,
                   videoName: "video1",	

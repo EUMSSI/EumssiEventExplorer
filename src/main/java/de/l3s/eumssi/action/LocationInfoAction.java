@@ -39,7 +39,7 @@ public class LocationInfoAction implements Action,ServletRequestAware  {
 	HashSet<String> hs;
 	HttpServletRequest request;
 	public String execute() throws Exception{
-		MongoDBManager mongo=new MongoDBManager(); 
+		MongoDBManager mongo=MongoDBManager.getInstance(); 
 		BasicDBObject document = new BasicDBObject();
 		DBCollection collection=mongo.getCollection("location");
 		

@@ -49,7 +49,7 @@ import org.json.simple.parser.ParseException;
 
 public class textsyncAction implements Action, ServletRequestAware{
 
-	MongoDBManager mongo = new MongoDBManager();
+	MongoDBManager mongo =MongoDBManager.getInstance();
 	//get the collection of all person
 	DBCollection personCollection = mongo.getCollection("person");
 	//get the collection of all locations. 

@@ -13,9 +13,12 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 
+import de.l3s.eumssi.dao.MongoDBManager;
+
 public class LocationContentGenerator extends ContentGenerator {
-	//get the collection of all locations. 
-	DBCollection locationCollection = mongo.getCollection("allLocations");
+	//get the collection of all locations.
+	public MongoDBManager mongo=MongoDBManager.getInstance();
+    public DBCollection locationCollection=mongo.getCollection("allLocations");
 	Map<String, String> locationMapQuestion = new HashMap<String, String>();
 	Map<String, String> locationMapInfo = new HashMap<String, String>();
 	
@@ -27,8 +30,10 @@ public class LocationContentGenerator extends ContentGenerator {
 
 	public BasicDBObject locationObject=new BasicDBObject();
 	  
-	LocationContentGenerator(BasicDBObject locationObjectConstructor){
+  public LocationContentGenerator(BasicDBObject locationObjectConstructor){
 		 locationObject= locationObjectConstructor;
+	//	 mongo=mongoClient;
+	//	 locationCollection = mongo.getCollection("allLocations");
 	
 			
 		 locationMapQuestion.put("currency", "What is the name of the currency?");
@@ -87,6 +92,7 @@ public class LocationContentGenerator extends ContentGenerator {
            dicisionList.add("abstract");
 		dicisionList.add("map");
 		dicisionList.add("wordGraph");
+		
 		// take dicision randomly
 		if(dicisionList.size()==0)
 		   return null;
@@ -121,7 +127,7 @@ public class LocationContentGenerator extends ContentGenerator {
 						+ comparedOption.get(2) + "\' value=\'" + comparedOption.get(0) + "\'>" + comparedOption.get(0)
 						+ "<br><input type='radio' name=\'" + comparedOption.get(2) + "\' value=\'" + comparedOption.get(1) + "\'>"
 						+ comparedOption.get(1) 
-						+ "<br><input type='button'  value='check'></div>";
+						+ "<br><input type='button' class='btn btn-primary' value='check'></div>";
 		
 		return question;
 		}
@@ -154,7 +160,7 @@ public class LocationContentGenerator extends ContentGenerator {
 				+ "<br><input type='checkbox' name=\'" + correctOrderAns + "\' id=\'" + options.get(2)
 				+ "\'>" + options.get(2) + "<br><input type='checkbox' name=\'" + correctOrderAns
 				+ "\' id=\'" + options.get(3) + "\'>" + options.get(3)
-				+ "<br><input type='button'  value='check'></div>";
+				+ "<br><input type='button' class='btn btn-primary' id='check'  value='check'></div>";
 
 		return question;
 		}

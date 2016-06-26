@@ -32,7 +32,8 @@ public class MongoDBManager {
 	String dbname = "eumssi_secondscreen_db";
 //	String collection = "location";
 	DBCollection coll = null;
-	public MongoDBManager() {
+	static MongoDBManager mongo=new MongoDBManager();
+	private MongoDBManager() {
 		try {
 			lemma.init();
 			mongoClient = new MongoClient( host , 27017);
@@ -44,6 +45,10 @@ public class MongoDBManager {
 			System.err.println("Connection errors");
 			e.printStackTrace();
 		}
+	}
+	
+	public static MongoDBManager getInstance(){
+		return mongo;
 	}
 	
 	public void showCollectionNames() {

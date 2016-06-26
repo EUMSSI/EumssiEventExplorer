@@ -40,7 +40,7 @@ import org.json.simple.parser.ParseException;
 
 public class textsyncvideo1Action implements Action, ServletRequestAware{
 	
-	MongoDBManager mongo=new MongoDBManager(); 
+	MongoDBManager mongo=MongoDBManager.getInstance(); 
     DBCollection personCollection=mongo.getCollection("person");
     DBCollection locationCollection=mongo.getCollection("location");
     DBCollection otherCollection=mongo.getCollection("other");

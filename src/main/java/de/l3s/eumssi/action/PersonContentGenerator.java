@@ -1,9 +1,14 @@
 package de.l3s.eumssi.action;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 
@@ -11,15 +16,18 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
 
+import de.l3s.eumssi.dao.MongoDBManager;
+
 public class PersonContentGenerator extends ContentGenerator {
    //get the collection of all person
-	DBCollection personCollection = mongo.getCollection("person");
+	public MongoDBManager mongo=MongoDBManager.getInstance();
+    private DBCollection personCollection= mongo.getCollection("person");
 	Map<String, String> personMapQuestion = new HashMap<String, String>();
 	Map<String, String> personMapInfo = new HashMap<String, String>();
 	
 	ArrayList<String> questionableKeyList = new ArrayList<String>();
 	ArrayList<String> infoableKeyList = new ArrayList<String>();
-	
+ //   private  MongoDBManager mongo;	
 
 
 
@@ -27,11 +35,13 @@ public class PersonContentGenerator extends ContentGenerator {
 	  
 	PersonContentGenerator(BasicDBObject personObjectConstructor){
 		 personObject= personObjectConstructor;
+	//	 mongo=mongoClient;
+	//	 personCollection = mongo.getCollection("person");
 			
 		 //template for person question 
-	//	 personMapQuestion.put("birthPlace","Where was this person born?");
-	//	 personMapQuestion.put("almaMater","Which university or college did this person attend??");
-		 personMapQuestion.put("birthDate","When does this person born?");
+	//	 personMapQuestion.put("birthPlace","What is this person's birthplace?");
+	//	 personMapQuestion.put("almaMater","Which university or college did this person attend?");
+		 personMapQuestion.put("birthDate","In which year was this person born?");
 		 
 		//template for info of persons
 		 personMapInfo.put("birthPlace","City of birth: ");
@@ -87,7 +97,7 @@ public class PersonContentGenerator extends ContentGenerator {
 	}
 
 	@Override
-	public String questionGenerator() {
+	public String questionGenerator() throws ParseException {
 		String correctAns = null;
 		String correctOrderAns;
 		String type=(String) personObject.get("type");
@@ -98,7 +108,13 @@ public class PersonContentGenerator extends ContentGenerator {
 		String mainKeyForQuestion = questionableKeyList.get(questionSelectorNumber);
 		String mainKeyValue = (String) personObject.get(mainKeyForQuestion);
 		 options = GetPersonFalseAns(mainKeyForQuestion, mainKeyValue);
-
+         if(mainKeyForQuestion.equals("birthDate")){
+        	 DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+     	    DateFormat targetFormat = new SimpleDateFormat("d MMMM yyyy");
+     	   Date keyValueDateType=df.parse(mainKeyValue);
+     	  mainKeyValue=targetFormat.format(keyValueDateType);
+     	    
+         }
 		 question = "<div><img src=Images" + "//" + "quiz.png><strong>" + personObject.getString("name") + "</strong><br>"
 				+ personMapQuestion.get(mainKeyForQuestion) + "<br><input type='radio' name=\'"
 				+ mainKeyValue + "\' value=\'" + options.get(0) + "\'>" + options.get(0)
@@ -106,7 +122,7 @@ public class PersonContentGenerator extends ContentGenerator {
 				+ options.get(1) + "<br><input type='radio' name=\'" + mainKeyValue + "\' value=\'"
 				+ options.get(2) + "\'>" + options.get(2) + "<br><input type='radio' name=\'" + mainKeyValue
 				+ "\' value=\'" + options.get(3) + "\'>" + options.get(3)
-				+ "<br><input type='button'  value='check'></div>";
+				+ "<br><input type='button' class='btn btn-primary' id='check' value='check' ></div>";
 
 		
 		return question;
@@ -142,9 +158,12 @@ public class PersonContentGenerator extends ContentGenerator {
 		   +"EUMSSI.Manager.addWidget(new AjaxSolr.GenericGraphWidget({id: 'my-genericgraph-"+entityNameForId+"\',target: '#my-genericgraph-"+entityNameForId+"'})); EUMSSI.Manager.doRequest(\'"+entityName+"\'); </script></div>" ;
 		   return wordgraph;
 	   }
-	private ArrayList GetPersonFalseAns(String keyName, String keyValue) {
+	private ArrayList GetPersonFalseAns(String keyName, String keyValue) throws ParseException {
 		ArrayList<String> options = new ArrayList<String>();
 		if(keyName.equals("birthDate")){
+			
+	    DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+	    DateFormat targetFormat = new SimpleDateFormat("d MMMM yyyy");
 		String[] birthDatesSplit=keyValue.split("-");
 		int birthYear=Integer.valueOf(birthDatesSplit[0]);
 		int falseBirthYear1=birthYear+2;
@@ -153,9 +172,18 @@ public class PersonContentGenerator extends ContentGenerator {
 		String falseBirthDate1=falseBirthYear1+"-"+birthDatesSplit[1]+"-"+birthDatesSplit[2];
 		String falseBirthDate2=falseBirthYear2+"-"+birthDatesSplit[1]+"-"+birthDatesSplit[2];
 		String falseBirthDate3=falseBirthYear3+"-"+birthDatesSplit[1]+"-"+birthDatesSplit[2];
+		Date falseBirthDate1DateType=df.parse(falseBirthDate1);
+		falseBirthDate1=targetFormat.format(falseBirthDate1DateType);
+		Date falseBirthDate2DateType=df.parse(falseBirthDate2);
+		falseBirthDate2=targetFormat.format(falseBirthDate2DateType);
+		Date falseBirthDate3DateType=df.parse(falseBirthDate3);
+		falseBirthDate3=targetFormat.format(falseBirthDate3DateType);
+		Date keyValueDateType=df.parse(keyValue);
+		keyValue=targetFormat.format(keyValueDateType);
 		options.add(falseBirthDate1);
 		options.add(falseBirthDate2);
 		options.add(falseBirthDate3);
+		options.add(keyValue);
 		}
 		else{
 		BasicDBObject whereQuery = new BasicDBObject();
@@ -175,8 +203,9 @@ public class PersonContentGenerator extends ContentGenerator {
 
 			options.add(value[0]);
 		}
-		}
+		
 		options.add(keyValue);
+		}
 		Collections.shuffle(options);
 		
 		return options;
