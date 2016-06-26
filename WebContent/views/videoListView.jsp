@@ -85,12 +85,12 @@
         if( $(this).siblings("input[type='checkbox']:checked").map(function(i,v) { return v.id; }).get().join(',') == correctans ) {
         	$(this).after("<img src=Images/tik.png>");
         	correctAns++;
-            $('#correct').html("<img src=Images/tik.png>&nbsp;"+correctAns);
+            $('#correct').html("<img src=Images/tik.png>&nbsp;<strong>"+correctAns+"</strong>");
         }
         else{
         	$(this).after("<img src=Images/cross.png>");
         wrongAns++;
-        $('#wrong').html("<img src=Images/cross.png>&nbsp;"+wrongAns);
+        $('#wrong').html("<img src=Images/cross.png>&nbsp;<strong>"+wrongAns+"</strong>");
     	}
         $(this).attr("disabled",true);
         
@@ -110,13 +110,13 @@
     	$(this).val("Correct");
     	$(this).after("<img src=Images/tik.png>");
     	correctAns++;
-        $('#correct').html("<img src=Images/tik.png>&nbsp;"+correctAns);
+        $('#correct').html("<img src=Images/tik.png>&nbsp;<strong>"+correctAns+"</strong>");
     }
     	else{
     	$(this).val("False");
     	$(this).after("<img src=Images/cross.png>");
     	wrongAns++;
-    	$('#wrong').html("<img src=Images/cross.png>&nbsp;"+wrongAns);
+    	$('#wrong').html("<img src=Images/cross.png>&nbsp;<strong>"+wrongAns+"</strong>");
     }
     	$(this).attr("disabled",true);
     	
