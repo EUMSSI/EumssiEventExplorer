@@ -34,10 +34,7 @@
         <a href='<s:url action="video1"  includeContext="true">
 	     </s:url>'>1. Alternative Fracking - Environmental risk or economic opportunity? </a><br>
 
-<form action="logout">
-  <br>
-  <input type="submit" value="logout">
-  </form>
+
 <script>
 var videoUrl = document.getElementById("videoUrl").value;
 

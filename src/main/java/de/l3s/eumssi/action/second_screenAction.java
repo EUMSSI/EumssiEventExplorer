@@ -38,18 +38,18 @@ public class second_screenAction implements ServletRequestAware{
 		    session = request.getSession(true);
 		   session.setAttribute("userId", userId);
 		  System.out.println(session.getAttribute("userId"));
-		  videoListCreator();
+		//  videoListCreator();
 			return "success";
 			}
 		}
 		else{
-			videoListCreator();
+		//	videoListCreator();
 		    return "success";	
 		}
 		
 		 
 	}
-
+/*
 	private void videoListCreator(){
 		List fileList =new ArrayList();
       
@@ -57,11 +57,11 @@ public class second_screenAction implements ServletRequestAware{
 			String path = context.getRealPath("/");
 		String sCurrentLine;
 
-		File[] files = new File(path + File.separator + "video_state").listFiles((dir, name) -> !name.equals(".DS_Store"));
+//		File[] files = new File(path + File.separator + "video_state").listFiles((dir, name) -> !name.equals(".DS_Store"));
 		
 		// If this pathname does not denote a directory, then listFiles()
 		// returns null.
-	 ;
+//	 ;
 		
 		for (File file : files) {
 			if (file.isFile()) {
@@ -81,7 +81,7 @@ public class second_screenAction implements ServletRequestAware{
 		}
 		System.out.println("videomap"+videoMap);
 	} 
-	
+*/	
 	@Override
 	public void setServletRequest(HttpServletRequest request) {
 		this.request = request;
