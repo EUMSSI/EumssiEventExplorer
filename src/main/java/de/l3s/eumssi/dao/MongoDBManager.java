@@ -24,7 +24,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 
 public class MongoDBManager {
-	MongoClient mongoClient = null;
+	public MongoClient mongoClient = null;
 	DB db = null;
 	String host = "127.0.0.1";
 //	String host = "pharos.l3s.uni-hannover.de";
@@ -32,17 +32,23 @@ public class MongoDBManager {
 	String dbname = "eumssi_secondscreen_db";
 //	String collection = "location";
 	DBCollection coll = null;
-	public MongoDBManager() {
+	static MongoDBManager mongo=new MongoDBManager();
+	private MongoDBManager() {
 		try {
 			lemma.init();
 			mongoClient = new MongoClient( host , 27017);
+			
 			db = mongoClient.getDB(dbname);
-			System.out.println("Connection to mongodb at "  + host  + " is successful.");
+		//	System.out.println("Connection to mongodb at "  + host  + " is successful.");
 			//coll = getCollection();
 		} catch (UnknownHostException e) {
 			System.err.println("Connection errors");
 			e.printStackTrace();
 		}
+	}
+	
+	public static MongoDBManager getInstance(){
+		return mongo;
 	}
 	
 	public void showCollectionNames() {

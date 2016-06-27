@@ -47,6 +47,7 @@
 <body OnLoad="getCurrentDate();">
 
 <div id = "container">
+
 	<!-- start #header -->
 	<s:include value="/views/header.jsp"></s:include>
 	<!-- end #header -->

@@ -90,6 +90,7 @@
                         $( function () {
                         	 var fileName = document.getElementById("jsonFileName").value;
                         	 var videoUrl = document.getElementById("videoUrl").value;
+                        	 alert()
                             $( "#defaultPlayer" ).mediaPlayer( {
                                 autoplay : true,
                                 src : videoUrl,

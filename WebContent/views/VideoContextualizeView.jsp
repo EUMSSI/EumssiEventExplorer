@@ -169,7 +169,7 @@
 										
 										<br/>
 										<s:iterator var="sources" value="#event.references">
-										<a href='<s:url action="textsync" includeContext="true"><s:param name="myparam" value="%{#entityname}"/>
+										<a target='_blank' href='<s:url action="video" includeContext="true"><s:param name="myparam" value="%{#entityname}"/>
 										 
 											
 												

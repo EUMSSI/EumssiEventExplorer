@@ -12,6 +12,18 @@
 			<artifactId>struts2-core</artifactId>
 			<version>2.3.15.1</version>
 		</dependency>
+		<dependency>
+	<groupId>org.apache.tomcat</groupId>
+	<artifactId>tomcat-websocket-api</artifactId>
+	<version>9.0.0.M4</version>
+</dependency>
+		
+<dependency>
+    <groupId>org.apache.tomcat</groupId>
+    <artifactId>tomcat-catalina</artifactId>
+    <version>7.0.16</version>
+</dependency>
+		
 		
 		<dependency>
           <groupId>org.apache.struts</groupId>

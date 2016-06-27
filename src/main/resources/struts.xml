@@ -8,13 +8,46 @@
     <constant name="struts.action.excludePattern" value="/webresources/.*?"/>
 	<package name="root" namespace="/" extends="struts-default">
 		<default-action-ref name="secondscreen"></default-action-ref>
-		
+		<!-- 
         <action name="textsync" 
 			class="de.l3s.eumssi.action.textsyncAction">
               <result name="test">/views/textsyncview.jsp</result>
+          </action>
           
+           -->
+           
+         <action name="update" class="de.l3s.eumssi.action.Second_screen_updateAction">
+        </action>   
+        <!-- get the request from the second screen and fetch the content from the file and send it to second screen. -->
+         <action name="content" class="de.l3s.eumssi.action.Second_screen_content_managerAction">
         </action>
         
+         <!-- when user click the logout button from video page, logged user out. -->
+          <action name="logout" class="de.l3s.eumssi.action.LogoutAction">
+          <!--    <result name="login">/views/index.jsp</result> -->
+         </action>
+         
+        <!-- show the content and send request for new content of second screen -->
+        <action name="second_screen"  class="de.l3s.eumssi.action.second_screenAction">
+              <result name="login">/views/second_screen_loginView.jsp</result>
+              <result name="success">/views/videoListView.jsp</result>
+         </action>  
+        
+        <!-- check session, login, if logged in play video and send video entity. -->
+        <action name="video" class="de.l3s.eumssi.action.VideoAction">
+              <result name="success">/views/video.jsp</result>
+              <result name="login">/views/login.jsp</result>
+          </action>
+         
+         <!-- get the entity, make content and save in respective file -->
+          <action name="second_screen_content" class="de.l3s.eumssi.action.Second_screen_contentAction">
+          </action>
+      
+       <action name="video1">
+              <result>/views/video1.jsp</result>
+          
+        </action>
+      <!--   
          <action name="video1" 
 			class="de.l3s.eumssi.action.textsyncvideo1Action">
               <result name="test">/views/textsyncvideo1View.jsp</result>
@@ -27,13 +60,13 @@
           
         </action>
            
-        
+         -->
          <action name="secondscreen" 
 			class="de.l3s.eumssi.action.SecondScreenAction">
 			<result name="success">/views/SecondScreen.jsp</result>
         </action>
         
-        
+    <!--   
         <action name="countryquestion" 
 			class="de.l3s.eumssi.action.countryQuestionAction">
             <result name="success">/views/countryQuestionView.jsp</result>
@@ -49,7 +82,7 @@
             <result name="success">/views/LocationInfoView.jsp</result>
         </action>
         
-        
+         --> 
 		<action name="EventSearchByKeywordInDBOnlyAction"
 			class="de.l3s.eumssi.action.EventSearchByKeywordInDBOnlyAction">
 			<result name="VideoContextualizeView">/views/VideoContextualizeView.jsp</result>
