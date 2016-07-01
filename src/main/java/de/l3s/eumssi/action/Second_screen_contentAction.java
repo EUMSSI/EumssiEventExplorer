@@ -46,7 +46,7 @@ public Second_screen_contentAction(MongoDBManager mongoClient){
 	 locationCollection = mongo.getCollection("allLocations");
 }
 */
-	public String contentGenerator(String entityName ) throws Exception {
+	public String contentGenerator(String entityName, String infoOrQues ) throws Exception {
 		System.out.println(entityName);
 		
     /*
@@ -96,7 +96,7 @@ public Second_screen_contentAction(MongoDBManager mongoClient){
 				String type = entity.getString("type");
 				if(type.equals("city") || type.equals("country") || type.equals("location")){
 					LocationContentGenerator locationObject=new LocationContentGenerator(entity);
-					String decision=locationObject.makeDicision();
+					String decision=locationObject.makeDicision(infoOrQues);
 					if(decision!=null)
 					if(decision.equals("question")){
 						String question=locationObject.questionGenerator();
@@ -138,7 +138,7 @@ public Second_screen_contentAction(MongoDBManager mongoClient){
 				
 				else if(type.equals("person")){
 					PersonContentGenerator personObject=new PersonContentGenerator(entity);
-					String decision=personObject.makeDicision();
+					String decision=personObject.makeDicision(infoOrQues);
 					if(decision!=null)
 					if(decision.equals("question")){
 						String question=personObject.questionGenerator();

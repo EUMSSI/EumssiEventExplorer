@@ -13,7 +13,7 @@ public abstract class ContentGenerator {
 	
  public	MongoDBManager mongo = MongoDBManager.getInstance();
     
-   public abstract String makeDicision(); 
+   public abstract String makeDicision(String infoOrQues); 
  
    public abstract String questionGenerator() throws ParseException;
    

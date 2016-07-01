@@ -29,6 +29,9 @@ Choose from the following. It will be reflected to the second screen with other 
 <div class="radio">
   <label><input type="radio" value="question" name="option">Question</label>
 </div>
+<div class="radio">
+  <label><input type="radio" value="both" name="option" checked="checked">Both</label>
+</div>
 <video width="1000" height="600" controls>
   <source id="videoSrc" src=<s:property value="videoUrl" /> type="video/mp4">
   <track id="videoTrack" src="scripts/text.vtt" kind="subtitles" srclang="en" label="English" default/>
@@ -63,9 +66,9 @@ trackElement.addEventListener("load", function() {
 	
 	  $.post("chat1",
 		        {
-		          entityName: cue.text
-                 // videoName: subtitleName,	
-                //  headLine:headLine
+		          entityName: cue.text,
+		          infoOrQues:$('input[name="option"]:checked').val()
+                
 		        })
 	}
  
