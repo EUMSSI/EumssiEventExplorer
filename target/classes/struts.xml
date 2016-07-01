@@ -15,7 +15,8 @@
           </action>
           
            -->
-           
+        
+          
          <action name="update" class="de.l3s.eumssi.action.Second_screen_updateAction">
         </action>   
         <!-- get the request from the second screen and fetch the content from the file and send it to second screen. -->
@@ -61,6 +62,7 @@
         </action>
            
          -->
+            
          <action name="secondscreen" 
 			class="de.l3s.eumssi.action.SecondScreenAction">
 			<result name="success">/views/SecondScreen.jsp</result>
