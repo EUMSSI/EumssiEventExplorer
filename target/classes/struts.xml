@@ -48,8 +48,9 @@
               <result>/views/video1.jsp</result>
        </action>
        
-       <action name="annoteted_videos">
-              <result>/views/Annoteted_Videos.jsp</result>
+       <action name="annoteted_videos" class="de.l3s.eumssi.action.annoteted_videos_login">
+              <result name="login">/views/annoteted_videos_login.jsp</result>
+              <result name="success">/views/Annoteted_Videos.jsp</result>
        </action>
         <action name="timed_annoteted" class="de.l3s.eumssi.action.annoteted_video">
               <result name="success">/views/timed_annoteted.jsp</result>
