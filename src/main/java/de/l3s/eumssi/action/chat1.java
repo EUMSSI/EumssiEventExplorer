@@ -4,15 +4,22 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.catalina.comet.CometEvent;
 import org.apache.catalina.comet.CometProcessor;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Multimap;
+
 import de.l3s.eumssi.dao.MongoDBManager;
 
 import javax.servlet.ServletException;
+import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -26,8 +33,7 @@ import javax.servlet.http.HttpServletResponse;
 public class chat1
     extends HttpServlet implements CometProcessor {
 
-    protected Map<String,HttpServletResponse> connections = 
-        new HashMap<String, HttpServletResponse>();
+    protected ListMultimap<String,HttpServletResponse> connections =  ArrayListMultimap.create();
     protected MessageSender messageSender = null;
  //   public MongoDBManager mongo; 
     
@@ -97,7 +103,7 @@ public class chat1
         	Second_screen_contentAction second_screen_content=new Second_screen_contentAction();
         	 String content;
 			try {
-				content = second_screen_content.contentGenerator(request.getParameter("entityName"));
+				content = second_screen_content.contentGenerator(request.getParameter("entityName"),request.getParameter("infoOrQues"));
 				 System.out.println("content"+content); 
 			        messageSender.send((String) request.getSession().getAttribute("userId"),content);
 			} catch (Exception e) {
@@ -113,7 +119,7 @@ public class chat1
         throws IOException, ServletException {
         log("End for session: " + request.getSession(true).getId());
         synchronized(connections) {
-            connections.remove(response);
+            connections.remove((String) request.getSession().getAttribute("userId"),response);
         }
   
     //    System.out.println("in the end ..");
@@ -127,7 +133,7 @@ public class chat1
         log("Error for session: " + request.getSession(true).getId());
   //      System.out.println("in the error ..");
         synchronized(connections) {
-            connections.remove(response);
+            connections.remove((String) request.getSession().getAttribute("userId"),response);
         }
         event.close();
     }
@@ -199,7 +205,7 @@ public class chat1
             // Loop until we receive a shutdown command
             while (running) {
                 // Loop if endpoint is paused
-
+         
                 if (messages.size() == 0) {
                     try {
                         synchronized (messages) {
@@ -209,6 +215,7 @@ public class chat1
                         // Ignore
                     }
                 }
+                
 
         //        synchronized (connections) {
                  //   String[] pendingMessages = null;
@@ -221,30 +228,28 @@ public class chat1
                     	  try {
                         	System.out.println("connection "+connections.get(userId)+" sending " + "connection name"+ connections.get(userId));
                           if(connections.get(userId)!=null){
-                        	  
-                        	  HttpServletResponse rsp=connections.get(userId);
-                        	  int status=rsp.getStatus();
-                        	PrintWriter writer = connections.get(userId).getWriter();
-                        	/*  
-                        	if(writer.checkError()){
-                        		  System.out.println("writer got error");
-                        		  continue;
-                        	  }
-                        	  */
-                            String message=messages.get(userId);   
-                        	try{
-                            writer.println(message);
-                            messages.remove(userId);
-                            System.out.println(writer);
-                            writer.flush();
-                            writer.close();
-                        	}
-                        	catch(NullPointerException e){
-                        		System.out.println("connections now"+connections);
-                        		connections.remove(userId);
-                        		System.out.println("connections after remove"+connections);
-                        		System.out.println(e.getMessage());
-                        	}
+                        	  List<HttpServletResponse> rsps=connections.get(userId);
+                        	for(int i=0; i<rsps.size();i++)  {
+                        		PrintWriter writer =rsps.get(i).getWriter();
+                                String message=messages.get(userId);   
+                           	try{
+                               writer.println(message);
+                              
+                               System.out.println(writer);
+                               writer.flush();
+                               writer.close();
+                           	}
+                           
+                           	catch(NullPointerException e){
+                           		System.out.println("connections now"+connections);
+                           		connections.remove(userId,rsps.get(i));
+                           		System.out.println("connections after remove"+connections);
+                           		System.out.println(e.getMessage());
+                           	}
+                            
+                        	} 
+                        	messages.remove(userId);
+                        	
                     	  }
                           else{
                         	  messages.remove(userId);

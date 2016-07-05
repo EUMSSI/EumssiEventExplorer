@@ -15,7 +15,8 @@
           </action>
           
            -->
-           
+        
+          
          <action name="update" class="de.l3s.eumssi.action.Second_screen_updateAction">
         </action>   
         <!-- get the request from the second screen and fetch the content from the file and send it to second screen. -->
@@ -45,8 +46,16 @@
       
        <action name="video1">
               <result>/views/video1.jsp</result>
-          
-        </action>
+       </action>
+       
+       <action name="annoteted_videos">
+              <result>/views/Annoteted_Videos.jsp</result>
+       </action>
+        <action name="timed_annoteted" class="de.l3s.eumssi.action.annoteted_video">
+              <result name="success">/views/timed_annoteted.jsp</result>
+       </action>
+       
+       
       <!--   
          <action name="video1" 
 			class="de.l3s.eumssi.action.textsyncvideo1Action">
@@ -61,6 +70,7 @@
         </action>
            
          -->
+            
          <action name="secondscreen" 
 			class="de.l3s.eumssi.action.SecondScreenAction">
 			<result name="success">/views/SecondScreen.jsp</result>

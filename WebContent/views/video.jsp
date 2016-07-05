@@ -17,13 +17,25 @@
       <li><a><h3 style="font-family:serif;">First Screen</h3></a></li>
       <li><a><button type="button" class='btn btn-primary'  id="close">Close</button></a></li>
       <li><a><form action="logout"> <input type="submit" class='btn btn-primary'  value="logout"></form></a><li>
-     </ul>
+     
+    </ul>
   </div>
 </nav>
+<div class="container-fluid">
+Choose from the following. It will be reflected to the second screen with other contents. If you want both, do not do anything. 
+<div class="radio">
+  <label><input type="radio" value="info" name="option">Info</label>
+</div>
+<div class="radio">
+  <label><input type="radio" value="question" name="option">Question</label>
+</div>
+<div class="radio">
+  <label><input type="radio" value="both" name="option" checked="checked">Both</label>
+</div>
+<img src="Images/qr_code.jpg"/>
 <video width="1000" height="600" controls>
-  <source id="videoSrc" src=scripts/sample.mp4 type="video/mp4">
+  <source id="videoSrc" src=<s:property value="videoUrl" /> type="video/mp4">
   <track id="videoTrack" src="scripts/text.vtt" kind="subtitles" srclang="en" label="English" default/>
-  
 </video>
 <s:hidden  name="videoUrl" id="videoUrl" />
 <s:hidden  name="subtitleName" id="subtitleName" />
@@ -31,14 +43,15 @@
 <div id="asdf"></div><br>
 <div>The timing of the information boxes is currently fixed. <br>
         Our goal is to show them at the exact time that a person appears or a location is mentioned. This is shown in:</div>
-        <a href='<s:url action="video1"  includeContext="true">
-	     </s:url>'>1. Alternative Fracking - Environmental risk or economic opportunity? </a><br>
+        <a href='<s:url action="annoteted_videos"  includeContext="true">
+	     </s:url>'>Annoteted Videos</a><br>
 
-
+</div>
 <script>
 var videoUrl = document.getElementById("videoUrl").value;
 
-$("#videoSrc").attr("src",videoUrl);
+//$("#videoSrc").attr("src","http://tv-download.dw.com/dwtv_video/flv/ke/ke20160610_dianekruger_sd_avc.mp4");
+
 
 var subtitleName = document.getElementById("subtitleName").value;
 var headLine = document.getElementById("headLine").value;
@@ -54,9 +67,9 @@ trackElement.addEventListener("load", function() {
 	
 	  $.post("chat1",
 		        {
-		          entityName: cue.text
-                 // videoName: subtitleName,	
-                //  headLine:headLine
+		          entityName: cue.text,
+		          infoOrQues:$('input[name="option"]:checked').val()
+                
 		        })
 	}
  
@@ -69,5 +82,6 @@ $("#close").click(function(){
 });
 
 </script>
+
 </body>
 </html>

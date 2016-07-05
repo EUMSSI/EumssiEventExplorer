@@ -57,7 +57,7 @@ public class LocationContentGenerator extends ContentGenerator {
 	
 
 	@Override
-	public String makeDicision() {
+	public String makeDicision(String infoOrQues) {
 		
 		String dicision;
 		boolean hasAbstract=false;
@@ -67,17 +67,21 @@ public class LocationContentGenerator extends ContentGenerator {
 		for (Iterator iteratorForKeyIntersection = locationObject.keySet()
 				.iterator(); iteratorForKeyIntersection.hasNext();) {
 			String keyForIntersection = (String) iteratorForKeyIntersection.next();
+			if(infoOrQues.equals("question") || infoOrQues.equals("both")){
 			if (locationMapQuestion.containsKey(keyForIntersection)) {
 				questionableKeyList.add(keyForIntersection);
 			}
-			
+			}
+			if(infoOrQues.equals("info") || infoOrQues.equals("both")){
 			if (locationMapInfo.containsKey(keyForIntersection)) {
 				infoableKeyList.add(keyForIntersection);
+			}
 			}
 			if(keyForIntersection.equals("abstract"))
 				hasAbstract=true;
 			
 		}
+	
 		ArrayList<String> dicisionList=new ArrayList<String>();
 		//options for the dicision
 		

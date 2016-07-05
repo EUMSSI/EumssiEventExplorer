@@ -53,24 +53,28 @@ public class PersonContentGenerator extends ContentGenerator {
 	
 	
 	@Override
-	public String makeDicision() {
+	public String makeDicision(String infoOrQues) {
 		String dicision;
 		boolean hasAbstract=false;
 
 		for (Iterator iteratorForKeyIntersection = personObject.keySet()
 				.iterator(); iteratorForKeyIntersection.hasNext();) {
 			String keyForIntersection = (String) iteratorForKeyIntersection.next();
-			if (personMapQuestion.containsKey(keyForIntersection)) {
+			if(infoOrQues.equals("question") || infoOrQues.equals("both")){
+			 if (personMapQuestion.containsKey(keyForIntersection)) {
 				questionableKeyList.add(keyForIntersection);
 			}
-			
+			}
+			if(infoOrQues.equals("info") || infoOrQues.equals("both")){
 			if (personMapInfo.containsKey(keyForIntersection)) {
 				infoableKeyList.add(keyForIntersection);
+			}
 			}
 			if(keyForIntersection.equals("abstract"))
 				hasAbstract=true;
 			
 		}
+		
 		ArrayList<String> dicisionList=new ArrayList<String>();
 		//options for the dicision
 		
@@ -78,13 +82,13 @@ public class PersonContentGenerator extends ContentGenerator {
 		if(questionableKeyList.size()>0)
 			dicisionList.add("question");
 		
-	/*
+	
 		if(infoableKeyList.size()>0)
 			dicisionList.add("info");
 		if(hasAbstract==true)
            dicisionList.add("abstract");
 		dicisionList.add("wordGraph");
-		*/
+		
 		// take dicision randomly
 		if(dicisionList.size()==0)
 		   return null;
