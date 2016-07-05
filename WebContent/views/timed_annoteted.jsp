@@ -1,10 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-    <%@ taglib uri="/struts-tags" prefix="s"%>
+     <%@ taglib uri="/struts-tags" prefix="s"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
-<meta name="viewport" content="width=device-width, initial-scale=1">
 <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
 <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
@@ -21,7 +22,6 @@
     </ul>
   </div>
 </nav>
-<div class="container-fluid">
 Choose from the following. It will be reflected to the second screen with other contents. If you want both, do not do anything. 
 <div class="radio">
   <label><input type="radio" value="info" name="option">Info</label>
@@ -33,36 +33,20 @@ Choose from the following. It will be reflected to the second screen with other 
   <label><input type="radio" value="both" name="option" checked="checked">Both</label>
 </div>
 <img src="Images/qr_code.jpg"/>
-<video width="1000" height="600" controls>
-  <source id="videoSrc" src=<s:property value="videoUrl" /> type="video/mp4">
-  <track id="videoTrack" src="scripts/text.vtt" kind="subtitles" srclang="en" label="English" default/>
+<video width="1100" height="600" controls>
+  <source id="videoSrc" src=<s:property value="videoUrl"/> type="video/mp4">
+  <track id="videoTrack" src="vtt_files/<s:property value="subTitleName"/>" kind="subtitles" srclang="en" label="English" default/>
+  
 </video>
-<s:hidden  name="videoUrl" id="videoUrl" />
-<s:hidden  name="subtitleName" id="subtitleName" />
-<s:hidden  name="headLine" id="headLine" />
-<div id="asdf"></div><br>
-<div>The timing of the information boxes is currently fixed. <br>
-        Our goal is to show them at the exact time that a person appears or a location is mentioned. This is shown in:</div>
-        <a href='<s:url action="annoteted_videos"  includeContext="true">
-	     </s:url>'>Annoteted Videos</a><br>
-
-</div>
+</body>
 <script>
-var videoUrl = document.getElementById("videoUrl").value;
-
-//$("#videoSrc").attr("src","http://tv-download.dw.com/dwtv_video/flv/ke/ke20160610_dianekruger_sd_avc.mp4");
-
-
-var subtitleName = document.getElementById("subtitleName").value;
-var headLine = document.getElementById("headLine").value;
-$("#videoTrack").attr("src","vtt_files/"+subtitleName+".vtt");
 var trackElement = document.querySelector("track");
 trackElement.addEventListener("load", function() {
  var textTrack = this.track; 
  textTrack.mode ="hidden";
  textTrack.oncuechange = function (){
 	  var cue = this.activeCues[0];
-	  document.getElementById("asdf").innerHTML=cue.text;
+	 // document.getElementById("asdf").innerHTML=cue.text;
 	
 	
 	  $.post("chat1",
@@ -76,12 +60,5 @@ trackElement.addEventListener("load", function() {
 
 }
 )
-$("#close").click(function(){
-	 var newWindow = window.open('', '_self', '');
-	 newWindow.close();
-});
-
 </script>
-
-</body>
 </html>

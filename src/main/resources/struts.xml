@@ -46,8 +46,16 @@
       
        <action name="video1">
               <result>/views/video1.jsp</result>
-          
-        </action>
+       </action>
+       
+       <action name="annoteted_videos">
+              <result>/views/Annoteted_Videos.jsp</result>
+       </action>
+        <action name="timed_annoteted" class="de.l3s.eumssi.action.annoteted_video">
+              <result name="success">/views/timed_annoteted.jsp</result>
+       </action>
+       
+       
       <!--   
          <action name="video1" 
 			class="de.l3s.eumssi.action.textsyncvideo1Action">
