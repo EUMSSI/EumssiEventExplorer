@@ -28,7 +28,7 @@ Choose from the following. It will be reflected to the second screen with other 
 </br>
 
   <label class="radio-inline"><input type="radio" value="both" name="option" checked="checked">Question and Info</label>
-   <label class="radio-inline"><input type="radio" value="question" name="option">Only Question</label>
+ <!--    <label class="radio-inline"><input type="radio" value="question" name="option">Only Question</label> -->
   <label class="radio-inline"><input type="radio" value="info" name="option">Only Information</label>
 
 <video width="1000" height="500" controls style="display: block;margin: auto;">

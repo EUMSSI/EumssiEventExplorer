@@ -95,7 +95,7 @@ public class LocationContentGenerator extends ContentGenerator {
 		if(hasAbstract==true)
            dicisionList.add("abstract");
 		dicisionList.add("map");
-		dicisionList.add("wordGraph");
+	//	dicisionList.add("wordGraph");
 		
 		// take dicision randomly
 		if(dicisionList.size()==0)

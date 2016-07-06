@@ -87,7 +87,7 @@ public class PersonContentGenerator extends ContentGenerator {
 			dicisionList.add("info");
 		if(hasAbstract==true)
            dicisionList.add("abstract");
-		dicisionList.add("wordGraph");
+	//	dicisionList.add("wordGraph");
 		
 		// take dicision randomly
 		if(dicisionList.size()==0)
