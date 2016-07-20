@@ -16,27 +16,22 @@
       <li><a><img src="Images/eumssi_logo.png"></a></li>
       <li><a><h3 style="font-family:serif;">First Screen</h3></a></li>
       <li><a><button type="button" class='btn btn-primary'  id="close">Close</button></a></li>
-      <li><a><form action="logout"> <input type="submit" class='btn btn-primary'  value="logout"></form></a><li>
+      <li><a><s:form method="get" action="logout"> <input type="submit" class='btn btn-primary'  value="logout"><s:hidden name="from" value="video"/></s:form></a><li>
      
     </ul>
   </div>
 </nav>
 <div class="container-fluid">
 Choose from the following. It will be reflected to the second screen with other contents. If you want both, do not do anything. 
-<div class="radio">
-  <label><input type="radio" value="info" name="option">Info</label>
-</div>
-<div class="radio">
-  <label><input type="radio" value="question" name="option">Question</label>
-</div>
-<div class="radio">
-  <label><input type="radio" value="both" name="option" checked="checked">Both</label>
-</div>
-<img src="Images/qr_code.jpg"/>
-<video width="1000" height="600" controls>
-  <source id="videoSrc" src=<s:property value="videoUrl" /> type="video/mp4">
-  <track id="videoTrack" src="scripts/text.vtt" kind="subtitles" srclang="en" label="English" default/>
+ <label class="radio-inline"><input type="radio" value="both" name="option" checked="checked">Question and Info</label>
+ <!--    <label class="radio-inline"><input type="radio" value="question" name="option">Only Question</label> -->
+  <label class="radio-inline"><input type="radio" value="info" name="option">Only Information</label>
+
+<video width="1000" height="500" controls style="display: block;margin: auto;">
+  <source id="videoSrc" src=<s:property value="videoUrl"/> type="video/mp4">
+  <track id="videoTrack" src="vtt_files/<s:property value="subTitleName"/>" kind="subtitles" srclang="en" label="English" default/>
 </video>
+<img src="Images/qr_code.jpg" class="img-rounded"  width="100" height="100" style="display: block;margin: auto;"/>
 <s:hidden  name="videoUrl" id="videoUrl" />
 <s:hidden  name="subtitleName" id="subtitleName" />
 <s:hidden  name="headLine" id="headLine" />

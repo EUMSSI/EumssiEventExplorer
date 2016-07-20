@@ -17,7 +17,7 @@
       <li><a><img src="Images/eumssi_logo.png"></a></li>
       <li><a><h3 style="font-family:serif;">Annoted Videos</h3></a></li>
       <li><a><button type="button" class='btn btn-primary'  id="close">Close</button></a></li>
-      <li><a><form action="logout"> <input type="submit" class='btn btn-primary'  value="logout"></form></a><li>
+      <li><a><s:form method="get" action="logout"> <input type="submit" class='btn btn-primary'  value="logout"><s:hidden name="from" value="timed_annoteted"/></s:form></a><li>
      </ul>
   </div>
 </nav>

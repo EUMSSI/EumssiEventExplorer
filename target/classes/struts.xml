@@ -25,7 +25,8 @@
         
          <!-- when user click the logout button from video page, logged user out. -->
           <action name="logout" class="de.l3s.eumssi.action.LogoutAction">
-          <!--    <result name="login">/views/index.jsp</result> -->
+              <result name="login">/views/index.jsp</result>
+              <result name="annoteted_video">/views/annoteted_videos_login.jsp</result>
          </action>
          
         <!-- show the content and send request for new content of second screen -->
