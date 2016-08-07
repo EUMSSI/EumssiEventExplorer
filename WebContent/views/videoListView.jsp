@@ -28,7 +28,58 @@
      <script src="scripts/js/Manager.jquery.js"></script>
     <script src="scripts/js/widgets/GenericGraphWidget.js"></script>
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+        <!-- Link Swiper's CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/3.3.1/css/swiper.min.css">
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+        <!-- Swiper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/3.3.1/js/swiper.min.js"></script>
+    
+     <style>
+    html, body {
+        position: relative;
+        height: 100%;
+    }
+    body {
+        background: #eee;
+        font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+        font-size: 14px;
+        color:#000;
+        margin: 0;
+        padding: 0;
+    }
+    
+    .swiper-container {
+        width: 100%;
+        height: 100%;
+    }
+    .swiper-slide{
+    margin-left:0.5cm;
+    }
+   /* 
+    .swiper-slide {
+        text-align: center;
+        font-size: 18px;
+        background: #fff;
+        
+        /* Center slide text vertically */
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: -webkit-flex;
+        display: flex;
+   
+        -webkit-box-pack: center;
+        -ms-flex-pack: center;
+        -webkit-justify-content: center;
+        justify-content: center;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        -webkit-align-items: center;
+        align-items: center;
+        */
+    }
+    
+    </style>
+
 </head>
 <body>
 <nav class="navbar navbar-default">
@@ -49,12 +100,28 @@
   </div>
 </nav>
   <div class="container-fluid">
-<div id="second_screen_content"></div>
+<div id="second_screen_content">
+
+
 </div>
+</div>
+
+  <div class="swiper-container">
+        <div class="swiper-wrapper"></div>
+        <!-- Add Pagination -->
+        <div class="swiper-pagination"></div>
+   
+  </div>
+ 
 <div id="interval"></div>
 </body>
 <script>
 //function interval() {
+	var swiper = new Swiper('.swiper-container', {
+        pagination: '.swiper-pagination',
+        paginationClickable: true,
+        direction: 'vertical'
+    });
 	 $.post("chat1",
 			    {
 			        requestType: "second_screen"
@@ -63,8 +130,14 @@
 			    function(data, status){
 			    	if(data!=""){
 			    		
-			    		$("#second_screen_content").html(data);
-			    		
+			    		//$("#second_screen_content").html(data);
+			    		if(swiper.isEnd){
+			        		swiper.appendSlide("<div class='swiper-slide'><img class='fade_star' src='Images/fade-star.png'style='width:16px;height:16px;'><br>"+data+"</div>")
+			        		swiper.slideNext()
+			            }
+			        	else{
+			        		swiper.appendSlide("<div class='swiper-slide'><img class='fade_star' src='Images/fade-star.png'style='width:16px;height:16px;'><br>"+data+"</div>")
+			        	}
 			    		
 			    		 $.get(this);	
 			    		}
@@ -76,6 +149,13 @@
 	 
 //}
 //interval();
+
+$(document).on("click",".fade_star", function () {
+	$(this).attr("src","Images/light-star.png");
+});
+
+
+
  	var correctAns=0;
  	var wrongAns=0;
     $(document.body).on("click","#check",function() {
@@ -104,8 +184,8 @@
     
     	if (selected.length > 0) {
     	    selectedVal = selected.val();
-    	}
-
+    	
+        
     	if(selected.val()==selected.attr('name')){
     	$(this).val("Correct");
     	$(this).after("<img src=Images/tik.png>");
@@ -119,7 +199,7 @@
     	$('#wrong').html("<img src=Images/cross.png>&nbsp;<strong>"+wrongAns+"</strong>");
     }
     	$(this).attr("disabled",true);
-    	
+    	}	
     	}
     	});
     

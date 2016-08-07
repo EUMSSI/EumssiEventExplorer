@@ -97,6 +97,7 @@ public Second_screen_contentAction(MongoDBManager mongoClient){
 				if(type.equals("city") || type.equals("country") || type.equals("location")){
 					LocationContentGenerator locationObject=new LocationContentGenerator(entity);
 					String decision=locationObject.makeDicision(infoOrQues);
+					System.out.println("Decision: "+decision);
 					if(decision!=null)
 					if(decision.equals("question")){
 						String question=locationObject.questionGenerator();

@@ -37,11 +37,15 @@ public class PersonContentGenerator extends ContentGenerator {
 		 personObject= personObjectConstructor;
 	//	 mongo=mongoClient;
 	//	 personCollection = mongo.getCollection("person");
-			
+		/*	
 		 //template for person question 
 		 personMapQuestion.put("birthPlace","What is this person's birthplace?");
 		 personMapQuestion.put("almaMater","Which university or college did this person attend?");
 		 personMapQuestion.put("birthDate","In which year was this person born?");
+		 */
+		 personMapQuestion.put("deathDate","In which year was this person died?");
+		 personMapQuestion.put("deathPlace","Where this person died?");
+		 
 		 
 		//template for info of persons
 		 personMapInfo.put("birthPlace","City of birth: ");
@@ -112,7 +116,7 @@ public class PersonContentGenerator extends ContentGenerator {
 		String mainKeyForQuestion = questionableKeyList.get(questionSelectorNumber);
 		String mainKeyValue = (String) personObject.get(mainKeyForQuestion);
 		 options = GetPersonFalseAns(mainKeyForQuestion, mainKeyValue);
-         if(mainKeyForQuestion.equals("birthDate")){
+         if(mainKeyForQuestion.equals("birthDate") || mainKeyForQuestion.equals("deathDate")){
         	 DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
      	    DateFormat targetFormat = new SimpleDateFormat("d MMMM yyyy");
      	   Date keyValueDateType=df.parse(mainKeyValue);
@@ -164,7 +168,7 @@ public class PersonContentGenerator extends ContentGenerator {
 	   }
 	private ArrayList GetPersonFalseAns(String keyName, String keyValue) throws ParseException {
 		ArrayList<String> options = new ArrayList<String>();
-		if(keyName.equals("birthDate")){
+		if(keyName.equals("birthDate") || keyName.equals("deathDate")){
 			
 	    DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 	    DateFormat targetFormat = new SimpleDateFormat("d MMMM yyyy");

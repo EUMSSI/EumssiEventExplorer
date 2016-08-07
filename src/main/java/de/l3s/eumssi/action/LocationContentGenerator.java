@@ -1,5 +1,7 @@
 package de.l3s.eumssi.action;
 
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -35,7 +37,7 @@ public class LocationContentGenerator extends ContentGenerator {
 	//	 mongo=mongoClient;
 	//	 locationCollection = mongo.getCollection("allLocations");
 	
-			
+		/*
 		 locationMapQuestion.put("currency", "What is the name of the currency?");
 		 locationMapQuestion.put("officialLanguage", "What is the official language spoken here?");
 	//	 locationMapQuestion.put("languages", "Which language/languages are spoken?");
@@ -45,6 +47,9 @@ public class LocationContentGenerator extends ContentGenerator {
 		 locationMapQuestion.put("country", "In which country is this city located?");
 		 locationMapQuestion.put("adminArea", "In which region is this city located?");
 		 locationMapQuestion.put("population", "Which is the most populated city in this country?");
+		 */
+		 locationMapQuestion.put("largestCity", "Which one is the largest city in this country?");
+		// locationMapQuestion.put("drivesOn", "Which is the side for vehicle in this country?");
 		 
 		//template for info of locations
 		locationMapInfo.put("currency", "The local currency is ");
@@ -94,7 +99,7 @@ public class LocationContentGenerator extends ContentGenerator {
 			dicisionList.add("info");
 		if(hasAbstract==true)
            dicisionList.add("abstract");
-		dicisionList.add("map");
+	//	dicisionList.add("map");
 	//	dicisionList.add("wordGraph");
 		
 		// take dicision randomly
@@ -135,6 +140,44 @@ public class LocationContentGenerator extends ContentGenerator {
 		
 		return question;
 		}
+		else if(mainKeyForQuestion.equals("drivesOn") && type.equals("country")){
+			String drivesOn=(String) locationObject.get("drivesOn");
+			ArrayList<String> drivesOnOption=new ArrayList<String>();
+			drivesOnOption.add("Left");
+			drivesOnOption.add("Right");
+			Collections.shuffle(drivesOnOption);
+			question = "<div><img src=Images" + "//" + "quiz.png><strong>" + (String) locationObject.get("drivesOn") + "</strong><br>"
+					+ locationMapQuestion.get(mainKeyForQuestion) + "<br><input type='radio' name=\'"
+					+ drivesOn + "\' value=\'" + drivesOnOption.get(0).toLowerCase() + "\'>" + drivesOnOption.get(0)
+					+ "<br><input type='radio' name=\'" + drivesOn + "\' value=\'" + drivesOnOption.get(1).toLowerCase() + "\'>"
+					+ drivesOnOption.get(1) 
+					+ "<br><input type='button' id='check' class='btn btn-primary' value='check'></div>";
+			return question;
+			
+		}
+		else if(mainKeyForQuestion.equals("largestCity") && type.equals("country")){
+			String largestCity=(String) locationObject.get("largestCity");
+			if(largestCity.equals("capital")){
+				largestCity=(String) locationObject.get("capital");
+			}
+			ArrayList largestCityOption=new ArrayList();
+			String countryName=(String) locationObject.get("name");
+			Long population=(Long) locationObject.get("population");
+			largestCityOption=LargestCityFalseAns(countryName,largestCity,population);
+			 question = "<div><img src=Images" + "//" + "quiz.png><strong>" + (String)locationObject.get("name")
+				+ "</strong><br>" + locationMapQuestion.get(mainKeyForQuestion)
+				+ "<input type='hidden' value=\'" + largestCity + "\'>"
+				+ "<br><input type='checkbox' name=\'" + largestCity + "\' id=\'" + largestCityOption.get(0)
+				+ "\'>" + largestCityOption.get(0) + "<br><input type='checkbox' name=\'" + largestCity
+				+ "\' id=\'" + largestCityOption.get(1) + "\'>" + largestCityOption.get(1)
+				+ "<br><input type='checkbox' name=\'" + largestCity + "\' id=\'" + largestCityOption.get(2)
+				+ "\'>" + largestCityOption.get(2) + "<br><input type='checkbox' name=\'" + largestCity
+				+ "\' id=\'" + largestCityOption.get(3) + "\'>" + largestCityOption.get(3)
+				+ "<br><input type='button' class='btn btn-primary' id='check'  value='check'></div>";
+
+		return question;
+		}
+		
 		else if(mainKeyForQuestion.equals("population") && type.equals("country"))
 			return null;
 		
@@ -196,7 +239,10 @@ public class LocationContentGenerator extends ContentGenerator {
 				return null;
 		   else{
 		   String abs = "<strong>" + locationObject.getString("name") + "</strong>" + "<br>" + (String) locationObject.get("abstract");
+		 //  System.out.println((String) locationObject.get("abstract"));
 			abs = abs.replaceAll("\\(.+?\\)\\s*", "");
+			Charset.forName("iso-8859-1").encode(abs);
+			System.out.println(abs);
 		    return abs;
 		   }
 		   
@@ -315,6 +361,38 @@ public class LocationContentGenerator extends ContentGenerator {
 	}
 
 
+   private ArrayList LargestCityFalseAns(String countryName,String largestCity,Long population){
+	   
+	   
+	   
+	   ArrayList options=new ArrayList();
+	   BasicDBObject whereQuery = new BasicDBObject();
+       whereQuery.put("country", countryName);
+       BasicDBObject capitalWhereQuery = new BasicDBObject();
+       capitalWhereQuery.put("$exists", 0);
+       BasicDBObject nameWhereQuery = new BasicDBObject();
+       nameWhereQuery.put("$exists", 1);
+       nameWhereQuery.put("$ne", largestCity);
+       whereQuery.put("capital", capitalWhereQuery);
+       whereQuery.put("name", nameWhereQuery);
+	   BasicDBObject projectionQuery = new BasicDBObject();
+		projectionQuery.put("_id", 0);
+		projectionQuery.put("name", 1);
+		BasicDBObject sortQuery = new BasicDBObject();
+		sortQuery.put("population", -1);
+		DBCursor largestCityCursor = locationCollection.find(whereQuery, projectionQuery).sort(sortQuery).limit(3);
+
+		while(largestCityCursor.hasNext()){
+			BasicDBObject cityObject=(BasicDBObject) largestCityCursor.next();
+			String name=cityObject.getString("name");
+		   options.add(name);
+		}
+	   options.add(largestCity);
+	   Collections.shuffle(options);
+	   return options;
+   }
+	
+	
 	
 	private ArrayList CityCompareByPopulation(String cityName, String countryName, Long population){
 		ArrayList returnList=new ArrayList();
