@@ -42,8 +42,8 @@ public class PersonContentGenerator extends ContentGenerator {
 		 personMapQuestion.put("birthPlace","What is this person's birthplace?");
 		 personMapQuestion.put("almaMater","Which university or college did this person attend?");
 		 personMapQuestion.put("birthDate","In which year was this person born?");
-		 */
 		 personMapQuestion.put("deathDate","In which year was this person died?");
+		 */
 		 personMapQuestion.put("deathPlace","Where this person died?");
 		 
 		 
@@ -123,6 +123,7 @@ public class PersonContentGenerator extends ContentGenerator {
      	  mainKeyValue=targetFormat.format(keyValueDateType);
      	    
          }
+         System.out.println(options);
 		 question = "<div><img src=Images" + "//" + "quiz.png><strong>" + personObject.getString("name") + "</strong><br>"
 				+ personMapQuestion.get(mainKeyForQuestion) + "<br><input type='radio' name=\'"
 				+ mainKeyValue + "\' value=\'" + options.get(0) + "\'>" + options.get(0)
@@ -199,9 +200,11 @@ public class PersonContentGenerator extends ContentGenerator {
 		BasicDBObject projectionQuery = new BasicDBObject();
 		projectionQuery.put("_id", 0);
 		projectionQuery.put(keyName, 1);
-
+        
+		DBCursor randomPersonLimitCounterCursor = personCollection.find(whereQuery, projectionQuery);
+		
 		Random ran = new Random();
-		int x = ran.nextInt(440) + 1;
+		int x = ran.nextInt(randomPersonLimitCounterCursor.count()-3) + 1;
 		DBCursor randomPersonCursor = personCollection.find(whereQuery, projectionQuery).limit(3).skip(x);
 
 		while (randomPersonCursor.hasNext()) {

@@ -37,18 +37,23 @@ public class LocationContentGenerator extends ContentGenerator {
 	//	 mongo=mongoClient;
 	//	 locationCollection = mongo.getCollection("allLocations");
 	
-		/*
-		 locationMapQuestion.put("currency", "What is the name of the currency?");
-		 locationMapQuestion.put("officialLanguage", "What is the official language spoken here?");
+		
+		// locationMapQuestion.put("currency", "What is the name of the currency?");
+		
+	//	 locationMapQuestion.put("officialLanguage", "What is the official language spoken here?");
 	//	 locationMapQuestion.put("languages", "Which language/languages are spoken?");
-		 locationMapQuestion.put("neighbours", "Which countries are the neighbours?");
-		 locationMapQuestion.put("timezone", "In which timezone is this city located?");
+		
+	//	 locationMapQuestion.put("neighbours", "Which countries are the neighbours?");
+		
+	//	 locationMapQuestion.put("timezone", "In which timezone is this city located?");
+		
 		 locationMapQuestion.put("capital", "What is the name of the capital?");
+		/*
 		 locationMapQuestion.put("country", "In which country is this city located?");
 		 locationMapQuestion.put("adminArea", "In which region is this city located?");
-		 locationMapQuestion.put("population", "Which is the most populated city in this country?");
+		 locationMapQuestion.put("population", "Which is more populated?");
 		 */
-		 locationMapQuestion.put("largestCity", "Which one is the largest city in this country?");
+		// locationMapQuestion.put("largestCity", "Which one is the largest city in this country?");
 		// locationMapQuestion.put("drivesOn", "Which is the side for vehicle in this country?");
 		 
 		//template for info of locations
@@ -94,11 +99,12 @@ public class LocationContentGenerator extends ContentGenerator {
 		if(questionableKeyList.size()>0 && locationObject.containsKey("longitude"))
 			dicisionList.add("question");
 		
-	
+	/*
 		if(infoableKeyList.size()>0)
 			dicisionList.add("info");
 		if(hasAbstract==true)
            dicisionList.add("abstract");
+           */
 	//	dicisionList.add("map");
 	//	dicisionList.add("wordGraph");
 		
@@ -122,10 +128,14 @@ public class LocationContentGenerator extends ContentGenerator {
 		String type=(String) locationObject.get("type");
 		ArrayList options;
 		String question ;
+		String mainKeyValue=null;
 		Random ran = new Random();
 		int questionSelectorNumber = ran.nextInt(questionableKeyList.size());
 		String mainKeyForQuestion = questionableKeyList.get(questionSelectorNumber);
-		String mainKeyValue = (String) locationObject.get(mainKeyForQuestion);
+		//if mainkey is population, then value is long 
+		if(!mainKeyForQuestion.equals("population")){
+		 mainKeyValue = (String) locationObject.get(mainKeyForQuestion);
+		}
 		if(mainKeyForQuestion.equals("population") && type.equals("city")){
 			String country =locationObject.getString("country");
 			String cityName=(String) locationObject.get("name");
@@ -136,7 +146,7 @@ public class LocationContentGenerator extends ContentGenerator {
 						+ comparedOption.get(2) + "\' value=\'" + comparedOption.get(0) + "\'>" + comparedOption.get(0)
 						+ "<br><input type='radio' name=\'" + comparedOption.get(2) + "\' value=\'" + comparedOption.get(1) + "\'>"
 						+ comparedOption.get(1) 
-						+ "<br><input type='button' class='btn btn-primary' value='check'></div>";
+						+ "<br><input type='button' id='check' class='btn btn-primary' value='check'></div>";
 		
 		return question;
 		}
@@ -327,6 +337,11 @@ public class LocationContentGenerator extends ContentGenerator {
 		for (int i = 0; i < distances.size(); i++) {
 
 			if (!checkList.contains((String) distanceToKeyValue.get(distances.get(i)))) {
+				String option=distanceToKeyValue.get(distances.get(i));
+				if(optionList.contains(option.substring(0, 1).toUpperCase() + option.substring(1)))
+						continue;
+				if(optionList.contains(option.toLowerCase()))
+					continue;
 				optionList.add(distanceToKeyValue.get(distances.get(i)));
 				if (optionList.size() == 4) {
 					break;

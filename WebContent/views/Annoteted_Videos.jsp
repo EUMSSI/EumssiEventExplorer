@@ -27,7 +27,8 @@
 <a href="timed_annoteted?videoUrl=http://tv-download.dw.com/dwtv_video/flv/wse/wse20160604_usa-latinos_sd_avc.mp4&subTitleName=wse20160604_usa-latinos_sd_avc.vtt">Latinos against Trump</a>
 <br>
 <a href="timed_annoteted?videoUrl=http://tv-download.dw.com/dwtv_video/flv/je/je20160424_merkel11g_sd_avc.mp4&subTitleName=je20160424_merkel11g_sd_avc.vtt">Merkel praises migration deal with Turkey</a>
-
+<br>
+<a href="timed_annoteted?videoUrl=http://tv-download.dw.com/dwtv_video/flv/je/je20160424_merkel11g_sd_avc.mp4&subTitleName=test.vtt">Test</a>
 </div>
 
 </body>
