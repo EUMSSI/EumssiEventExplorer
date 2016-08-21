@@ -6,7 +6,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Insert title here</title>
+<title>EUMSSI Second Screen</title>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
        
     <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.js"></script>
@@ -85,7 +85,8 @@
 <nav class="navbar navbar-default">
   <div class="container-fluid">
      <ul class="nav navbar-nav">
-      <li><a><img src="Images/eumssi_logo.png"></a></li>
+      <li><a><img src="Images/eumssi_logo.png"><br>
+      <h3 style="font-family:serif;">Hello <s:property value="userId"/></h3></a></li>
       <li><a><h4 style="font-family:serif;">Second Screen</h4></a></li>
         <li><a><div id="correct"></div></a></li>
         <li><a><div id="wrong"></div></a></li>

@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Insert title here</title>
+<title>EUMSSI First Screen</title>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
 <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
@@ -14,9 +14,10 @@
 <nav class="navbar navbar-default">
   <div class="container-fluid">
      <ul class="nav navbar-nav">
-      <li><a><img src="Images/eumssi_logo.png"></a></li>
+      <li><a><img src="Images/eumssi_logo.png"><br>
+      <h3 style="font-family:serif;">Hello <s:property value="userId"/></h3> </a></li>
       <li><a><h3 style="font-family:serif;">First Screen</h3></a></li>
-      <li><a><button type="button" class='btn btn-primary'  id="close">Close</button></a></li>
+      <li><a><s:form method="get" action="annoteted_videos"> <input type="submit" class='btn btn-primary'  value="To overview"></s:form></a></li>
       <li><a><s:form method="get" action="logout"> <input type="submit" class='btn btn-primary'  value="logout"><s:hidden name="from" value="timed_annoteted"/></s:form></a><li>
      
     </ul>

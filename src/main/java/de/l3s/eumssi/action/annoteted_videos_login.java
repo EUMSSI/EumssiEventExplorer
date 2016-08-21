@@ -31,7 +31,7 @@ public class annoteted_videos_login implements ServletRequestAware {
 			}
 		} else {
 		  System.out.println(session.getAttribute("userId"));
-		
+		  userId=(String) session.getAttribute("userId");
 		  return "success";
 		}
 		
@@ -42,6 +42,7 @@ public class annoteted_videos_login implements ServletRequestAware {
 	@Override
 	public void setServletRequest(HttpServletRequest request) {
 		this.request = request;
+		System.out.println("request from anneted videos: " +this.request);
 		
 	}
 
