@@ -25,7 +25,8 @@
         
          <!-- when user click the logout button from video page, logged user out. -->
           <action name="logout" class="de.l3s.eumssi.action.LogoutAction">
-          <!--    <result name="login">/views/index.jsp</result> -->
+              <result name="login">/views/index.jsp</result>
+              <result name="annoteted_video">/views/annoteted_videos_login.jsp</result>
          </action>
          
         <!-- show the content and send request for new content of second screen -->
@@ -56,6 +57,15 @@
               <result name="success">/views/timed_annoteted.jsp</result>
        </action>
        
+        <action name="updatelocation" 
+			class="de.l3s.eumssi.action.UpdateLocationInfoMongo">
+              <result name="success">/views/index.jsp</result>
+        </action>
+       
+        <action name="updateperson" 
+			class="de.l3s.eumssi.action.UpdatePerson">
+              <result name="success">/views/index.jsp</result>
+        </action>
        
       <!--   
          <action name="video1" 
@@ -69,6 +79,8 @@
               <result name="test">/views/textsyncvideo2View.jsp</result>
           
         </action>
+        
+     
            
          -->
             

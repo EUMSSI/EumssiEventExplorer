@@ -26,7 +26,7 @@ public class second_screenAction implements ServletRequestAware{
 
 		HttpSession session = request.getSession(false);
 		 userId=request.getParameter("userId");
-	
+	     
 	    
 		if (session==null ||session.getAttribute("userId") == null) {
 			
@@ -43,7 +43,7 @@ public class second_screenAction implements ServletRequestAware{
 			}
 		}
 		else{
-		//	videoListCreator();
+			userId=(String) session.getAttribute("userId");
 		    return "success";	
 		}
 		

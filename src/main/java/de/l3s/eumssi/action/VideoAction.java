@@ -73,6 +73,7 @@ public class VideoAction implements ServletRequestAware{
 			file.createNewFile();
 		}
 		String [] entities= getEntitiesFromSolr();
+		if(entities!=null){
 		String fileContent="WEBVTT FILE\n";
 		SimpleDateFormat formatter;
 
@@ -108,7 +109,7 @@ public class VideoAction implements ServletRequestAware{
 		bw.write(fileContent);
 		bw.close();
 	    
-
+		}
 	}
 		
 
@@ -142,6 +143,7 @@ public class VideoAction implements ServletRequestAware{
 		       System.out.println(headLine);
 		       
 		//    }
+		    if(entities!=null){   
 		    Set<String> hs = new HashSet<>();
 		    hs.addAll(entities);
 		    entities.clear();
@@ -151,6 +153,9 @@ public class VideoAction implements ServletRequestAware{
 		    
 		
 		 return entitiesArray;
+		    }
+		    else
+		    	return null;
 		}	
 	@Override
 	public void setServletRequest(HttpServletRequest request) {

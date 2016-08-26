@@ -103,6 +103,7 @@ public class EventSearchByKeywordInDBOnlyAction  extends ActionSupport implement
 	
 	/** video contextualization with entities information taken from solr **/
 	public String videoContextualize() throws Exception {
+	
 		ArrayList<String> searchField = formSearchField();						//search field
 		contextPath = ServletActionContext.getServletContext().getContextPath();
 		useContextPath = true;
