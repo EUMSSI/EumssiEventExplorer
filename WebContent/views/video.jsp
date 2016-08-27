@@ -57,6 +57,7 @@ trackElement.addEventListener("load", function() {
  textTrack.mode ="hidden";
  textTrack.oncuechange = function (){
 	  var cue = this.activeCues[0];
+	  var jsonObj = jQuery.parseJSON(cue.text);
 	  document.getElementById("asdf").innerHTML=cue.text;
 	
 	

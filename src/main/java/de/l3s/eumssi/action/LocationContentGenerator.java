@@ -10,6 +10,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
@@ -38,23 +41,23 @@ public class LocationContentGenerator extends ContentGenerator {
 	//	 locationCollection = mongo.getCollection("allLocations");
 	
 		
-		// locationMapQuestion.put("currency", "What is the name of the currency?");
+		 locationMapQuestion.put("currency", "What is the name of the currency?");
 		
-	//	 locationMapQuestion.put("officialLanguage", "What is the official language spoken here?");
+		 locationMapQuestion.put("officialLanguage", "What is the official language spoken here?");
 	//	 locationMapQuestion.put("languages", "Which language/languages are spoken?");
 		
-	//	 locationMapQuestion.put("neighbours", "Which countries are the neighbours?");
+		 locationMapQuestion.put("neighbours", "Which countries are the neighbours?");
 		
-	//	 locationMapQuestion.put("timezone", "In which timezone is this city located?");
+		 locationMapQuestion.put("timezone", "In which timezone is this city located?");
 		
 		 locationMapQuestion.put("capital", "What is the name of the capital?");
-		/*
+		
 		 locationMapQuestion.put("country", "In which country is this city located?");
 		 locationMapQuestion.put("adminArea", "In which region is this city located?");
 		 locationMapQuestion.put("population", "Which is more populated?");
-		 */
-		// locationMapQuestion.put("largestCity", "Which one is the largest city in this country?");
-		// locationMapQuestion.put("drivesOn", "Which is the side for vehicle in this country?");
+		 
+		 locationMapQuestion.put("largestCity", "Which one is the largest city in this country?");
+		 locationMapQuestion.put("drivesOn", "Which is the side for vehicle in this country?");
 		 
 		//template for info of locations
 		locationMapInfo.put("currency", "The local currency is ");
@@ -67,9 +70,9 @@ public class LocationContentGenerator extends ContentGenerator {
 	
 
 	@Override
-	public String makeDicision(String infoOrQues) {
+	public ArrayList<String> makeDicision() {
 		
-		String dicision;
+		
 		boolean hasAbstract=false;
 		
 	
@@ -77,16 +80,16 @@ public class LocationContentGenerator extends ContentGenerator {
 		for (Iterator iteratorForKeyIntersection = locationObject.keySet()
 				.iterator(); iteratorForKeyIntersection.hasNext();) {
 			String keyForIntersection = (String) iteratorForKeyIntersection.next();
-			if(infoOrQues.equals("question") || infoOrQues.equals("both")){
+			
 			if (locationMapQuestion.containsKey(keyForIntersection)) {
 				questionableKeyList.add(keyForIntersection);
 			}
-			}
-			if(infoOrQues.equals("info") || infoOrQues.equals("both")){
+			
+			
 			if (locationMapInfo.containsKey(keyForIntersection)) {
 				infoableKeyList.add(keyForIntersection);
 			}
-			}
+		
 			if(keyForIntersection.equals("abstract"))
 				hasAbstract=true;
 			
@@ -99,97 +102,84 @@ public class LocationContentGenerator extends ContentGenerator {
 		if(questionableKeyList.size()>0 && locationObject.containsKey("longitude"))
 			dicisionList.add("question");
 		
-	/*
+	
 		if(infoableKeyList.size()>0)
 			dicisionList.add("info");
 		if(hasAbstract==true)
            dicisionList.add("abstract");
-           */
-	//	dicisionList.add("map");
+          
+		dicisionList.add("map");
 	//	dicisionList.add("wordGraph");
 		
 		// take dicision randomly
-		if(dicisionList.size()==0)
-		   return null;
-		Random ran = new Random();
-	
-		int x = ran.nextInt(dicisionList.size());
-		dicision=dicisionList.get(x);
 		
-		return dicision;
+		
+		return dicisionList;
 	}
 
 	
 	@Override
-	public String questionGenerator() {
-		
+	public JSONArray questionGenerator() {
+		JSONArray questions=new JSONArray();
 		String correctAns = null;
 		String correctOrderAns;
 		String type=(String) locationObject.get("type");
-		ArrayList options;
-		String question ;
+		JSONArray options;
+		String question;
 		String mainKeyValue=null;
-		Random ran = new Random();
-		int questionSelectorNumber = ran.nextInt(questionableKeyList.size());
-		String mainKeyForQuestion = questionableKeyList.get(questionSelectorNumber);
+	    
+		for(int i=0;i<questionableKeyList.size();i++){
+			JSONObject questionObj=new JSONObject();
 		//if mainkey is population, then value is long 
-		if(!mainKeyForQuestion.equals("population")){
-		 mainKeyValue = (String) locationObject.get(mainKeyForQuestion);
+			System.out.println("questionable key list: "+questionableKeyList);
+		if(!questionableKeyList.get(i).equals("population")){
+		 mainKeyValue = (String) locationObject.get(questionableKeyList.get(i));
 		}
-		if(mainKeyForQuestion.equals("population") && type.equals("city")){
+		if(questionableKeyList.get(i).equals("population") && type.equals("city")){
 			String country =locationObject.getString("country");
 			String cityName=(String) locationObject.get("name");
 			Long population=Long.valueOf(locationObject.getString("population"));
-			ArrayList comparedOption=CityCompareByPopulation(cityName, country, population);
-			 question = "<div><img src=Images" + "//" + "quiz.png><strong>" + cityName + "</strong><br>"
-						+ locationMapQuestion.get(mainKeyForQuestion) + "<br><input type='radio' name=\'"
-						+ comparedOption.get(2) + "\' value=\'" + comparedOption.get(0) + "\'>" + comparedOption.get(0)
-						+ "<br><input type='radio' name=\'" + comparedOption.get(2) + "\' value=\'" + comparedOption.get(1) + "\'>"
-						+ comparedOption.get(1) 
-						+ "<br><input type='button' id='check' class='btn btn-primary' value='check'></div>";
+			JSONArray comparedOption=CityCompareByPopulation(cityName, country, population);
+			question=locationMapQuestion.get(questionableKeyList.get(i));
+			questionObj.put("question",locationMapQuestion.get(questionableKeyList.get(i)));
+			questionObj.put("options",comparedOption);
+			questionObj.put("correct",comparedOption.get(2));
+		    //questions array will go inside content array
+			questions.add(questionObj);
 		
-		return question;
 		}
-		else if(mainKeyForQuestion.equals("drivesOn") && type.equals("country")){
+		else if(questionableKeyList.get(i).equals("drivesOn") && type.equals("country")){
 			String drivesOn=(String) locationObject.get("drivesOn");
-			ArrayList<String> drivesOnOption=new ArrayList<String>();
+			JSONArray drivesOnOption=new JSONArray();
 			drivesOnOption.add("Left");
 			drivesOnOption.add("Right");
 			Collections.shuffle(drivesOnOption);
-			question = "<div><img src=Images" + "//" + "quiz.png><strong>" + (String) locationObject.get("drivesOn") + "</strong><br>"
-					+ locationMapQuestion.get(mainKeyForQuestion) + "<br><input type='radio' name=\'"
-					+ drivesOn + "\' value=\'" + drivesOnOption.get(0).toLowerCase() + "\'>" + drivesOnOption.get(0)
-					+ "<br><input type='radio' name=\'" + drivesOn + "\' value=\'" + drivesOnOption.get(1).toLowerCase() + "\'>"
-					+ drivesOnOption.get(1) 
-					+ "<br><input type='button' id='check' class='btn btn-primary' value='check'></div>";
-			return question;
+			questionObj.put("question",locationMapQuestion.get(questionableKeyList.get(i)));
+			questionObj.put("options",drivesOnOption);
+			questionObj.put("correct",drivesOn);
+			
+			questions.add(questionObj);
 			
 		}
-		else if(mainKeyForQuestion.equals("largestCity") && type.equals("country")){
+		else if(questionableKeyList.get(i).equals("largestCity") && type.equals("country")){
 			String largestCity=(String) locationObject.get("largestCity");
 			if(largestCity.equals("capital")){
 				largestCity=(String) locationObject.get("capital");
 			}
-			ArrayList largestCityOption=new ArrayList();
+			JSONArray largestCityOption=new JSONArray();
 			String countryName=(String) locationObject.get("name");
 			Long population=(Long) locationObject.get("population");
 			largestCityOption=LargestCityFalseAns(countryName,largestCity,population);
-			 question = "<div><img src=Images" + "//" + "quiz.png><strong>" + (String)locationObject.get("name")
-				+ "</strong><br>" + locationMapQuestion.get(mainKeyForQuestion)
-				+ "<input type='hidden' value=\'" + largestCity + "\'>"
-				+ "<br><input type='checkbox' name=\'" + largestCity + "\' id=\'" + largestCityOption.get(0)
-				+ "\'>" + largestCityOption.get(0) + "<br><input type='checkbox' name=\'" + largestCity
-				+ "\' id=\'" + largestCityOption.get(1) + "\'>" + largestCityOption.get(1)
-				+ "<br><input type='checkbox' name=\'" + largestCity + "\' id=\'" + largestCityOption.get(2)
-				+ "\'>" + largestCityOption.get(2) + "<br><input type='checkbox' name=\'" + largestCity
-				+ "\' id=\'" + largestCityOption.get(3) + "\'>" + largestCityOption.get(3)
-				+ "<br><input type='button' class='btn btn-primary' id='check'  value='check'></div>";
-
-		return question;
+			question=locationMapQuestion.get(questionableKeyList.get(i));
+			questionObj.put("question",question);
+			questionObj.put("options",largestCityOption);
+			questionObj.put("correct",largestCity);
+			questions.add(questionObj);
+			
 		}
 		
-		else if(mainKeyForQuestion.equals("population") && type.equals("country"))
-			return null;
+		else if(questionableKeyList.get(i).equals("population") && type.equals("country"))
+			continue;
 		
 		
         //for locations
@@ -197,7 +187,7 @@ public class LocationContentGenerator extends ContentGenerator {
 		correctAns = mainKeyValue;
 		double longitude = Double.parseDouble((String) locationObject.get("longitude"));
 		double latitude = Double.parseDouble((String) locationObject.get("latitude"));
-		options = GetLocationFalseAns(mainKeyForQuestion, correctAns.split("[,]"), longitude, latitude);
+		options = GetLocationFalseAns((String)questionableKeyList.get(i), correctAns.split("[,]"), longitude, latitude);
         
 		// in the options the order of answer may change, which is
 		// important for the logic of quize. The
@@ -205,35 +195,28 @@ public class LocationContentGenerator extends ContentGenerator {
 		// correct ans.
 		
 		correctOrderAns = CorrectAnsOrderFinder(correctAns.split("[,]"), options);
-        
+        questionObj.put("question",locationMapQuestion.get(questionableKeyList.get(i)));
+        questionObj.put("options",options);
+        questionObj.put("correct",correctOrderAns);
+        questions.add(questionObj);
 		
 		
-		 question = "<div><img src=Images" + "//" + "quiz.png><strong>" + (String)locationObject.get("name")
-				+ "</strong><br>" + locationMapQuestion.get(mainKeyForQuestion)
-				+ "<input type='hidden' value=\'" + correctOrderAns + "\'>"
-				+ "<br><input type='checkbox' name=\'" + correctOrderAns + "\' id=\'" + options.get(0)
-				+ "\'>" + options.get(0) + "<br><input type='checkbox' name=\'" + correctOrderAns
-				+ "\' id=\'" + options.get(1) + "\'>" + options.get(1)
-				+ "<br><input type='checkbox' name=\'" + correctOrderAns + "\' id=\'" + options.get(2)
-				+ "\'>" + options.get(2) + "<br><input type='checkbox' name=\'" + correctOrderAns
-				+ "\' id=\'" + options.get(3) + "\'>" + options.get(3)
-				+ "<br><input type='button' class='btn btn-primary' id='check'  value='check'></div>";
 
-		return question;
+		
 		}
+	  } 
+		return questions;
 	}
 
 	@Override
-	public String infoGenerator() {
-		Random ran = new Random();
-		int infoSelectorNumber = ran.nextInt(infoableKeyList.size());
-		String mainKeyForInfo = infoableKeyList.get(infoSelectorNumber);
-		String mainKeyValue = (String) locationObject.get(mainKeyForInfo);
-		String info;
-        info = "<img src=Images" + "/" + "Info.png><strong>" + locationObject.getString("name") + "</strong>" + "<br>"
-				+ locationMapInfo.get(mainKeyForInfo) + mainKeyValue;
-		
-		return info;
+	public JSONArray infoGenerator() {
+		JSONArray infos=new JSONArray();
+		for(int i=0;i<infoableKeyList.size();i++){
+		String info = (String) locationObject.get(infoableKeyList.get(i));
+        info = locationMapInfo.get(infoableKeyList.get(i)) + info;
+        infos.add(info);
+		}
+		return infos;
 	}
 	
 	public String mapGenerator(String locationName){
@@ -248,7 +231,7 @@ public class LocationContentGenerator extends ContentGenerator {
 		   if ((String) locationObject.get("abstract") == null)
 				return null;
 		   else{
-		   String abs = "<strong>" + locationObject.getString("name") + "</strong>" + "<br>" + (String) locationObject.get("abstract");
+		   String abs =(String) locationObject.get("abstract");
 		 //  System.out.println((String) locationObject.get("abstract"));
 			abs = abs.replaceAll("\\(.+?\\)\\s*", "");
 			Charset.forName("iso-8859-1").encode(abs);
@@ -266,8 +249,9 @@ public class LocationContentGenerator extends ContentGenerator {
 		   return wordgraph;
 	   }
 	
-	private ArrayList GetLocationFalseAns(String keyName, String[] keyValue, double longi, double lat) {
+	private JSONArray GetLocationFalseAns(String keyName, String[] keyValue, double longi, double lat) {
 		ArrayList optionList = new ArrayList();
+		JSONArray options=new JSONArray();
 		DBCollection collectionName = null;
 		int falseAnsNum = (4 - keyValue.length);
         String where;
@@ -292,7 +276,7 @@ public class LocationContentGenerator extends ContentGenerator {
 			optionList.add(keyvalue);
 
 		if (optionList.size() >= 4)
-			optionList = new ArrayList(optionList.subList(0, 3));
+			optionList =  new ArrayList(optionList.subList(0, 3));
 	
 		ArrayList distances = new ArrayList();
 		Map<Double, String> distanceToKeyValue = new HashMap<Double, String>();
@@ -328,6 +312,7 @@ public class LocationContentGenerator extends ContentGenerator {
 		// optionList.add(Arrays.asList(keyValue));
 		ArrayList checkList;
 		if (keyName.equals("neighbours")) {
+			//get all the neihbours for checking
 			checkList = new ArrayList(Arrays.asList(keyValue));
 			distances.remove(0);
 
@@ -349,7 +334,10 @@ public class LocationContentGenerator extends ContentGenerator {
 			}
 		}
 		Collections.shuffle(optionList);
-		return optionList;
+		for(int i=0;i<optionList.size();i++){
+			options.add(optionList.get(i));
+		}
+		return options;
 
 	}
 	
@@ -376,11 +364,11 @@ public class LocationContentGenerator extends ContentGenerator {
 	}
 
 
-   private ArrayList LargestCityFalseAns(String countryName,String largestCity,Long population){
+   private JSONArray LargestCityFalseAns(String countryName,String largestCity,Long population){
 	   
 	   
 	   
-	   ArrayList options=new ArrayList();
+	   JSONArray options=new JSONArray();
 	   BasicDBObject whereQuery = new BasicDBObject();
        whereQuery.put("country", countryName);
        BasicDBObject capitalWhereQuery = new BasicDBObject();
@@ -409,8 +397,8 @@ public class LocationContentGenerator extends ContentGenerator {
 	
 	
 	
-	private ArrayList CityCompareByPopulation(String cityName, String countryName, Long population){
-		ArrayList returnList=new ArrayList();
+	private JSONArray CityCompareByPopulation(String cityName, String countryName, Long population){
+		JSONArray returnList=new JSONArray();
 		int numberOfDigitOfCity=String.valueOf(population).length();
 		BasicDBObject whereQuery = new BasicDBObject();
 
