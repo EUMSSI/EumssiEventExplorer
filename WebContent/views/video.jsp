@@ -58,13 +58,25 @@ trackElement.addEventListener("load", function() {
  textTrack.oncuechange = function (){
 	  var cue = this.activeCues[0];
 	  var jsonObj = jQuery.parseJSON(cue.text);
-	  document.getElementById("asdf").innerHTML=cue.text;
-	
+	  var content_type=jsonObj.default_content.type;
+	  var content;	
+	  if(content_type=="questions" || content_type=="infos"){
+			var content_number=jsonObj.default_content.number;
+			document.getElementById("asdf").innerHTML="type :"+jsonObj.default_content.type+"  number: "+jsonObj.default_content.number;
+		   content=jsonObj.content_type[content_number];
+		   document.getElementById("asdf").innerHTML="type :"+jsonObj.default_content.type+
+		   "  number: "+jsonObj.default_content.number+" content: "+content;
+		}
+		else{
+			content=jsonObj.content_type[content_number];
+		
+		document.getElementById("asdf").innerHTML="type :"+jsonObj.default_content.type+" content: "+content;
+		}
 	
 	  $.post("chat1",
 		        {
-		          entityName: cue.text,
-		          infoOrQues:$('input[name="option"]:checked').val()
+		          content: cue.text,
+		        //  infoOrQues:$('input[name="option"]:checked').val()
                 
 		        })
 	}

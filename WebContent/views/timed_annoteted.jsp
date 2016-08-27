@@ -51,19 +51,27 @@ trackElement.addEventListener("load", function() {
 	 // document.getElementById("asdf").innerHTML=cue.text;
 	var jsonObj = jQuery.parseJSON(cue.text);
 	var content_type=jsonObj.default_content.type;
-	if(content_type=="questions" || content_type=="infos"){
-		var content_number=jsonObj.default_content.number;
-		
-		document.getElementById("asdf").innerHTML="type :"+jsonObj.default_content.type+"  number: "+jsonObj.default_content.number;
-	}
-	else
-	document.getElementById("asdf").innerHTML="type :"+jsonObj.default_content.type;
-	
+	 var content;
+	 var mainContent;
+	  if(content_type=="questions" || content_type=="infos"){
+			var content_number=jsonObj.default_content.number;
+			document.getElementById("asdf").innerHTML="type :"+jsonObj.default_content.type+"  number: "+jsonObj.default_content.number;
+		  content=jsonObj[content_type][content_number];
+		  if(typeof content=='object'){
+			 
+		  }
+
+		}
+		else{
+			content=jsonObj[content_type];
+
+		}
+	  mainContent={name:jsonObj.name,thumbnail:jsonObj.thumbnail,content:content};
 	  $.post("chat1",
 		        {
-		          entityName: cue.text,
-		          infoOrQues:$('input[name="option"]:checked').val()
-                
+		          content:JSON.stringify(mainContent),
+		        
+              
 		        })
 	}
  
