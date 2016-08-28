@@ -20,7 +20,7 @@ import de.l3s.eumssi.dao.MongoDBManager;
 public class LocationContentGenerator extends ContentGenerator {
 	//get the collection of all locations.
 	public MongoDBManager mongo=MongoDBManager.getInstance();
-    public DBCollection locationCollection=mongo.getCollection("allLocations");
+    public DBCollection locationCollection=mongo.getCollection("allLocations_dbpedia");
 	Map<String, String> locationMapQuestion = new HashMap<String, String>();
 	Map<String, String> locationMapInfo = new HashMap<String, String>();
 	
