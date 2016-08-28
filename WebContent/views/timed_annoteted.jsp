@@ -66,7 +66,7 @@ trackElement.addEventListener("load", function() {
 			content=jsonObj[content_type];
 
 		}
-	  mainContent={name:jsonObj.name,thumbnail:jsonObj.thumbnail,content:content};
+	  mainContent={name:jsonObj.name,type:jsonObj.default_content.type,thumbnail:jsonObj.thumbnail,content:content};
 	  $.post("chat1",
 		        {
 		          content:JSON.stringify(mainContent),
