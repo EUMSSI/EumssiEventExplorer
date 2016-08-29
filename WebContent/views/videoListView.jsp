@@ -129,7 +129,7 @@
 			        
 			    },
 			    function(data, status){
-			    	if(data!=""){
+			    	if(data!="" && data!="null"){
 			    		
 			    		//$("#second_screen_content").html(data);
 			    		if(swiper.isEnd){
