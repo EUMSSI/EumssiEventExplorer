@@ -182,11 +182,13 @@ public Second_screen_contentAction(MongoDBManager mongoClient){
 				else if(type.equals("other")) {
 					String otherEntityName = (String) entity.get("name");
 					otherEntityName = otherEntityName.replaceAll("[_]", " ");
+					if(entity.get("abstract")!=null){
 					String entityAbstract = "<strong>" + otherEntityName + "</strong><br>"
 							+ (String) entity.get("abstract");
 					entityAbstract = entityAbstract.replaceAll("[\"]", "");
 					entityAbstract = entityAbstract.replaceAll("\\(.+?\\)\\s*", "");
 					return entityAbstract;
+					}
 				}
 		}
 		
@@ -199,7 +201,7 @@ public Second_screen_contentAction(MongoDBManager mongoClient){
 		
 		
 		
-		return null;
+		return "null";
         
     }
 	
