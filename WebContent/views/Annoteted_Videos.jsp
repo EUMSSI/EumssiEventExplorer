@@ -24,10 +24,13 @@
 </nav>
 <div class="container-fluid">
 <a href="timed_annoteted?videoUrl=http://tv-download.dw.com/dwtv_video/flv/vdt/2016/beng160613_001_qwiinduweb_01i_sd_avc.mp4&subTitleName=beng160613_001_qwiinduweb_01i_sd_avc.vtt">Brexit and German Company</a>  
+&nbsp;&nbsp;<a href="editor?fileName=beng160613_001_qwiinduweb_01i_sd_avc.vtt">Edit</a>
 <br>
 <a href="timed_annoteted?videoUrl=http://tv-download.dw.com/dwtv_video/flv/wse/wse20160604_usa-latinos_sd_avc.mp4&subTitleName=wse20160604_usa-latinos_sd_avc.vtt">Latinos against Trump</a>
+&nbsp;&nbsp;<a href="editor?fileName=wse20160604_usa-latinos_sd_avc.vtt">Edit</a>
 <br>
 <a href="timed_annoteted?videoUrl=http://tv-download.dw.com/dwtv_video/flv/je/je20160424_merkel11g_sd_avc.mp4&subTitleName=je20160424_merkel11g_sd_avc.vtt">Merkel praises migration deal with Turkey</a>
+&nbsp;&nbsp;<a href="editor?fileName=je20160424_merkel11g_sd_avc.vtt">Edit</a>
 <br>
 <a href="timed_annoteted?videoUrl=http://tv-download.dw.com/dwtv_video/flv/je/je20160424_merkel11g_sd_avc.mp4&subTitleName=test.vtt">Test</a>
 </div>
