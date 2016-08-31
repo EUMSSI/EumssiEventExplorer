@@ -118,6 +118,7 @@
 </body>
 <script>
 //function interval() {
+	
 	var swiper = new Swiper('.swiper-container', {
         pagination: '.swiper-pagination',
         paginationClickable: true,
@@ -130,14 +131,54 @@
 			    },
 			    function(data, status){
 			    	if(data!=""){
+			    		data=jQuery.parseJSON(data);
+			    		if(data.thumbnail!=null){
+			    		var thumbnail="<img src="+data.thumbnail+" height='50' width='50'><br>";
+			    		}
 			    		
-			    		//$("#second_screen_content").html(data);
+			    		var name;
+			    		var content=data.content;
+			    		var html;
+			    		if(data.type=='questions'){
+			    			name="<img src=Images" + "//" + "quiz.png><strong>" + data.name + "</strong><br>";
+			    			var question=content.question;
+				    		var options=content.options;
+				    		var correct=content.correct;
+				    		var correctAnsArray=correct.split(",")
+				    		var radioOrCheckbox;
+				    		
+				    		if(correctAnsArray.length==1){
+				    			var i;
+				    			for(i=0;i<options.length;i++){
+				    				radioOrCheckbox+="<br><input type='radio' name=\'"
+									+ correct + "\' value=\'" + options[i] + "\'>" + options[i];	
+				    			} 
+				    		}
+				    		else{
+				    			var i;
+				    			for(i=0;i<options.length;i++){
+				    				radioOrCheckbox+="<br><input type='checkbox' name=\'"
+									+ correct +"\' id=\'" + options[i]+ "\' value=\'" + options[i] + "\'>" + options[i];	
+				    			}
+				    			radioOrCheckbox+="<input type='hidden' value=\'" + correct + "\'>";
+				    		}
+				    		var button="<br><input type='button' id='check' class='btn btn-primary' value='check'></div>";
+				    		html=name+thumbnail+question+radioOrCheckbox+button;
+			    		}
+			    		else if(data.type=='infos'){
+			    			name="<img src=Images" + "//" + "Info.png><strong>" + data.name + "</strong><br>";
+			    			html=name+thumbnail+content;
+			    		}
+			    		else{
+			    			name="<strong>" + data.name + "</strong><br>";
+			    			html=name+thumbnail+content;
+			    		}
 			    		if(swiper.isEnd){
-			        		swiper.appendSlide("<div class='swiper-slide'><img class='fade_star' src='Images/fade-star.png'style='width:16px;height:16px;'><br>"+data+"</div>")
+			        		swiper.appendSlide("<div class='swiper-slide'><img class='fade_star' src='Images/fade-star.png'style='width:16px;height:16px;'><br>"+html+"</div>")
 			        		swiper.slideNext()
 			            }
 			        	else{
-			        		swiper.appendSlide("<div class='swiper-slide'><img class='fade_star' src='Images/fade-star.png'style='width:16px;height:16px;'><br>"+data+"</div>")
+			        		swiper.appendSlide("<div class='swiper-slide'><img class='fade_star' src='Images/fade-star.png'style='width:16px;height:16px;'><br>"+html+"</div>")
 			        	}
 			    		
 			    		 $.get(this);	

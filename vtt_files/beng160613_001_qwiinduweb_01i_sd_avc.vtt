@@ -1,53 +1,49 @@
 WEBVTT FILE
 
-a
-00:00:11.000 --> 00:00:14.000
 Stuttgart
+00:00:11.000 --> 00:00:14.000
+{"thumbnail":"http:\/\/commons.wikimedia.org\/wiki\/Special:FilePath\/Stuttgart_collage.jpg?width=300","default_content":{"type":"abstract"},"name":"Stuttgart","abstract":"Stuttgart is the capital and largest city of the state of Baden-Württemberg in southwest Germany.The sixth-largest city in Germany, Stuttgart has a population of 600,068 while the greater Stuttgart Metropolitan Region has a population of 5.3 million , being the fourth-biggest in Germany after the Rhine-Ruhr area, Berlin\/Brandenburg and Frankfurt\/Rhine-Main."}
 
-b
-00:00:14.000 --> 00:00:17.000
 England
+00:00:14.000 --> 00:00:17.000
+{"thumbnail":"http:\/\/en.wikipedia.org\/wiki\/Special:FilePath\/Flag_of_England.svg?width=300","default_content":{"number":0,"type":"questions"},"name":"England","questions":[{"question":"What is the name of the capital?","correct":"London","options":["Cardiff","Brussels","Paris","London"]},{"question":"What is the name of the currency?","correct":"sterling","options":["Euro","sterling","Deutsche Marke","Franc"]},{"question":"Which one is the largest city in this country?","correct":"capital","options":["capital","Nancy","Frankfurt","Glasgow"]}],"abstract":"England \/ˈɪŋɡlənd\/ is a country that is part of the United Kingdom.It shares land borders with Scotland to the north and Wales to the west.","map":"<iframe width='600' height='300' frameborder='0' style='border:0' src='https:\/\/www.google.com\/maps\/embed\/v1\/place?q=England&key=AIzaSyAJCit6uJoDOEdy-PPb0L5_3SydfJbJ3Vg' allowfullscreen><\/iframe>","infos":["The capital is London","The local currency is sterling"]}
 
-c
-00:00:21.000 --> 00:00:24.000
 Euro
+00:00:21.000 --> 00:00:24.000
+{"thumbnail":"http:\/\/commons.wikimedia.org\/wiki\/Special:FilePath\/Euro_Series_Banknotes.png?width=300","default_content":{"type":"abstract"},"name":"Euro","abstract":"The euro is the official currency of the eurozone, which consists of 19 of the 28 member states of the European Union: Austria, Belgium, Cyprus, Estonia, Finland, France, Germany, Greece, Ireland, Italy, Latvia, Lithuania, Luxembourg, Malta, the Netherlands, Portugal, Slovakia, Slovenia, and Spain.The currency is also officially used by the institutions of the European Union and four other European countries, as well as unilaterally by two others, and is consequently used daily by some 337 million Europeans as of 2015."}
 
-d
+Proposed_referendum_on_United_Kingdom_membership_of_the_European_Union
 00:00:26.000 --> 00:00:29.000
-Proposed_referendum_on_United_Kingdom_membership_of_the_European_Union
+{"thumbnail":"http:\/\/commons.wikimedia.org\/wiki\/Special:FilePath\/David_Cameron_official.jpg?width=300","default_content":{"type":"abstract"},"name":"Proposed_referendum_on_United_Kingdom_membership_of_the_European_Union","abstract":"A referendum on whether the United Kingdom should remain a member or leave the European Union is planned to take place before the end of 2017.Following the general election in May 2015, in which his Conservative Party won a majority in  the House of Commons, Prime Minister David Cameron reiterated the party's manifesto commitment to hold an in-out referendum on Britain's membership of the European Union by the end of 2017, following negotiations with EU leaders.The planned referendum was included in the Queen's Speech on 27 May 2015."}
 
-e
+Gebr._Heller
 00:00:32.000 --> 00:00:35.000
-Gebr. Heller
+{"thumbnail":null,"default_content":{"type":"abstract"},"name":"Gebr._Heller","abstract":"Gebr.Heller Maschinenfabrik GmbH is a German manufacturer of milling machines, manufacturing systems and crankshaft and camshaft machines."}
 
-f
-00:00:39.000 --> 00:00:42.000
 Germany
+00:00:39.000 --> 00:00:42.000
+{"thumbnail":"http:\/\/en.wikipedia.org\/wiki\/Special:FilePath\/Flag_of_Germany.svg?width=300","default_content":{"number":1,"type":"infos"},"name":"Germany","questions":[{"question":"What is the name of the capital?","correct":"Berlin","options":["Schwerin","Berlin","Magdeburg","Dresden"]},{"question":"What is the name of the currency?","correct":"Euro","options":["Euro","Krone","Koruna","Reichsmark"]},{"question":"What is the official language spoken here?","correct":"German","options":["Austrian German","German","Danish","Slovak"]},{"question":"Which countries are the neighbours?","correct":"Netherlands,Switzerland,Poland","options":["Nazi_Germany","Netherlands","Switzerland","Poland"]},{"question":"Which one is the largest city in this country?","correct":"Berlin","options":["Berlin","Mannheim","Bochum","Munich"]},{"question":"Which is the side for vehicle in this country?","correct":"right","options":["Right","Left"]}],"abstract":"Germany , officially the Federal Republic of Germany ), is a federal parliamentary republic in western-central Europe.It consists of 16 constituent states, which retain limited sovereignty, and covers an area of 357,021 square kilometres with a largely temperate seasonal climate.","map":"<iframe width='600' height='300' frameborder='0' style='border:0' src='https:\/\/www.google.com\/maps\/embed\/v1\/place?q=Germany&key=AIzaSyAJCit6uJoDOEdy-PPb0L5_3SydfJbJ3Vg' allowfullscreen><\/iframe>","infos":["The capital is Berlin","The local currency is Euro","The language spoken is German language","language spoken German"]}
 
-g
-00:00:54.000 --> 00:00:57.000
 Metal
+00:00:54.000 --> 00:00:57.000
+{"thumbnail":"http:\/\/commons.wikimedia.org\/wiki\/Special:FilePath\/Close_packing_box.svg?width=300","default_content":{"type":"abstract"},"name":"Metal","abstract":"A metal is a material that is typically hard, opaque, shiny, and has good electrical and thermal conductivity.Metals are generally malleable \u2014 that is, they can be hammered or pressed permanently out of shape without breaking or cracking \u2014 as well as fusible and ductile ."}
 
-h
-00:00:58.000 --> 00:01:01.000
 Mercedes
+00:00:58.000 --> 00:01:01.000
+{"thumbnail":null,"name":"Mercedes"}
 
-i
-00:01:08.000 --> 00:01:11.000
 European_Union
+00:01:08.000 --> 00:01:11.000
+{"thumbnail":"http:\/\/commons.wikimedia.org\/wiki\/Special:FilePath\/Flag_of_Europe.svg?width=300","default_content":{"type":"abstract"},"name":"European_Union","abstract":"The European Union is a politico-economic union of 28 member states that are located primarily in Europe.The EU operates through a system of supranational institutions and intergovernmental-negotiated decisions by the member states."}
 
-j
-00:01:27.000 --> 00:01:30.000
 Great_Britain
+00:01:27.000 --> 00:01:30.000
+{"thumbnail":"http:\/\/commons.wikimedia.org\/wiki\/Special:FilePath\/Satellite_image_of_Great_Britain_and_Northern_Ireland_in_April_2002.jpg?width=300","default_content":{"type":"abstract"},"name":"Great_Britain","abstract":"Great Britain, also known as Britain \/ˈbrɪ.tən\/, is an island in the North Atlantic off the north-west coast of continental Europe.With an area of 209,331 km2 , it is the largest island in Europe and the ninth-largest in the world."}
 
-k
-00:01:35.000 --> 00:01:38.000
-Eastern_Europe
-
-l
-00:01:59.000 --> 00:02:02.000
 Market_(economics)
+00:01:59.000 --> 00:02:02.000
+{"thumbnail":null,"default_content":{"type":"abstract"},"name":"Market_(economics)","abstract":"A market is one of the many varieties of systems, institutions, procedures, social relations and infrastructures whereby parties engage in exchange.While parties may exchange goods and services by barter, most markets rely on sellers offering their goods or services in exchange for money from buyers."}
 
-m
-00:02:23.000 --> 00:02:26.000
 Proposed_referendum_on_United_Kingdom_membership_of_the_European_Union
+00:02:23.000 --> 00:02:26.000
+{"thumbnail":"http:\/\/commons.wikimedia.org\/wiki\/Special:FilePath\/David_Cameron_official.jpg?width=300","default_content":{"type":"abstract"},"name":"Proposed_referendum_on_United_Kingdom_membership_of_the_European_Union","abstract":"A referendum on whether the United Kingdom should remain a member or leave the European Union is planned to take place before the end of 2017.Following the general election in May 2015, in which his Conservative Party won a majority in  the House of Commons, Prime Minister David Cameron reiterated the party's manifesto commitment to hold an in-out referendum on Britain's membership of the European Union by the end of 2017, following negotiations with EU leaders.The planned referendum was included in the Queen's Speech on 27 May 2015."}

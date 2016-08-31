@@ -39,6 +39,7 @@ Choose from the following. It will be reflected to the second screen with other 
 
 </div>
 <img src="Images/qr_code.jpg" class="img-rounded"  width="100" height="100" style="display: block;margin: auto;"/>
+<div id="asdf"></div>
 </body>
 <script>
 var trackElement = document.querySelector("track");
@@ -48,13 +49,29 @@ trackElement.addEventListener("load", function() {
  textTrack.oncuechange = function (){
 	  var cue = this.activeCues[0];
 	 // document.getElementById("asdf").innerHTML=cue.text;
-	
-	
+	var jsonObj = jQuery.parseJSON(cue.text);
+	var content_type=jsonObj.default_content.type;
+	 var content;
+	 var mainContent;
+	  if(content_type=="questions" || content_type=="infos"){
+			var content_number=jsonObj.default_content.number;
+			document.getElementById("asdf").innerHTML="type :"+jsonObj.default_content.type+"  number: "+jsonObj.default_content.number;
+		  content=jsonObj[content_type][content_number];
+		  if(typeof content=='object'){
+			 
+		  }
+
+		}
+		else{
+			content=jsonObj[content_type];
+
+		}
+	  mainContent={name:jsonObj.name,type:jsonObj.default_content.type,thumbnail:jsonObj.thumbnail,content:content};
 	  $.post("chat1",
 		        {
-		          entityName: cue.text,
-		          infoOrQues:$('input[name="option"]:checked').val()
-                
+		          content:JSON.stringify(mainContent),
+		        
+              
 		        })
 	}
  

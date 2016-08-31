@@ -60,19 +60,22 @@ public class VideoAction implements ServletRequestAware{
 			
 		}
 	 
-	private void VttFileCreator() throws IOException, SolrServerException{
+	private void VttFileCreator() throws Exception{
 		ServletContext context = request.getServletContext();
 		String path = context.getRealPath("/");
 		String fileNameWithoutExtension = FilenameUtils.removeExtension(videoUrl);
 		//fileNameWithoutExtension=fileNameWithoutExtension.replaceAll("\\", "\\\\");
     	String[] fileNames=fileNameWithoutExtension.split("/");
 		subtitleName=fileNames[fileNames.length-1];
+    	
 		File file = new File(path + File.separator + "vtt_files" + File.separator + subtitleName + ".vtt");
 		System.out.println(file);
 		if (!file.exists()) {
 			file.createNewFile();
-		}
+		
+		//get entities from solr.
 		String [] entities= getEntitiesFromSolr();
+		
 		if(entities!=null){
 		String fileContent="WEBVTT FILE\n";
 		SimpleDateFormat formatter;
@@ -88,6 +91,7 @@ public class VideoAction implements ServletRequestAware{
 	    calendar.set(Calendar.MILLISECOND,0);
 	    Calendar time1 = Calendar.getInstance();
 	    Calendar time2 = Calendar.getInstance();
+	    Second_screen_contentAction second_screen_content=new Second_screen_contentAction();
 	    for(int i=0;i<entities.length;i++) {
 			    time1.setTime(calendar.getTime());
 			    time1.set(Calendar.HOUR_OF_DAY,0);
@@ -102,13 +106,14 @@ public class VideoAction implements ServletRequestAware{
 			    time2.set(Calendar.MILLISECOND,0);  
 			    
 			    System.out.println(formatter.format(time1.getTime()));
-			    fileContent=fileContent+"\n"+entities[i]+"\n"+formatter.format(time1.getTime())+" --> "+formatter.format(time2.getTime())+"\n"+entities[i]+"\n";
+			    fileContent=fileContent+"\n"+entities[i]+"\n"+formatter.format(time1.getTime())+" --> "+formatter.format(time2.getTime())+"\n"+second_screen_content.contentGenerator(entities[i])+"\n";
 	    }
 	    FileWriter fw = new FileWriter(file);
 		BufferedWriter bw = new BufferedWriter(fw);
 		bw.write(fileContent);
 		bw.close();
 	    
+		}
 		}
 	}
 		
