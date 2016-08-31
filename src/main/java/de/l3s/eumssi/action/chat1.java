@@ -98,13 +98,13 @@ public class chat1
                System.out.println("connections: " + connections);
                }
         }
-        if(request.getParameter("content")!=null){
+        if(request.getParameter("entityName")!=null){
         	System.out.println("first screen userId: " +(String) request.getSession().getAttribute("userId"));
         	Second_screen_contentAction second_screen_content=new Second_screen_contentAction();
         	 String content;
 			try {
-				content = request.getParameter("content");
-				// System.out.println("content"+content); 
+				content = second_screen_content.contentGenerator(request.getParameter("entityName"),request.getParameter("infoOrQues"));
+				 System.out.println("content"+content); 
 			        messageSender.send((String) request.getSession().getAttribute("userId"),content);
 			} catch (Exception e) {
 		//		System.out.println("error happened");

@@ -8,20 +8,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-
 import de.l3s.eumssi.dao.MongoDBManager;
 
 public abstract class ContentGenerator {
 	
  public	MongoDBManager mongo = MongoDBManager.getInstance();
     
-   public abstract ArrayList<String> makeDicision(); 
+   public abstract String makeDicision(String infoOrQues); 
  
-   public abstract JSONArray questionGenerator() throws ParseException;
+   public abstract String questionGenerator() throws ParseException;
    
-   public abstract JSONArray infoGenerator();
+   public abstract String infoGenerator();
  
    public abstract String abstractGenerator();
    

@@ -136,7 +136,7 @@ public class UpdateLocationInfoMongo implements Action,ServletRequestAware {
 
 						}
 
-
+/*
 // get location and update in mongo 
 private static void UpdateLocation(String locationName,DBCollection collection) throws Exception {
     JSONParser parser = new JSONParser();
@@ -185,7 +185,6 @@ private static void UpdateLocation(String locationName,DBCollection collection) 
 					    String[] splitKey2=(String[])tempValue.split("/");
     			        mainValue=splitKey2[splitKey2.length-1].toString();
     			        mainValue=mainValue.replaceAll("[_]", " ");
-    			        /*
     			        if(!locationName.equals(mainValue)){
     			        	if(mainValue.equals("Capital city")){
     			             mainValue="capital";
@@ -196,7 +195,6 @@ private static void UpdateLocation(String locationName,DBCollection collection) 
     			        		updateQuery.put(mainKey,mainValue);
     			        	}
     			        }
-    			        */
     				  }
     			  }
     			  else if(mainKey.equals("drivesOn")){
@@ -233,5 +231,5 @@ private static void UpdateLocation(String locationName,DBCollection collection) 
 
 }
 }
-
+*/
 }

@@ -1,53 +1,53 @@
 WEBVTT FILE
 
-Miami
+a
 00:00:05.000 --> 00:00:08.000
-{"thumbnail":"http:\/\/commons.wikimedia.org\/wiki\/Special:FilePath\/Miami_collage_20110330.jpg?width=300","default_content":{"type":"abstract"},"name":"Miami","abstract":"Miami is a city located on the Atlantic coast in southeastern Florida and the county seat of Miami-Dade County.The 44th most populated city proper in the United States, with a population of 417,650, it is the principal, central, and most populous city of the Miami metropolitan area, and the most populous metropolis in the Southeastern United States after Washington, D.C."}
+Miami
 
-Cuban_American
+b
 00:00:12.000 --> 00:00:15.000
-{"thumbnail":"http:\/\/commons.wikimedia.org\/wiki\/Special:FilePath\/Desi_Arnaz_1950.JPG?width=300","default_content":{"type":"abstract"},"name":"Cuban_American","abstract":"Cuban Americans are Americans who trace their national origin to Cuba; and even though they identify themselves as Cubans.Cuban Americans form a distantly third largest Hispanic group in the United States, but nonetheless the largest group of Hispanics of European ancestry as a percentage but not in numbers.Many communities throughout the United States have significant Cuban-American populations."}
+Cuban_American
 
-Republican_Party_(United_States)
+c
 00:00:15.000 --> 00:00:18.000
-{"thumbnail":"http:\/\/commons.wikimedia.org\/wiki\/Special:FilePath\/Logo-GOP.png?width=300","default_content":{"type":"abstract"},"name":"Republican_Party_(United_States)","abstract":"The Republican Party, commonly referred to as GOP , is one of the two major contemporary political parties in the United States, the other being its historic rival, the Democratic Party.Founded by anti-slavery activists, modernizers, ex-Whigs, and ex-Free Soilers in 1854, the Republicans dominated politics nationally and in the majority of northern States for most of the period between 1860 and 1932.There have been 18 Republican presidents, the first being Abraham Lincoln, who served from 1861 until his assassination in 1865, and the most recent being George W."}
+Republican_Party_(United_States)
 
-Donald_Trump
+d
 00:00:18.000 --> 00:00:21.000
-{"thumbnail":"http:\/\/commons.wikimedia.org\/wiki\/Special:FilePath\/Donald_Trump_September_3_2015.jpg?width=300","default_content":{"type":"abstract"},"name":"Donald_Trump","abstract":"Donald John Trump is an American real estate developer, television personality, business author, and political candidate.He is the chairman and president of The Trump Organization, and the founder of Trump Entertainment Resorts."}
-
-Venezuela
-00:00:30.000 --> 00:00:33.000
-{"thumbnail":"http:\/\/commons.wikimedia.org\/wiki\/Special:FilePath\/Flag_of_Venezuela.svg?width=300","default_content":{"type":"map"},"name":"Venezuela","questions":[{"question":"What is the name of the capital?","correct":"Caracas","options":["Caracas","Basse-Terre","Castries","St. George's"]},{"question":"What is the name of the currency?","correct":"Bolivar","options":["Dollar","Bolivar","Peso","Euro"]},{"question":"Which countries are the neighbours?","correct":"Colombia,Brazil,Guyana","options":["Grenada","Colombia","Brazil","Guyana"]}],"abstract":"Venezuela , officially called the Bolivarian Republic of Venezuela , is a country on the northern coast of South America.Venezuela's territory covers around 916,445 km2 with an estimated population around 29,100,000.","map":"<iframe width='600' height='300' frameborder='0' style='border:0' src='https:\/\/www.google.com\/maps\/embed\/v1\/place?q=Venezuela&key=AIzaSyAJCit6uJoDOEdy-PPb0L5_3SydfJbJ3Vg' allowfullscreen><\/iframe>","infos":["The capital is Caracas","The local currency is Bolivar","language spoken Spanish"]}
-
-President
-00:00:45.000 --> 00:00:48.000
-{"thumbnail":null,"default_content":{"type":"abstract"},"name":"President","abstract":"A president is the leader of a country or a division or part of a country, typically a republic, a democracy, or a dictatorship.The title president is sometimes used by extension for leaders of other groups."}
-
-United_States
-00:00:59.000 --> 00:01:02.000
-{"thumbnail":"http:\/\/en.wikipedia.org\/wiki\/Special:FilePath\/Flag_of_the_United_States.svg?width=300","default_content":{"type":"map"},"name":"United_States","questions":[{"question":"What is the name of the capital?","correct":"Washington","options":["Concord,_New_Hampshire","Hartford,_Connecticut","Washington","Albany,_New_York"]},{"question":"What is the name of the currency?","correct":"Dollar","options":["Peso","Dollar","Gourde","United States Dollar"]},{"question":"What is the official language spoken here?","correct":"English","options":["French","English","Dominican Spanish","Cuban Spanish"]},{"question":"Which countries are the neighbours?","correct":"Canada,Cuba,Mexico","options":["Canada","Connecticut","Cuba","Mexico"]}],"abstract":"The United States of America , commonly referred to as the United States , America, and sometimes the States, is a federal republic consisting of 50 states, 16 territories, and a federal district.The 48 contiguous states and Washington, D.C., are in central North America between Canada and Mexico.","map":"<iframe width='600' height='300' frameborder='0' style='border:0' src='https:\/\/www.google.com\/maps\/embed\/v1\/place?q=United_States&key=AIzaSyAJCit6uJoDOEdy-PPb0L5_3SydfJbJ3Vg' allowfullscreen><\/iframe>","infos":["The capital is Washington","The local currency is Dollar","The language spoken is English","language spoken English,Spanish,Hawaiian,French"]}
-
 Donald_Trump
-00:01:04.000 --> 00:01:07.000
-{"thumbnail":"http:\/\/commons.wikimedia.org\/wiki\/Special:FilePath\/Donald_Trump_September_3_2015.jpg?width=300","default_content":{"type":"abstract"},"name":"Donald_Trump","abstract":"Donald John Trump is an American real estate developer, television personality, business author, and political candidate.He is the chairman and president of The Trump Organization, and the founder of Trump Entertainment Resorts."}
 
-Latin_America
-00:01:20.000 --> 00:01:23.000
-{"thumbnail":"http:\/\/commons.wikimedia.org\/wiki\/Special:FilePath\/Latin_America_(orthographic_projection).svg?width=300","default_content":{"type":"abstract"},"name":"Latin_America","abstract":"Latin America is a region of the Americas that comprises countries where Romance languages are predominant; primarily Spanish and Portuguese, but also French.It consists of twenty sovereign states which cover an area that stretches from the southern border of the United States to the southern tip of South America, including the Caribbean."}
+e
+00:00:30.000 --> 00:00:33.000
+Venezuela
 
-Miami
-00:01:33.000 --> 00:01:36.000
-{"thumbnail":"http:\/\/commons.wikimedia.org\/wiki\/Special:FilePath\/Miami_collage_20110330.jpg?width=300","default_content":{"type":"abstract"},"name":"Miami","abstract":"Miami is a city located on the Atlantic coast in southeastern Florida and the county seat of Miami-Dade County.The 44th most populated city proper in the United States, with a population of 417,650, it is the principal, central, and most populous city of the Miami metropolitan area, and the most populous metropolis in the Southeastern United States after Washington, D.C."}
+f
+00:00:45.000 --> 00:00:48.000
+President
 
+g
+00:00:59.000 --> 00:01:02.000
 United_States
-00:02:03.000 --> 00:02:06.000
-{"thumbnail":"http:\/\/en.wikipedia.org\/wiki\/Special:FilePath\/Flag_of_the_United_States.svg?width=300","default_content":{"number":0,"type":"questions"},"name":"United_States","questions":[{"question":"What is the name of the capital?","correct":"Washington","options":["Hartford,_Connecticut","Washington","Concord,_New_Hampshire","Albany,_New_York"]},{"question":"What is the name of the currency?","correct":"Dollar","options":["Dollar","United States Dollar","Gourde","Peso"]},{"question":"What is the official language spoken here?","correct":"English","options":["Dominican Spanish","French","English","Cuban Spanish"]},{"question":"Which countries are the neighbours?","correct":"Canada,Mexico,Cuba","options":["Canada","Mexico","Connecticut","Cuba"]}],"abstract":"The United States of America , commonly referred to as the United States , America, and sometimes the States, is a federal republic consisting of 50 states, 16 territories, and a federal district.The 48 contiguous states and Washington, D.C., are in central North America between Canada and Mexico.","map":"<iframe width='600' height='300' frameborder='0' style='border:0' src='https:\/\/www.google.com\/maps\/embed\/v1\/place?q=United_States&key=AIzaSyAJCit6uJoDOEdy-PPb0L5_3SydfJbJ3Vg' allowfullscreen><\/iframe>","infos":["The capital is Washington","The local currency is Dollar","The language spoken is English","language spoken English,Spanish,Hawaiian,French"]}
 
-Cuba
-00:02:20.000 --> 00:02:23.000
-{"thumbnail":"http:\/\/commons.wikimedia.org\/wiki\/Special:FilePath\/Flag_of_Cuba.svg?width=300","default_content":{"type":"abstract"},"name":"Cuba","questions":[{"question":"What is the name of the capital?","correct":"Havana","options":["Nassau,_Bahamas","George Town","Havana","Kingston"]},{"question":"What is the name of the currency?","correct":"Peso","options":["Gourde","Dollar","Peso","Lempira"]},{"question":"What is the official language spoken here?","correct":"Cuban Spanish","options":["Spanish","Jamaican English","Cuban Spanish","English"]},{"question":"Which countries are the neighbours?","correct":"United States","options":["Jamaica","The_Bahamas","United States","Cayman_Islands"]},{"question":"Which one is the largest city in this country?","correct":"Havana","options":["Havana"]},{"question":"Which is the side for vehicle in this country?","correct":"right","options":["Right","Left"]}],"abstract":"Cuba, officially the Republic of Cuba ), is an island country in the Caribbean.The nation of Cuba comprises the main island of Cuba, the Isla de la Juventud and several archipelagos.","map":"<iframe width='600' height='300' frameborder='0' style='border:0' src='https:\/\/www.google.com\/maps\/embed\/v1\/place?q=Cuba&key=AIzaSyAJCit6uJoDOEdy-PPb0L5_3SydfJbJ3Vg' allowfullscreen><\/iframe>","infos":["The capital is Havana","The local currency is Peso","The language spoken is Cuban Spanish","language spoken Spanish"]}
+h
+00:01:04.000 --> 00:01:07.000
+Donald Trump
 
+i
+00:01:20.000 --> 00:01:23.000
+Latin_America
+
+j
+00:01:33.000 --> 00:01:36.000
 Miami
+
+k
+00:02:03.000 --> 00:02:06.000
+United_States
+
+l
+00:02:20.000 --> 00:02:23.000
+Cuba
+
+m
 00:02:30.000 --> 00:02:33.000
-{"thumbnail":"http:\/\/commons.wikimedia.org\/wiki\/Special:FilePath\/Miami_collage_20110330.jpg?width=300","default_content":{"type":"abstract"},"name":"Miami","abstract":"Miami is a city located on the Atlantic coast in southeastern Florida and the county seat of Miami-Dade County.The 44th most populated city proper in the United States, with a population of 417,650, it is the principal, central, and most populous city of the Miami metropolitan area, and the most populous metropolis in the Southeastern United States after Washington, D.C."}
+Miami

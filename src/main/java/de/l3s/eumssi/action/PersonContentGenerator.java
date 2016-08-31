@@ -12,9 +12,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
@@ -40,13 +37,13 @@ public class PersonContentGenerator extends ContentGenerator {
 		 personObject= personObjectConstructor;
 	//	 mongo=mongoClient;
 	//	 personCollection = mongo.getCollection("person");
-		
+		/*	
 		 //template for person question 
 		 personMapQuestion.put("birthPlace","What is this person's birthplace?");
 		 personMapQuestion.put("almaMater","Which university or college did this person attend?");
 		 personMapQuestion.put("birthDate","In which year was this person born?");
 		 personMapQuestion.put("deathDate","In which year was this person died?");
-		 
+		 */
 		 personMapQuestion.put("deathPlace","Where this person died?");
 		 
 		 
@@ -60,23 +57,23 @@ public class PersonContentGenerator extends ContentGenerator {
 	
 	
 	@Override
-	public ArrayList<String> makeDicision() {
+	public String makeDicision(String infoOrQues) {
 		String dicision;
 		boolean hasAbstract=false;
 
 		for (Iterator iteratorForKeyIntersection = personObject.keySet()
 				.iterator(); iteratorForKeyIntersection.hasNext();) {
 			String keyForIntersection = (String) iteratorForKeyIntersection.next();
-			
+			if(infoOrQues.equals("question") || infoOrQues.equals("both")){
 			 if (personMapQuestion.containsKey(keyForIntersection)) {
 				questionableKeyList.add(keyForIntersection);
 			}
-			
-			
+			}
+			if(infoOrQues.equals("info") || infoOrQues.equals("both")){
 			if (personMapInfo.containsKey(keyForIntersection)) {
 				infoableKeyList.add(keyForIntersection);
 			}
-			
+			}
 			if(keyForIntersection.equals("abstract"))
 				hasAbstract=true;
 			
@@ -99,53 +96,58 @@ public class PersonContentGenerator extends ContentGenerator {
 		// take dicision randomly
 		if(dicisionList.size()==0)
 		   return null;
-		else
-		return dicisionList;
+		Random ran = new Random();
+
+		int x = ran.nextInt(dicisionList.size());
+		dicision=dicisionList.get(x);
+		System.out.println("decision "+dicision);
+		return dicision;
 	}
 
 	@Override
-	public JSONArray questionGenerator() throws ParseException {
-		JSONArray questions=new JSONArray();
+	public String questionGenerator() throws ParseException {
 		String correctAns = null;
 		String correctOrderAns;
 		String type=(String) personObject.get("type");
-		JSONArray options;
+		ArrayList options;
 		String question ;
-		JSONObject questionObj=new JSONObject();
-
-		for(int i=0;i<questionableKeyList.size();i++){
-		String keyForQuestion = questionableKeyList.get(i);
-		String keyValue = (String) personObject.get(keyForQuestion);
-		 options = GetPersonFalseAns(keyForQuestion, keyValue);
-         if(keyForQuestion.equals("birthDate") || keyForQuestion.equals("deathDate")){
+		Random ran = new Random();
+		int questionSelectorNumber = ran.nextInt(questionableKeyList.size());
+		String mainKeyForQuestion = questionableKeyList.get(questionSelectorNumber);
+		String mainKeyValue = (String) personObject.get(mainKeyForQuestion);
+		 options = GetPersonFalseAns(mainKeyForQuestion, mainKeyValue);
+         if(mainKeyForQuestion.equals("birthDate") || mainKeyForQuestion.equals("deathDate")){
         	 DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
      	    DateFormat targetFormat = new SimpleDateFormat("d MMMM yyyy");
-     	   Date keyValueDateType=df.parse(keyValue);
-     	  keyValue=targetFormat.format(keyValueDateType);
+     	   Date keyValueDateType=df.parse(mainKeyValue);
+     	  mainKeyValue=targetFormat.format(keyValueDateType);
      	    
          }
          System.out.println(options);
-         question=personMapQuestion.get(questionableKeyList.get(i));
-			questionObj.put("question",personMapQuestion.get(questionableKeyList.get(i)));
-			questionObj.put("options",options);
-			questionObj.put("correct",keyValue);
-		    //questions array will go inside content array
-			questions.add(questionObj);
-		}
+		 question = "<div><img src=Images" + "//" + "quiz.png><strong>" + personObject.getString("name") + "</strong><br>"
+				+ personMapQuestion.get(mainKeyForQuestion) + "<br><input type='radio' name=\'"
+				+ mainKeyValue + "\' value=\'" + options.get(0) + "\'>" + options.get(0)
+				+ "<br><input type='radio' name=\'" + mainKeyValue + "\' value=\'" + options.get(1) + "\'>"
+				+ options.get(1) + "<br><input type='radio' name=\'" + mainKeyValue + "\' value=\'"
+				+ options.get(2) + "\'>" + options.get(2) + "<br><input type='radio' name=\'" + mainKeyValue
+				+ "\' value=\'" + options.get(3) + "\'>" + options.get(3)
+				+ "<br><input type='button' class='btn btn-primary' id='check' value='check' ></div>";
 
 		
-		return questions;
+		return question;
 	}
 
 	@Override
-	public JSONArray infoGenerator() {
-		JSONArray infos=new JSONArray();
-		for(int i=0;i<infoableKeyList.size();i++){
-		String info = (String) personObject.get(infoableKeyList.get(i));
-        info = personMapInfo.get(infoableKeyList.get(i)) + info;
-        infos.add(info);
-		}
-		return infos;
+	public String infoGenerator() {
+		Random ran = new Random();
+		int infoSelectorNumber = ran.nextInt(infoableKeyList.size());
+		String mainKeyForInfo = infoableKeyList.get(infoSelectorNumber);
+		String mainKeyValue = (String) personObject.get(mainKeyForInfo);
+		String info;
+        info = "<img src=Images" + "/" + "Info.png><strong>" + personObject.getString("name") + "</strong>" + "<br>"
+				+ personMapInfo.get(mainKeyForInfo) + mainKeyValue;
+		
+		return info;
 	}
 
 	@Override
@@ -165,8 +167,8 @@ public class PersonContentGenerator extends ContentGenerator {
 		   +"EUMSSI.Manager.addWidget(new AjaxSolr.GenericGraphWidget({id: 'my-genericgraph-"+entityNameForId+"\',target: '#my-genericgraph-"+entityNameForId+"'})); EUMSSI.Manager.doRequest(\'"+entityName+"\'); </script></div>" ;
 		   return wordgraph;
 	   }
-	private JSONArray GetPersonFalseAns(String keyName, String keyValue) throws ParseException {
-		JSONArray  options = new JSONArray ();
+	private ArrayList GetPersonFalseAns(String keyName, String keyValue) throws ParseException {
+		ArrayList<String> options = new ArrayList<String>();
 		if(keyName.equals("birthDate") || keyName.equals("deathDate")){
 			
 	    DateFormat df = new SimpleDateFormat("yyyy-MM-dd");

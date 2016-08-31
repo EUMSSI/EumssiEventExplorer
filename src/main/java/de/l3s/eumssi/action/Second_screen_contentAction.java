@@ -9,7 +9,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -40,7 +39,6 @@ public class Second_screen_contentAction{
 DBCollection personCollection=mongo.getCollection("person");
 	//get the collection of all locations. 
 DBCollection locationCollection=mongo.getCollection("allLocations");
-JSONObject content=new JSONObject();
 /*
 public Second_screen_contentAction(MongoDBManager mongoClient){
 	mongo=mongoClient;
@@ -48,8 +46,7 @@ public Second_screen_contentAction(MongoDBManager mongoClient){
 	 locationCollection = mongo.getCollection("allLocations");
 }
 */
-	public JSONObject contentGenerator(String entityName ) throws Exception {
-		JSONObject content=new JSONObject();
+	public String contentGenerator(String entityName, String infoOrQues ) throws Exception {
 		System.out.println(entityName);
 		
     /*
@@ -87,12 +84,9 @@ public Second_screen_contentAction(MongoDBManager mongoClient){
 				 
 				 
 				if (locationCursor.count() == 0 && personCursor.count() == 0) {
-					
 					entity = abstractFinder(entityName);
-					if(entity!=null){
 					entity.put("type", "other");
 					entity.put("name", entityName);
-					}
 					}
 				
 				if(entity!=null){
@@ -100,103 +94,95 @@ public Second_screen_contentAction(MongoDBManager mongoClient){
 			//entity variable is a json object which contains all the information that can be shown in second screen.
 			
 				String type = entity.getString("type");
-				content.put("name",entity.getString("name") );
-				String thumbnail=entity.getString("thumbnail");
-				content.put("thumbnail", thumbnail);
 				if(type.equals("city") || type.equals("country") || type.equals("location")){
 					LocationContentGenerator locationObject=new LocationContentGenerator(entity);
-					ArrayList decisionList=locationObject.makeDicision();
-					System.out.println("Decision: "+decisionList);
-					if(decisionList!=null){
-					for(int i=0;i<decisionList.size();i++){
-					if(decisionList.get(i).equals("question")){
-						JSONArray questions=locationObject.questionGenerator();
-						if(questions!=null){
-						
-							content.put("questions", questions);
+					String decision=locationObject.makeDicision(infoOrQues);
+					System.out.println("Decision: "+decision);
+					if(decision!=null)
+					if(decision.equals("question")){
+						String question=locationObject.questionGenerator();
+						if(question!=null){
+							String thumbnail=entity.getString("thumbnail");
+							return question;
 						}
 							
 					}
 					
-					else if(decisionList.get(i).equals("info")){
-						JSONArray infos=locationObject.infoGenerator();
-						if(infos!=null){
-							content.put("infos", infos);	
+					else if(decision.equals("info")){
+						String info=locationObject.infoGenerator();
+						if(info!=null){
+							String thumbnail=entity.getString("thumbnail");
+							return info;
 						}
 							
 					}
-					else if(decisionList.get(i).equals("abstract")){
+					else if(decision.equals("abstract")){
 						String abs=locationObject.abstractGenerator();
 						if(abs!=null){
-							
-							content.put("abstract", abs);
+							String thumbnail=entity.getString("thumbnail");
+							return abs;
 						}
 							
 					}
-					else if (decisionList.get(i).equals("map")){
+					else if (decision.equals("map")){
 						String googleMap=locationObject.mapGenerator(entity.getString("name"));
-					
-						content.put("map", googleMap);
+						String thumbnail=entity.getString("thumbnail");
+						return googleMap;
 					}
 					
-					else if (decisionList.get(i).equals("wordGraph")){
+					else if (decision.equals("wordGraph")){
 						String wordGraph=locationObject.wordGraphGenerator(entity.getString("name"));
-						content.put("wordGraph", wordGraph);
-						
-					}
-				 }
-			   }
-					
-			}
+						String thumbnail=entity.getString("thumbnail");
+						return wordGraph;
+					}	
+				}
 				
 				else if(type.equals("person")){
 					PersonContentGenerator personObject=new PersonContentGenerator(entity);
-					ArrayList<String> decisionList=personObject.makeDicision();
-					if(decisionList!=null)
-					for(int i=0;i<decisionList.size();i++){	
-					if(decisionList.get(i).equals("question")){
-						JSONArray questions=personObject.questionGenerator();
-						if(questions!=null){
-							content.put("questions", questions);
+					String decision=personObject.makeDicision(infoOrQues);
+					if(decision!=null)
+					if(decision.equals("question")){
+						String question=personObject.questionGenerator();
+						if(question!=null){
+							String thumbnail=entity.getString("thumbnail");
+							return question;
 						}
 							
 					}
 					
-					else if(decisionList.get(i).equals("info")){
-						JSONArray infos=personObject.infoGenerator();
-						if(infos!=null){
-							content.put("infos", infos);
+					else if(decision.equals("info")){
+						String info=personObject.infoGenerator();
+						if(info!=null){
+							String thumbnail=entity.getString("thumbnail");
+						    return info;
 						}
 							
 					}
-					else if(decisionList.get(i).equals("abstract")){
+					else if(decision.equals("abstract")){
 						String abs=personObject.abstractGenerator();
 						if(abs!=null){
-						
-							content.put("abstract", abs);
+							String thumbnail=entity.getString("thumbnail");
+							return abs;
 						}
 							
 					}
-					else if (decisionList.get(i).equals("wordGraph")){
+					else if (decision.equals("wordGraph")){
 						String wordGraph=personObject.wordGraphGenerator(entity.getString("name"));
-						
-						content.put("wordGraph", wordGraph);
+						String thumbnail=entity.getString("thumbnail");
+						return wordGraph;
 					}
-				}
-				}
-				 
-			else if(type.equals("other")) {
-				
-					String otherEntityName = (String) entity.get("name");
-					otherEntityName = otherEntityName.replaceAll("[_]", " ");
-					String entityAbstract =(String) entity.get("abstract");
-					entityAbstract = entityAbstract.replaceAll("[\"]", "");
-					entityAbstract = entityAbstract.replaceAll("\\(.+?\\)\\s*", "");
-					content.put("abstract",entityAbstract );
-				  
 					
 				}
-				content=DefaultFinder(content);
+				 
+				else if(type.equals("other")) {
+					String otherEntityName = (String) entity.get("name");
+					otherEntityName = otherEntityName.replaceAll("[_]", " ");
+					String entityAbstract = "<strong>" + otherEntityName + "</strong><br>"
+							+ (String) entity.get("abstract");
+					entityAbstract = entityAbstract.replaceAll("[\"]", "");
+					entityAbstract = entityAbstract.replaceAll("\\(.+?\\)\\s*", "");
+					return entityAbstract;
+				}
 		}
 		
 			
@@ -205,54 +191,13 @@ public Second_screen_contentAction(MongoDBManager mongoClient){
 			e.printStackTrace();
 		}
 		
-	
 		
 		
-		return content;
+		
+		return entityName;
         
     }
 	
-//select the default content	
-	private  JSONObject DefaultFinder(JSONObject content){
-		ArrayList<String>decisionList=new ArrayList<>();
-		JSONObject defaultContent=new JSONObject();
-		Random ran=new Random();
-		for (Iterator iterator = content.keySet().iterator(); iterator.hasNext();){
-		 String contentType=(String) iterator.next();
-			if(!contentType.equals("name") && !contentType.equals("thumbnail")){
-			decisionList.add(contentType);
-		}
-	  }
-		String contentDecision=null;
-		try{
-		 contentDecision=decisionList.get(ran.nextInt(decisionList.size()));
-		}
-		catch(IllegalArgumentException e){
-			System.out.println(decisionList.size());
-		}
-
-		defaultContent.put("type",contentDecision );
-		if(contentDecision.equals("questions")){
-			JSONArray questions= (JSONArray) content.get("questions");
-			int questionNumber=0;
-			try{
-			questionNumber=ran.nextInt(questions.size());
-			}
-			catch(NullPointerException e){
-				System.out.println(questions.size());
-			}
-			defaultContent.put("number",questionNumber );
-		}
-		if(contentDecision.equals("infos")){
-			JSONArray infos= (JSONArray) content.get("infos");
-			int infoNumber=ran.nextInt(infos.size());
-			defaultContent.put("number",infoNumber );
-		}
-		
-	   content.put("default_content", defaultContent);
-		
-		return content;
-	}
 	
 	private static BasicDBObject abstractFinder(String entityName) throws Exception {
 		String outputString = readUrl("http://dbpedia.org/data/" + entityName + ".json");
