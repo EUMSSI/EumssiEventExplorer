@@ -35,10 +35,9 @@ public class Second_screen_contentAction{
  
  HttpServletRequest request;
  public MongoDBManager mongo= MongoDBManager.getInstance() ;
-	//get the collection of all person
 DBCollection personCollection=mongo.getCollection("person");
 	//get the collection of all locations. 
-DBCollection locationCollection=mongo.getCollection("allLocations");
+DBCollection locationCollection=mongo.getCollection("allLocations_dbpedia");
 /*
 public Second_screen_contentAction(MongoDBManager mongoClient){
 	mongo=mongoClient;
@@ -97,6 +96,7 @@ public Second_screen_contentAction(MongoDBManager mongoClient){
 				if(type.equals("city") || type.equals("country") || type.equals("location")){
 					LocationContentGenerator locationObject=new LocationContentGenerator(entity);
 					String decision=locationObject.makeDicision(infoOrQues);
+					
 					System.out.println("Decision: "+decision);
 					if(decision!=null)
 					if(decision.equals("question")){
@@ -140,15 +140,20 @@ public Second_screen_contentAction(MongoDBManager mongoClient){
 				else if(type.equals("person")){
 					PersonContentGenerator personObject=new PersonContentGenerator(entity);
 					String decision=personObject.makeDicision(infoOrQues);
+					if(decision.equals("abstract")||decision.equals("info")){
+						System.out.println("got it");
+					}
 					if(decision!=null)
 					if(decision.equals("question")){
 						String question=personObject.questionGenerator();
 						if(question!=null){
 							String thumbnail=entity.getString("thumbnail");
 							return question;
+						}					
 						}
+			          
 							
-					}
+					
 					
 					else if(decision.equals("info")){
 						String info=personObject.infoGenerator();
@@ -177,11 +182,13 @@ public Second_screen_contentAction(MongoDBManager mongoClient){
 				else if(type.equals("other")) {
 					String otherEntityName = (String) entity.get("name");
 					otherEntityName = otherEntityName.replaceAll("[_]", " ");
+					if(entity.get("abstract")!=null){
 					String entityAbstract = "<strong>" + otherEntityName + "</strong><br>"
 							+ (String) entity.get("abstract");
 					entityAbstract = entityAbstract.replaceAll("[\"]", "");
 					entityAbstract = entityAbstract.replaceAll("\\(.+?\\)\\s*", "");
 					return entityAbstract;
+					}
 				}
 		}
 		
@@ -194,7 +201,7 @@ public Second_screen_contentAction(MongoDBManager mongoClient){
 		
 		
 		
-		return entityName;
+		return "null";
         
     }
 	

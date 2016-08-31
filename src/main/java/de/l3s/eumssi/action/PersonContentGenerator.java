@@ -37,13 +37,13 @@ public class PersonContentGenerator extends ContentGenerator {
 		 personObject= personObjectConstructor;
 	//	 mongo=mongoClient;
 	//	 personCollection = mongo.getCollection("person");
-		/*	
-		 //template for person question 
+			
+		// template for person question 
 		 personMapQuestion.put("birthPlace","What is this person's birthplace?");
 		 personMapQuestion.put("almaMater","Which university or college did this person attend?");
 		 personMapQuestion.put("birthDate","In which year was this person born?");
 		 personMapQuestion.put("deathDate","In which year was this person died?");
-		 */
+		 
 		 personMapQuestion.put("deathPlace","Where this person died?");
 		 
 		 

@@ -20,7 +20,7 @@ import de.l3s.eumssi.dao.MongoDBManager;
 public class LocationContentGenerator extends ContentGenerator {
 	//get the collection of all locations.
 	public MongoDBManager mongo=MongoDBManager.getInstance();
-    public DBCollection locationCollection=mongo.getCollection("allLocations");
+    public DBCollection locationCollection=mongo.getCollection("allLocations_dbpedia");
 	Map<String, String> locationMapQuestion = new HashMap<String, String>();
 	Map<String, String> locationMapInfo = new HashMap<String, String>();
 	
@@ -38,21 +38,21 @@ public class LocationContentGenerator extends ContentGenerator {
 	//	 locationCollection = mongo.getCollection("allLocations");
 	
 		
-		// locationMapQuestion.put("currency", "What is the name of the currency?");
+	     locationMapQuestion.put("currency", "What is the name of the currency?");
 		
-	//	 locationMapQuestion.put("officialLanguage", "What is the official language spoken here?");
-	//	 locationMapQuestion.put("languages", "Which language/languages are spoken?");
+		 locationMapQuestion.put("officialLanguage", "What is the official language spoken here?");
+		// locationMapQuestion.put("languages", "Which language/languages are spoken?");
 		
-	//	 locationMapQuestion.put("neighbours", "Which countries are the neighbours?");
+		 locationMapQuestion.put("neighbours", "Which countries are the neighbours?");
 		
-	//	 locationMapQuestion.put("timezone", "In which timezone is this city located?");
+		 locationMapQuestion.put("timezone", "In which timezone is this city located?");
 		
 		 locationMapQuestion.put("capital", "What is the name of the capital?");
-		/*
+		
 		 locationMapQuestion.put("country", "In which country is this city located?");
 		 locationMapQuestion.put("adminArea", "In which region is this city located?");
 		 locationMapQuestion.put("population", "Which is more populated?");
-		 */
+		 
 		// locationMapQuestion.put("largestCity", "Which one is the largest city in this country?");
 		// locationMapQuestion.put("drivesOn", "Which is the side for vehicle in this country?");
 		 
