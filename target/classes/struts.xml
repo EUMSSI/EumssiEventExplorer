@@ -5,6 +5,7 @@
 	"http://struts.apache.org/dtds/struts-2.3.dtd">
 <struts>
 	<constant name="struts.devMode" value="true"></constant>
+	<constant name="struts.ui.theme" value="simple"/>
     <constant name="struts.action.excludePattern" value="/webresources/.*?"/>
 	<package name="root" namespace="/" extends="struts-default">
 		<default-action-ref name="secondscreen"></default-action-ref>
@@ -69,7 +70,9 @@
        
        <action name="editor" 
 			class="de.l3s.eumssi.action.Editor">
-              <result name="defaultcontents">/views/DefaultContents.jsp</result>
+              <result name="default_contents">/views/DefaultContents.jsp</result>
+              <result name="change_default_request">/views/ChangeDefaultContents.jsp</result>
+              <result name="edit_default_request">/views/EditDefaultContents.jsp</result>
         </action>
       <!--   
          <action name="video1" 
