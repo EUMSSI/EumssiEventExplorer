@@ -100,7 +100,7 @@ public class chat1
         }
         if(request.getParameter("content")!=null){
         	System.out.println("first screen userId: " +(String) request.getSession().getAttribute("userId"));
-        	Second_screen_contentAction second_screen_content=new Second_screen_contentAction();
+        //	Second_screen_contentAction second_screen_content=new Second_screen_contentAction();
         	 String content;
 			try {
 				content = request.getParameter("content");

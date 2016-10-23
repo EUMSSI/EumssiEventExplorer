@@ -43,6 +43,7 @@ var documentNumber;
 for(i=0;i<jsonContent.length;i++){
 	var name=jsonContent[i].name;
 	var thumbnail=jsonContent[i].thumbnail;
+	var time=jsonContent[i].time;
 	var default_content=jsonContent[i].default_content.type;
 //	$("#content").append("<div class="col-md-8"><li>"+jsonContent[i][default_content]+"</li></div>").css({"width":"70%","float":"left"})
  if(default_content=="questions"){
@@ -86,10 +87,11 @@ for(i=0;i<jsonContent.length;i++){
  }
    
  documentNumber=i+1;
- $("#content").append("<div style='background-color: #fafafa;border-style: ridge;' class='row' style='border-style: ridge;'><div style='padding:10px;' class='col-md-8'>"+
- content+"</div><div style='padding:10px;' class='col-md-4'><a style='float:right' href=editor?fileName="+fileName+"&entityName="+name+"&actionType=changeDefaultRequest&documentNumber="+documentNumber
+ $("#content").append("<div style='background-color: #fafafa;border-style: ridge;' class='row' style='border-style: ridge;'><div style='padding:10px;' class='col-md-8'>At: "+time
+ +"<br>"+content+"</div><div style='padding:10px;' class='col-md-4'><a style='float:right' href=editor?fileName="+fileName+"&entityName="+name+"&actionType=changeDefaultRequest&documentNumber="+documentNumber
 		 +" class='btn btn-primary' role='button'>Change</a><br><br><a data-content-type="+default_content+" id='editLink' style='float:right' href=editor?fileName="+fileName+"&entityName="+name+"&actionType=editDefaultRequest&documentNumber="+documentNumber
-		 +" class='btn btn-primary' role='button'>Edit</a></div></div>")
+		 +" class='btn btn-primary' role='button'>Edit</a><br><br><a style='float:right' href=editor?fileName="+fileName+"&entityName="+name+"&actionType=delete&documentNumber="+documentNumber
+		 +" class='btn btn-primary' role='button'>Delete</a></div></div>")
  $("#content").append("<br>");
  
 

@@ -118,11 +118,15 @@ public class PersonContentGenerator extends ContentGenerator {
 		String keyValue = (String) personObject.get(keyForQuestion);
 		 options = GetPersonFalseAns(keyForQuestion, keyValue);
          if(keyForQuestion.equals("birthDate") || keyForQuestion.equals("deathDate")){
+        	try{
         	 DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
      	    DateFormat targetFormat = new SimpleDateFormat("d MMMM yyyy");
      	   Date keyValueDateType=df.parse(keyValue);
      	  keyValue=targetFormat.format(keyValueDateType);
-     	    
+        	}
+        	catch(ParseException e){
+        		
+        	}
          }
          System.out.println(options);
          question=personMapQuestion.get(questionableKeyList.get(i));

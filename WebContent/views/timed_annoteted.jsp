@@ -24,14 +24,13 @@
   </div>
 </nav>
 <div class="container-fluid">
-Choose from the following. It will be reflected to the second screen with other contents. If you want both, do not do anything. 
 
 </br>
-
+<!-- 
   <label class="radio-inline"><input type="radio" value="both" name="option" checked="checked">Question and Info</label>
- <!--    <label class="radio-inline"><input type="radio" value="question" name="option">Only Question</label> -->
+     <label class="radio-inline"><input type="radio" value="question" name="option">Only Question</label> 
   <label class="radio-inline"><input type="radio" value="info" name="option">Only Information</label>
-
+ -->
 <video width="1000" height="500" controls style="display: block;margin: auto;">
   <source id="videoSrc" src=<s:property value="videoUrl"/> type="video/mp4">
   <track id="videoTrack" src="vtt_files/<s:property value="subTitleName"/>" kind="subtitles" srclang="en" label="English" default/>

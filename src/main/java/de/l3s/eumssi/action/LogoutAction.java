@@ -20,6 +20,8 @@ public class LogoutAction  implements ServletRequestAware{
 		    session.invalidate();
 	if(from.equals("video"))	    
 	   return "login";
+	else if(from.equals("second_screen"))
+		return "second_screen_login";
 	else
 		return "annoteted_video";
  				

@@ -55,6 +55,9 @@
     .swiper-slide{
     margin-left:0.5cm;
     }
+    .custom-pagination{
+     cursor: pointer;
+    }
    /* 
     .swiper-slide {
         text-align: center;
@@ -94,6 +97,7 @@
        <a>
     <form action="logout">
         <input type="submit" class='btn btn-primary' value="logout">
+        <s:hidden name="from" value="second_screen"/>
     </form></a>
     </li>
 
@@ -121,8 +125,14 @@
 	
 	var swiper = new Swiper('.swiper-container', {
         pagination: '.swiper-pagination',
-        paginationClickable: true,
-        direction: 'vertical'
+        paginationClickable: true
+     //   direction: 'vertical'
+     /*
+        paginationBulletRender: function (index, className) {
+            return '<span class="custom-pagination">&nbsp;' + (index + 1) + '</span>';
+        }
+	*/
+      
     });
 	 $.post("chat1",
 			    {
@@ -145,20 +155,32 @@
 				    		var options=content.options;
 				    		var correct=content.correct;
 				    		var correctAnsArray=correct.split(",")
-				    		var radioOrCheckbox;
+				    		var radioOrCheckbox=null;
 				    		
 				    		if(correctAnsArray.length==1){
 				    			var i;
 				    			for(i=0;i<options.length;i++){
+				    				if(radioOrCheckbox==null){
+				    					radioOrCheckbox="<br><input type='radio' name=\'"
+											+ correct + "\' value=\'" + options[i] + "\'><span>" + options[i]+"</span>";
+				    				}
+									else{
 				    				radioOrCheckbox+="<br><input type='radio' name=\'"
-									+ correct + "\' value=\'" + options[i] + "\'>" + options[i];	
+									+ correct + "\' value=\'" + options[i] + "\'><span>" + options[i]+"</span>";
+									}
 				    			} 
 				    		}
 				    		else{
 				    			var i;
 				    			for(i=0;i<options.length;i++){
+				    				if(radioOrCheckbox==null){
+				    					radioOrCheckbox="<br><input type='checkbox' name=\'"
+											+ correct + "\' value=\'" + options[i] + "\'><span>" + options[i]+"</span>";
+				    				}
+				    				else{
 				    				radioOrCheckbox+="<br><input type='checkbox' name=\'"
-									+ correct +"\' id=\'" + options[i]+ "\' value=\'" + options[i] + "\'>" + options[i];	
+									+ correct +"\' id=\'" + options[i]+ "\' value=\'" + options[i] + "\'><span>" + options[i]+"</span>";
+				    				}
 				    			}
 				    			radioOrCheckbox+="<input type='hidden' value=\'" + correct + "\'>";
 				    		}
@@ -167,18 +189,30 @@
 			    		}
 			    		else if(data.type=='infos'){
 			    			name="<img src=Images" + "//" + "Info.png><strong>" + data.name + "</strong><br>";
-			    			html=name+thumbnail+content;
+			    			if(thumbnail!=null)
+				    			html=name+thumbnail+content;
+				    			else
+				    				html=name+content
 			    		}
 			    		else{
 			    			name="<strong>" + data.name + "</strong><br>";
+			    			if(thumbnail!=null)
 			    			html=name+thumbnail+content;
+			    			else
+			    				html=name+content;	
 			    		}
 			    		if(swiper.isEnd){
-			        		swiper.appendSlide("<div class='swiper-slide'><img class='fade_star' src='Images/fade-star.png'style='width:16px;height:16px;'><br>"+html+"</div>")
+			    	//		var inside=$("div.swiper-pagination-clickable").html();
+			    	//		inside=inside.replace("swiper-pagination-bullet-active","");
+			    	//		$( "div.swiper-pagination-clickable").empty();
+			    			swiper.appendSlide("<div class='swiper-slide'><img class='fade_star' src='Images/fade-star.png'style='width:16px;height:16px;'><br>"+html+"</div>")
+			       // 		$( "div span.swiper-pagination-bullet").last().html(data.name);
+			    //			$( "div.swiper-pagination-clickable").last().prepend(inside);
 			        		swiper.slideNext()
 			            }
 			        	else{
 			        		swiper.appendSlide("<div class='swiper-slide'><img class='fade_star' src='Images/fade-star.png'style='width:16px;height:16px;'><br>"+html+"</div>")
+			        		$( "div span.swiper-pagination-bullet").last().html(data.name);
 			        	}
 			    		
 			    		 $.get(this);	
@@ -213,6 +247,17 @@ $(document).on("click",".fade_star", function () {
         	$(this).after("<img src=Images/cross.png>");
         wrongAns++;
         $('#wrong').html("<img src=Images/cross.png>&nbsp;<strong>"+wrongAns+"</strong>");
+        var correctArray=correctans.split(",");
+        $("input[type='checkbox']").each(function(){
+        	if(jQuery.inArray($(this).val(),correctArray) !== -1){
+     		   var span = $(this).next();
+     		   span.css({"background":"#286090","font-weight":"bold"});
+     		   
+     	   }
+     		
+     	});
+        
+      
     	}
         $(this).attr("disabled",true);
         
@@ -222,8 +267,6 @@ $(document).on("click",".fade_star", function () {
     	{
     	var selected = $(this).siblings("input[type='radio']:checked");
     	
-    	
-    
     	if (selected.length > 0) {
     	    selectedVal = selected.val();
     	
@@ -239,6 +282,15 @@ $(document).on("click",".fade_star", function () {
     	$(this).after("<img src=Images/cross.png>");
     	wrongAns++;
     	$('#wrong').html("<img src=Images/cross.png>&nbsp;<strong>"+wrongAns+"</strong>");
+    	$("input[type='radio']").each(function(){
+    	   if($(this).val()==$(this).attr("name")){
+    		   var span = $(this).next();
+    		   span.css({"background":"#286090","font-weight":"bold"});
+    		   
+    	   }
+    		
+    	});
+
     }
     	$(this).attr("disabled",true);
     	}	

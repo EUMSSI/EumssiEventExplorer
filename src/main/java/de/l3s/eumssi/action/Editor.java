@@ -8,7 +8,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -30,16 +34,17 @@ private String actionType;
 private String entityName;
 private String updateString;
 private String documentNumber;
+private String time;
 HttpServletRequest request = ServletActionContext.getRequest();	
 HttpSession session = request.getSession(false);
 
-public String execute() throws IOException{
+public String execute() throws IOException, java.text.ParseException{
 	session = request.getSession(true);
 	userId=(String) session.getAttribute("userId");
 	int documentNumberInt;
 	
 	//actionType=changeDefault means change and save the new default request in file	
-		 if(actionType.equals("changeDefault") || actionType.equals("editDefault")){
+		 if(actionType.equals("changeDefault") || actionType.equals("editDefault") || actionType.equals("delete")){
 			 documentNumberInt=Integer.valueOf(documentNumber);
 			Edit(documentNumberInt);
 			getJsonContent();
@@ -52,7 +57,7 @@ public String execute() throws IOException{
 	 * Here getJsonContent() will get all the contents a vtt file and save it as a json object in content varible.
 	 * Two particular jsp file(ChangeDefaultContents.jsp and EditDefaultContents.jsp) dedicated for above two types of requests. 
 	 * Both will parse the "content" json object and show desired output accoring to their
-	 * resposibility and other parameters  
+	 * responsibility and other parameters  
 	 * Return type "default_contents" is for showing the DefaultContents.jsp page, where all the defaults contents of a particular 
 	 * file is shown.
 	 * Return type "change_default_request" and "edit_default_request" will show the "ChangeDefaultContents.jsp" and "EditDefaultContents.jsp"
@@ -82,15 +87,27 @@ private void getJsonContent() throws IOException{
      JSONParser parser = new JSONParser();
      JSONObject jsonObject=new JSONObject();
      int i=0;
+     String[] times;
+     String time=null;
      while((line = reader.readLine()) != null) {
           if(i==0){
 	         String[] headlineArray=line.split("#");
 	         System.out.println(headlineArray);
 	         headLine=headlineArray[1];
 	        }
+          else{
+        	  if(line.contains("-->"))
+        	  {
+        		  System.out.println("time found");
+        		  times=line.split("-->");
+        		  time=times[0].replace(" ","");
+        		  System.out.println(times[0]);
+        	  }
+          }
      i=1;
      try {
 	       jsonObject=(JSONObject) parser.parse(line);
+	       jsonObject.put("time",time);
           contents.add(jsonObject);
 	
      } catch (ParseException e) {
@@ -99,7 +116,7 @@ private void getJsonContent() throws IOException{
      } 
 }
 
-private void Edit(int documentNumber) throws IOException{
+private void Edit(int documentNumber) throws IOException, java.text.ParseException{
 	ServletContext context = request.getServletContext();
 	InputStream input = context.getResourceAsStream("/vtt_files/"+fileName);
 	BufferedReader reader = new BufferedReader(new InputStreamReader(input));
@@ -108,18 +125,24 @@ private void Edit(int documentNumber) throws IOException{
 	JSONObject jsonObject=new JSONObject();
 	ArrayList<String> fileContent=new ArrayList<String>();
     int documentCounter=0;
-    /*Read each line from the file, save it in a list(for writing letter) try toparse it in json. 
+    /*Read each line from the file, save it in a list(for writing letter) try to parse it in json. 
      */
 	while((line = reader.readLine()) != null) {
 	   try {
 		   jsonObject=(JSONObject) parser.parse(line);
 			JSONObject default_content=(JSONObject) jsonObject.get("default_content");
 			documentCounter++;
-			/*math with document number, if the request is change default then only change the default by update string which contains new 
+			/*match with document number, if the request is change default then only change the default by update string which contains new 
 			 * default request.
 			 */
 			if(documentNumber==documentCounter){
-				if(actionType.equals("changeDefault")){
+			  if(actionType.equals("delete")){
+				  fileContent.remove(fileContent.size()-1);
+				  fileContent.remove(fileContent.size()-1);
+				  fileContent.remove(fileContent.size()-1);
+				  continue;
+			  }
+			  else if(actionType.equals("changeDefault")){
 					System.out.println(updateString);
 					JSONObject jsonUpdateString=new JSONObject();
 					jsonUpdateString=(JSONObject)parser.parse(updateString);
@@ -130,6 +153,17 @@ private void Edit(int documentNumber) throws IOException{
 			   * if it is not a question or info, no need to look for the number.
 			   */
 				else if(actionType.equals("editDefault")){
+					System.out.println("time is :"+time);
+					DateFormat df = new SimpleDateFormat("HH:mm:ss.SSS");
+				    Date timeTo = df.parse(time);
+				    Calendar cal = Calendar.getInstance();
+				    cal.setTime(timeTo);
+				    cal.add(Calendar.SECOND, 3);
+				    timeTo = cal.getTime();
+				    System.out.println("time+5: " + df.format(timeTo));
+				    String timeSpan= time+" --> "+df.format(timeTo);
+				    fileContent.remove(fileContent.size()-1);
+				    fileContent.add(timeSpan);
 				   if(default_content.get("type").equals("questions")||default_content.get("type").equals("infos")){
 						   Integer default_content_number= Integer.valueOf((String) default_content.get("number"));
 					   JSONArray questionOrInfo=(JSONArray)jsonObject.get(default_content.get("type"));
@@ -233,6 +267,14 @@ public String getDocumentNumber() {
 
 public void setDocumentNumber(String documentNumber) {
 	this.documentNumber = documentNumber;
+}
+
+public String getTime() {
+	return time;
+}
+
+public void setTime(String time) {
+	this.time = time;
 }
 
 

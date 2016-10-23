@@ -26,6 +26,7 @@
 <div class="container-fluid">
 <div id="content">
 <form action="editor" id="editFrm" method="post" style='background-color: #fafafa;border-style: ridge; padding:10px;'>
+Time: <input type="text" name="time" id="time">
 <div id="textboxes">
 <!--
 Question: <input type="text" id="question" name="question" size="40"/>
@@ -67,6 +68,8 @@ var fileName=document.getElementById("fileName").value;
 var jsonContent=jQuery.parseJSON(contents);
 var default_content=jsonContent[documentNumber-1].default_content;
 var default_type=default_content.type;
+var time=jsonContent[documentNumber-1].time
+$('#time').val(time)
 if(default_type=="questions" || default_type=="infos" ){
 	var default_number=default_content.number;
 	var questionOrInfo=jsonContent[documentNumber-1][default_type]

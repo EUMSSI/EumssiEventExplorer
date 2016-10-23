@@ -57,28 +57,31 @@ trackElement.addEventListener("load", function() {
  textTrack.mode ="hidden";
  textTrack.oncuechange = function (){
 	  var cue = this.activeCues[0];
-	  var jsonObj = jQuery.parseJSON(cue.text);
-	  var content_type=jsonObj.default_content.type;
-	  var content;	
-	  if(content_type=="questions" || content_type=="infos"){
-			var content_number=jsonObj.default_content.number;
-			document.getElementById("asdf").innerHTML="type :"+jsonObj.default_content.type+"  number: "+jsonObj.default_content.number;
-		   content=jsonObj.content_type[content_number];
-		   document.getElementById("asdf").innerHTML="type :"+jsonObj.default_content.type+
-		   "  number: "+jsonObj.default_content.number+" content: "+content;
-		}
-		else{
-			content=jsonObj.content_type[content_number];
-		
-		document.getElementById("asdf").innerHTML="type :"+jsonObj.default_content.type+" content: "+content;
-		}
-	
-	  $.post("chat1",
-		        {
-		          content: cue.text,
-		        //  infoOrQues:$('input[name="option"]:checked').val()
-                
-		        })
+		 // document.getElementById("asdf").innerHTML=cue.text;
+		var jsonObj = jQuery.parseJSON(cue.text);
+		var content_type=jsonObj.default_content.type;
+		 var content;
+		 var mainContent;
+		  if(content_type=="questions" || content_type=="infos"){
+				var content_number=jsonObj.default_content.number;
+				document.getElementById("asdf").innerHTML="type :"+jsonObj.default_content.type+"  number: "+jsonObj.default_content.number;
+			  content=jsonObj[content_type][content_number];
+			  if(typeof content=='object'){
+				 
+			  }
+
+			}
+			else{
+				content=jsonObj[content_type];
+
+			}
+		  mainContent={name:jsonObj.name,type:jsonObj.default_content.type,thumbnail:jsonObj.thumbnail,content:content};
+		  $.post("chat1",
+			        {
+			          content:JSON.stringify(mainContent),
+			        
+	              
+			        })
 	}
  
 
