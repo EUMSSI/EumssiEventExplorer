@@ -142,7 +142,7 @@ public Second_screen_contentAction(MongoDBManager mongoClient){
 					else if (decisionList.get(i).equals("wordGraph")){
 						String wordGraph=locationObject.wordGraphGenerator(entity.getString("name"));
 						content.put("wordGraph", wordGraph);
-						
+						 
 					}
 				 }
 			   }
@@ -190,9 +190,15 @@ public Second_screen_contentAction(MongoDBManager mongoClient){
 					String otherEntityName = (String) entity.get("name");
 					otherEntityName = otherEntityName.replaceAll("[_]", " ");
 					String entityAbstract =(String) entity.get("abstract");
+					try{
 					entityAbstract = entityAbstract.replaceAll("[\"]", "");
 					entityAbstract = entityAbstract.replaceAll("\\(.+?\\)\\s*", "");
 					content.put("abstract",entityAbstract );
+					}
+					catch(NullPointerException e){
+						
+					}
+					
 				  
 					
 				}

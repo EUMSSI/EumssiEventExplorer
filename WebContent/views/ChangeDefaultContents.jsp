@@ -59,7 +59,7 @@ for(i=0;i<jsonContent.length;i++){
 				if(value.type=='questions' || value.type=='questions')
 					default_number=value.number;
 			}
-			if(key!="thumbnail" && key!="name" && key!="default_content"){
+			if(key!="thumbnail" && key!="name" && key!="default_content" && key!="time"){
 			  if(key=="questions"){
 				  var j;
 				  var length=jsonContent[i].questions.length;

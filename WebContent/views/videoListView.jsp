@@ -125,15 +125,19 @@
 	
 	var swiper = new Swiper('.swiper-container', {
         pagination: '.swiper-pagination',
-        paginationClickable: true
-     //   direction: 'vertical'
+        paginationClickable: true,
+        direction: 'vertical',
      /*
-        paginationBulletRender: function (index, className) {
-            return '<span class="custom-pagination">&nbsp;' + (index + 1) + '</span>';
+        paginationBulletRender: function (swiper,index, className) {
+            return '<span class="swiper-pagination-bullet">&nbsp;'+swiper+'</span>';
+    //        alert(swiper)
+        	//return '<span>&nbsp;' + (index + 1) + '</span>';
         }
-	*/
+	
+  */ 
       
     });
+    
 	 $.post("chat1",
 			    {
 			        requestType: "second_screen"
@@ -146,11 +150,13 @@
 			    		var thumbnail="<img src="+data.thumbnail+" height='50' width='50'><br>";
 			    		}
 			    		
-			    		var name;
+			    		var name=data.name;
 			    		var content=data.content;
 			    		var html;
+			    		
 			    		if(data.type=='questions'){
-			    			name="<img src=Images" + "//" + "quiz.png><strong>" + data.name + "</strong><br>";
+			    			name="<img src=Images" + "//" + "quiz.png><strong>" + data.name + 
+			    			"</strong>&nbsp;<a href='https://en.wikipedia.org/wiki/"+data.name+"'><img src='http://image.flaticon.com/icons/svg/25/25284.svg' width='20px' height='20px'/></a><br>";
 			    			var question=content.question;
 				    		var options=content.options;
 				    		var correct=content.correct;
@@ -188,27 +194,30 @@
 				    		html=name+thumbnail+question+radioOrCheckbox+button;
 			    		}
 			    		else if(data.type=='infos'){
-			    			name="<img src=Images" + "//" + "Info.png><strong>" + data.name + "</strong><br>";
+			    			name="<img src=Images" + "//" + "Info.png><strong>" + 
+			    			data.name + "</strong>&nbsp;<a href='https://en.wikipedia.org/wiki/"+
+			    			data.name+"'><img src='http://image.flaticon.com/icons/svg/25/25284.svg' width='20px' height='20px'/></a><br>";
 			    			if(thumbnail!=null)
 				    			html=name+thumbnail+content;
 				    			else
 				    				html=name+content
 			    		}
 			    		else{
-			    			name="<strong>" + data.name + "</strong><br>";
+			    			name="<strong>" + data.name + "</strong>&nbsp;<a href='https://en.wikipedia.org/wiki/"+data.name+"'><img src='http://image.flaticon.com/icons/svg/25/25284.svg' width='20px' height='20px'/></a><br>";
 			    			if(thumbnail!=null)
 			    			html=name+thumbnail+content;
 			    			else
 			    				html=name+content;	
 			    		}
 			    		if(swiper.isEnd){
-			    	//		var inside=$("div.swiper-pagination-clickable").html();
-			    	//		inside=inside.replace("swiper-pagination-bullet-active","");
-			    	//		$( "div.swiper-pagination-clickable").empty();
+			    		//	var inside=$("div.swiper-pagination-clickable").html();
+			    		//	inside=inside.replace("swiper-pagination-bullet-active","");
+			    		//	$( "div.swiper-pagination-clickable").empty();
 			    			swiper.appendSlide("<div class='swiper-slide'><img class='fade_star' src='Images/fade-star.png'style='width:16px;height:16px;'><br>"+html+"</div>")
-			       // 		$( "div span.swiper-pagination-bullet").last().html(data.name);
-			    //			$( "div.swiper-pagination-clickable").last().prepend(inside);
-			        		swiper.slideNext()
+			        	//	$( "div span.swiper-pagination-bullet").html();
+			    		//	$( "div.swiper-pagination-clickable").last().prepend(inside);
+			
+			        		swiper.slideNext();
 			            }
 			        	else{
 			        		swiper.appendSlide("<div class='swiper-slide'><img class='fade_star' src='Images/fade-star.png'style='width:16px;height:16px;'><br>"+html+"</div>")

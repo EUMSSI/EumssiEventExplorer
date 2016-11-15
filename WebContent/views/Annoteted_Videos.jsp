@@ -16,7 +16,7 @@
      <ul class="nav navbar-nav">
       <li><a><img src="Images/eumssi_logo.png"><br>
       <h3 style="font-family:serif;">Hello <s:property value="userId"/></h3> </a></li>
-      <li><a><h3 style="font-family:serif;">Annoted Videos</h3></a></li>
+      <li><a><h3 style="font-family:serif;">Annoteted Videos</h3></a></li>
       <li><a><button type="button" class='btn btn-primary'  id="close">Close</button></a></li>
       <li><a><s:form method="get" action="logout"> <input type="submit" class='btn btn-primary'  value="logout"><s:hidden name="from" value="timed_annoteted"/></s:form></a><li>
      </ul>
@@ -34,7 +34,13 @@
 <br>
 <!--  <a href="timed_annoteted?videoUrl=http://tv-download.dw.com/dwtv_video/flv/je/je20160424_merkel11g_sd_avc.mp4&subTitleName=test.vtt">Test</a> -->
 </div>
-
+</br>
+<h3>Some recent automatically Annoteted videos</h3>
+<s:iterator value="recentVideos">
+<a href="timed_annoteted?videoUrl=<s:property value="videoUrl"/>&subTitleName=<s:property value="subtitleName"/>"><s:property value="headLine"/></a>  
+&nbsp;&nbsp;<a href="editor?fileName=<s:property value="subtitleName"/>&actionType=defaultContents">Edit</a>
+<br>
+</s:iterator>
 
 </body>
 </html>

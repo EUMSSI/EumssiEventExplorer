@@ -90,36 +90,7 @@ public class VideoAction implements ServletRequestAware{
 		
 		if(timedEntities!=null){
 		String fileContent="WEBVTT FILE\n";
-		/*
-		SimpleDateFormat formatter;
-		formatter = new SimpleDateFormat("HH:mm:ss.SSS");
-	    Calendar calendar = Calendar.getInstance();
-	    calendar.setTime(new Date());
-	    calendar.set(Calendar.HOUR_OF_DAY,0);
-	    calendar.set(Calendar.MINUTE,0);
-	    calendar.set(Calendar.SECOND,0);
-	    calendar.set(Calendar.MILLISECOND,0);
-	    Calendar time1 = Calendar.getInstance();
-	    Calendar time2 = Calendar.getInstance();
 	    Second_screen_contentAction second_screen_content=new Second_screen_contentAction();
-	    for(int i=0;i<entities.length;i++) {
-			    time1.setTime(calendar.getTime());
-			    time1.set(Calendar.HOUR_OF_DAY,0);
-			    time1.set(Calendar.MINUTE,0);
-			    time1.set(Calendar.SECOND,calendar.get(Calendar.SECOND)+i*5);
-			    time1.set(Calendar.MILLISECOND,0);
-
-			    time2.setTime(calendar.getTime());
-			    time2.set(Calendar.HOUR_OF_DAY,0);
-			    time2.set(Calendar.MINUTE,0);
-			    time2.set(Calendar.SECOND,calendar.get(Calendar.SECOND)+i*5+3);
-			    time2.set(Calendar.MILLISECOND,0);  
-			    
-			    System.out.println(formatter.format(time1.getTime()));
-			    fileContent=fileContent+"\n"+entities[i]+"\n"+formatter.format(time1.getTime())+" --> "+formatter.format(time2.getTime())+"\n"+second_screen_content.contentGenerator(entities[i])+"\n";
-	    }
-	    */
-		 Second_screen_contentAction second_screen_content=new Second_screen_contentAction();
 		for ( Long key : timedEntities.keySet() ) {
 			long millis=key;
 			String timeFrom= String.format("%02d:%02d:%02d.%03d",
@@ -137,7 +108,17 @@ public class VideoAction implements ServletRequestAware{
 		    cal.add(Calendar.SECOND, 5);
 		    timeTo = cal.getTime();
 		    System.out.println("time+5: " + df.format(timeTo));
-			fileContent=fileContent+"\n"+timedEntities.get(key)+"\n"+timeFrom+" --> "+df.format(timeTo)+"\n"+second_screen_content.contentGenerator(timedEntities.get(key).substring(0, 1).toUpperCase() + timedEntities.get(key).substring(1))+"\n";
+		    String tempEntityName=timedEntities.get(key);
+		    String[] tempEntityName_part=tempEntityName.split(" ");
+		    String searchable_entity_Name=null;
+		    for(int partCounter=0;partCounter<tempEntityName_part.length;partCounter++){
+		    	if(searchable_entity_Name==null)
+		    	searchable_entity_Name=tempEntityName_part[partCounter].substring(0, 1).toUpperCase()+tempEntityName_part[partCounter].substring(1);
+		    	else
+		    		searchable_entity_Name=searchable_entity_Name+'_'+tempEntityName_part[partCounter].substring(0, 1).toUpperCase()+tempEntityName_part[partCounter].substring(1);
+		    }
+			fileContent=fileContent+"\n"+timedEntities.get(key)+"\n"+timeFrom+" --> "+
+		    df.format(timeTo)+"\n"+second_screen_content.contentGenerator(searchable_entity_Name)+"\n";
 		}
 		
 	    FileWriter fw = new FileWriter(file);
@@ -157,9 +138,15 @@ private  Map<Long, String> ensureTenSecondsDelay(TreeMap<Long, String> timedEnti
 		if(higherKey==null){
 			break mainLoop;
 		}
+		try{
 		if(higherKey-key<10000){
 			Long nextHigherKey=timedEntities.higherKey(higherKey);
+			if(nextHigherKey==null){
+				timedEntities.remove(higherKey);
+				break mainLoop;
+			}
 			Long d=higherKey-key;
+			
 			if((10000+(10000-d))<(nextHigherKey-higherKey)){
 			 String valueOfHigherKey=timedEntities.get(higherKey);
 			 timedEntities.remove(higherKey);
@@ -170,6 +157,13 @@ private  Map<Long, String> ensureTenSecondsDelay(TreeMap<Long, String> timedEnti
 			}
 			
 			break;
+		}
+		}
+		catch(NullPointerException e){
+			System.out.println("timedEntities: "+timedEntities);
+			System.out.println("key: "+key);
+			System.out.println("higherKey: "+higherKey);
+			//System.out.println("nextHigherKey: "+nextHigherKey);
 		}
 	}
   

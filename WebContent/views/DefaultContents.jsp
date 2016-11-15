@@ -42,6 +42,8 @@ var content;
 var documentNumber;
 for(i=0;i<jsonContent.length;i++){
 	var name=jsonContent[i].name;
+	if(!jsonContent[i].hasOwnProperty("default_content"))
+		continue;
 	var thumbnail=jsonContent[i].thumbnail;
 	var time=jsonContent[i].time;
 	var default_content=jsonContent[i].default_content.type;

@@ -68,6 +68,7 @@ public String execute() throws IOException, java.text.ParseException{
          
           if(actionType.equals("changeDefaultRequest")){
   			System.out.println(entityName);
+  			System.out.println(contents);
   	        return "change_default_request";
   		}
           else if(actionType.equals("editDefaultRequest")){

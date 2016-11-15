@@ -81,11 +81,22 @@ if(default_type=="questions" || default_type=="infos" ){
     	var i;
     	for(i=0;i<updateString.options.length;i++){
     		var j=i+1;
-    		$( "#textboxes" ).append( "Option"+j+": <input type='text' id='option"+j+"' class='option' name='option"+j+"' size='40'/></br></br>" )
-    		$('#option'+j+'').val(updateString.options[i])
+    		var correctAnswers=updateString.correct.split(',')
+    		if(jQuery.inArray(updateString.options[i],correctAnswers)== -1){
+    		$( "#textboxes" ).append( "Option"+j+": <input type='text' id='option"+j+"' class='option' name='option"+j+
+    				"' size='40'/>&nbsp;&nbsp;<input type='checkbox' name='correct'/>&nbsp;Correct</br></br>")
+    	    }
+    	else{
+    		$( "#textboxes" ).append( "Option"+j+": <input type='text' id='option"+j+"' class='option' name='option"+j+
+    				"' size='40'/>&nbsp;&nbsp;<input type='checkbox' checked name='correct'/>&nbsp;Correct</br></br>" )
     	}
-    	$( "#textboxes" ).append( "Correct"+j+": <input type='text' id='correct' name='correct' size='40'/></br></br>" )
-    	$('#correct').val(updateString.correct)
+    		$('#option'+j+'').val(updateString.options[i])
+    	    $('#option'+j+'').append("<input type='radio' name='correct'/>")
+    		
+    	    
+    	    
+    	}
+    	
     	/*
     	$('#question').val(updateString.question)
     	$('#option1').val(updateString.options[0])
@@ -107,6 +118,7 @@ else{
 	var updateString=updateDocument[default_type];
 	$('#updateString').val(updateString)
 }
+
 if(default_type=="questions"){
 $(document).ready(function() {
 $("#editFrm").submit(function() {
@@ -114,8 +126,15 @@ $("#editFrm").submit(function() {
 	$('.option').each(function(){
 		options.push('"'+$(this).val()+'"')
 	});
-	
-	updateString='{"question":"'+$("#question").val()+'" , "correct": "'+$("#correct").val()+'", "options":['+options+']}';
+	var correctAns =null;
+	$(':checkbox:checked').each(function(i){
+        if(correctAns==null)
+        	correctAns = $(this).prev().val();
+        else
+        	correctAns =correctAns+','+ $(this).prev().val();
+      });
+
+	updateString='{"question":"'+$("#question").val()+'" , "correct": "'+correctAns+'", "options":['+options+']}';
 	/*
 	updateString='{"question":"'+$("#question").val()+'" , "correct": "'+$("#correct").val()+'", "options":["'+$("#option1").val()+'","'+$("#option2").val()+'","'+
 	$("#option3").val()+'","'+$("#option4").val()+'"]	}';
