@@ -96,7 +96,7 @@ public class annoteted_videos_login implements ServletRequestAware {
 			for(int i=0;i<transcriptJarray.size();i++){
 				JSONObject eachJsonObject=(JSONObject) transcriptJarray.get(i); 
 				Long beginTime=(Long) eachJsonObject.get("beginTime");
-			    String entity=	(String) eachJsonObject.get("text");
+			    String entity=	(String) eachJsonObject.get("uri");
 				timedEntities.put(beginTime, entity);
 			}
 		    timedEntities=ensureTenSecondsDelay((TreeMap<Long, String>) timedEntities);
@@ -123,6 +123,7 @@ public class annoteted_videos_login implements ServletRequestAware {
 		      cal.add(Calendar.SECOND, 5);
 		      timeTo = cal.getTime();
 		      System.out.println("time+5: " + df.format(timeTo));
+		      /*
 		      String tempEntityName=timedEntities.get(key);
 		      String[] tempEntityName_part=tempEntityName.split(" ");
 		      String searchable_entity_Name=null;
@@ -132,8 +133,9 @@ public class annoteted_videos_login implements ServletRequestAware {
 		    	else
 		    		searchable_entity_Name=searchable_entity_Name+'_'+tempEntityName_part[partCounter].substring(0, 1).toUpperCase()+tempEntityName_part[partCounter].substring(1);
 		       }
+		      */ 
 			  fileContent=fileContent+"\n"+timedEntities.get(key)+"\n"+timeFrom+" --> "+
-		      df.format(timeTo)+"\n"+second_screen_content.contentGenerator(searchable_entity_Name)+"\n";
+		      df.format(timeTo)+"\n"+second_screen_content.contentGenerator(timedEntities.get(key))+"\n";
 		      }
 		
 	         FileWriter fw = new FileWriter(file);
