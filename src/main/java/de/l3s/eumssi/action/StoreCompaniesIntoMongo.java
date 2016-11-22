@@ -334,13 +334,9 @@ public class StoreCompaniesIntoMongo {
 	    /*iterate over the predicates*/
 	    while(iterator.hasNext()){
 	    	String key = (String) iterator.next();
-	    	
-	    	Object ob;
-		   	JSONObject job1;
-		   			   	
-		   	
-		   	ob= jsonObject.get(key);
-   		    job1 = (JSONObject) ob;
+	    	    	 			   			  
+	    	Object ob= jsonObject.get(key);
+		   	JSONObject job1 = (JSONObject) ob;
     		String[] splitKey1 = (String[])key.split("/");
 		    String asianCountry = splitKey1[splitKey1.length-1].toString();
 		    if (!asianCountry.contains("Category:") && !asianCountry.equals(null)) {
