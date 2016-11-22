@@ -162,6 +162,12 @@ public Second_screen_contentAction(MongoDBManager mongoClient){
 							
 					}
 					
+					
+					
+					
+					
+					
+					
 					else if(decisionList.get(i).equals("info")){
 						JSONArray infos=personObject.infoGenerator();
 						if(infos!=null){
@@ -184,6 +190,29 @@ public Second_screen_contentAction(MongoDBManager mongoClient){
 					}
 				}
 				}
+				
+				
+				
+				
+			/*handler for company entity*/
+			else if(type.equals("company")){
+									
+				CompanyContentGenerator companyObject=new CompanyContentGenerator(entity);
+/*				String decision=companyObject.makeDicision(infoOrQues);
+									
+				if(decision!=null)
+				if(decision.equals("question")){*/
+					//String question=companyObject.questionGenerator();
+					JSONArray questions = companyObject.questionGenerator();
+					if(questions != null){					
+						content.put("questions", questions);
+					}					
+				/*}*/														
+			}				
+				
+				
+				
+				
 				 
 			else if(type.equals("other")) {
 				
