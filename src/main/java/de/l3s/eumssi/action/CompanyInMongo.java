@@ -45,8 +45,9 @@ public class CompanyInMongo implements Action, ServletRequestAware {
 	 * @throws Exception the exception
 	 */
 	private void grepListOfCompanies() throws Exception {
+		System.out.println("Company In Mongo");
 		listOfUrlsWithPredicatesCount.put("Category:Car_manufacturers_of_Germany", 2);
-		listOfUrlsWithPredicatesCount.put("Category:Car_manufacturers_of_France", 3);
+		/*listOfUrlsWithPredicatesCount.put("Category:Car_manufacturers_of_France", 3);
 		listOfUrlsWithPredicatesCount.put("Category:Car_manufacturers_of_Italy", 3);
 		listOfUrlsWithPredicatesCount.put("Category:Car_manufacturers_of_Japan", 3);
 		listOfUrlsWithPredicatesCount.put("Category:Car_manufacturers_of_Sweden", 3);
@@ -59,7 +60,7 @@ public class CompanyInMongo implements Action, ServletRequestAware {
 		listOfUrlsWithPredicatesCount.put("Internet", 5);
 		listOfUrlsWithPredicatesCount.put("Computer_hardware", 3);
 		listOfUrlsWithPredicatesCount.put("Category:Clothing_brands", 3);
-		listOfUrlsWithPredicatesCount.put("Category:Soft_drinks", 3);
+		listOfUrlsWithPredicatesCount.put("Category:Soft_drinks", 3);*/
 		
 		/*Iterating through the url and read the list of companies from data*/		
 		for(Iterator<?> listOfUrlsIterator = listOfUrlsWithPredicatesCount.keySet().iterator(); listOfUrlsIterator.hasNext();) {
