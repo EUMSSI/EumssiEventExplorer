@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Annoteted Videos</title>
+<title>Annotated Videos</title>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
 <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
@@ -35,7 +35,7 @@
 <!--  <a href="timed_annoteted?videoUrl=http://tv-download.dw.com/dwtv_video/flv/je/je20160424_merkel11g_sd_avc.mp4&subTitleName=test.vtt">Test</a> -->
 </div>
 </br>
-<h3>Some recent automatically Annoteted videos</h3>
+<h3>Some recent automatically Annotated videos</h3>
 <s:iterator value="recentVideos">
 <a href="timed_annoteted?videoUrl=<s:property value="videoUrl"/>&subTitleName=<s:property value="subtitleName"/>"><s:property value="headLine"/></a>  
 &nbsp;&nbsp;<a href="editor?fileName=<s:property value="subtitleName"/>&actionType=defaultContents">Edit</a>
