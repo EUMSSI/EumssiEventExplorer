@@ -28,19 +28,7 @@
 <form action="editor" id="editFrm" method="post" style='background-color: #fafafa;border-style: ridge; padding:10px;'>
 Time: <input type="text" name="time" id="time">
 <div id="textboxes">
-<!--
-Question: <input type="text" id="question" name="question" size="40"/>
-</br></br>
-Option 1: <input type="text" id="option1" name="option1" size="40"/>
-</br></br>
-Option 2: <input type="text" id="option2" name="option2" size="40"/>
-</br></br>
-Option 3: <input type="text" id="option3" name="option3" size="40"/>
-</br></br>
-Option 4: <input type="text" id="option4" name="option4" size="40"/>
-</br></br>
-Correct : <input type="text" id="correct" name="correct" size="40"/>
--->
+
 </br></br>
 
 </div>

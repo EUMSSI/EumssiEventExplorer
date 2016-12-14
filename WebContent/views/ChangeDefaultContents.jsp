@@ -138,7 +138,17 @@ for(i=0;i<jsonContent.length;i++){
 		
 }
 var checked_value=$('input[name="optradio"]:checked').val();
-$("#content").append("<a id='save' style='float:left' href=editor?documentNumber="+documentNumber+"&actionType=changeDefault&fileName="+fileName+"&updateString="+checked_value+" class='btn btn-primary' role='button'>Save</a>")
+$("#content").append("<a id='addQuestion' style='float:left' href=addNew?documentNumber="+documentNumber+"&entityName="+entityName+
+		"&actionType=addQuestion&fileName="+fileName+" class='btn btn-primary' role='button'>Add Question</a><br><br>")
+
+$("#content").append("&nbsp;&nbsp;")
+
+$("#content").append("<a id='addInfo' style='float:left' href=addNew?documentNumber="+documentNumber+"&entityName="+entityName+
+		"&actionType=addInfo&fileName="+fileName+" class='btn btn-primary' role='button'>Add Info</a><br><br>")
+
+$("#content").append("<a id='save' style='float:left' href=editor?documentNumber="+documentNumber+"&actionType=changeDefault&fileName="+fileName+
+		"&updateString="+checked_value+" class='btn btn-primary' role='button'>Save</a>")
+
 $('input:radio[name="optradio"]').on('click',
 	    function(){
 	    	checked_value=$('input[name="optradio"]:checked').val();

@@ -49,10 +49,16 @@ public String execute() throws IOException, java.text.ParseException{
 			Edit(documentNumberInt);
 			getJsonContent();
 			return "default_contents";
-		}	
+		}
+		 else if(actionType.equals("addQuestion") ||actionType.equals("addInfo")){
+			 documentNumberInt=Integer.valueOf(documentNumber);
+				Edit(documentNumberInt);
+				getJsonContent();
+				return "change_default_request";
+		 }
 	 
 	/*in else section 2 types of request will be handaled.
-	 * 1. request for change the default. where all the possible contents of a perticular entity will be shown to admin 
+	 * 1. request for change the default. where all the possible contents of a particular entity will be shown to admin 
 	 * 2. request for edit  the default. admin can edit the default.
 	 * Here getJsonContent() will get all the contents a vtt file and save it as a json object in content varible.
 	 * Two particular jsp file(ChangeDefaultContents.jsp and EditDefaultContents.jsp) dedicated for above two types of requests. 
@@ -143,13 +149,48 @@ private void Edit(int documentNumber) throws IOException, java.text.ParseExcepti
 				  fileContent.remove(fileContent.size()-1);
 				  continue;
 			  }
+			  else if(actionType.equals("addQuestion")){
+	          	if(jsonObject.containsKey("questions")){
+	          		JSONArray questions=(JSONArray) jsonObject.get("questions");
+	          		JSONObject updateStringJson=(JSONObject) parser.parse(updateString);
+	          		questions.add(updateStringJson);
+	          		jsonObject.put("questions", questions);
+	          		fileContent.add(jsonObject.toString());
+	     
+	          	}
+	          	else{
+	          		JSONArray questions=new JSONArray();
+	          		 JSONObject updateStringJson=(JSONObject) parser.parse(updateString);
+	          		questions.add(updateStringJson);
+	          		jsonObject.put("questions", questions);
+	          		fileContent.add(jsonObject.toString());
+	          		
+	          	}
+			  }
+              else if(actionType.equals("addInfo")){
+            	  if(jsonObject.containsKey("infos")){
+  	          		JSONArray infos=(JSONArray) jsonObject.get("infos");
+  	          		infos.add(updateString);
+  	          		jsonObject.put("infos", infos);
+  	          		fileContent.add(jsonObject.toString());
+  	          	}
+  	          	else{
+  	          		JSONArray infos=new JSONArray();
+  	          		infos.add(updateString);
+  	          		jsonObject.put("infos", infos);
+  	          		fileContent.add(jsonObject.toString());
+  	          		
+  	          	} 
+			  }
+			  
 			  else if(actionType.equals("changeDefault")){
 					System.out.println(updateString);
 					JSONObject jsonUpdateString=new JSONObject();
 					jsonUpdateString=(JSONObject)parser.parse(updateString);
-				  jsonObject.put("default_content", jsonUpdateString);
-				   fileContent.add(jsonObject.toString());
+				    jsonObject.put("default_content", jsonUpdateString);
+				    fileContent.add(jsonObject.toString());
 				}
+			  
 			  /*If the request is edit default, if it is a question of info, take the number and then update is specified position. 
 			   * if it is not a question or info, no need to look for the number.
 			   */

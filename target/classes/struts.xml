@@ -69,6 +69,12 @@
               <result name="success">/views/index.jsp</result>
         </action>
        
+       <action name="addNew" 
+			class="de.l3s.eumssi.action.AddNew">
+              <result name="addQuestion">/views/AddQuestion.jsp</result>
+              <result name="addInfo">/views/AddInfo.jsp</result>
+       </action>
+       
        <action name="editor" 
 			class="de.l3s.eumssi.action.Editor">
               <result name="default_contents">/views/DefaultContents.jsp</result>
