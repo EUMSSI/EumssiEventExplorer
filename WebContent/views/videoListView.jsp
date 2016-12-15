@@ -161,21 +161,22 @@
 				    		var options=content.options;
 				    		var correct=content.correct;
 				    		var correctAnsArray=correct.split(",")
-				    		var radioOrCheckbox=null;
+				    		var ansButtonOption=null;
 				    		
 				    		if(correctAnsArray.length==1){
 				    			var i;
 				    			for(i=0;i<options.length;i++){
-				    				if(radioOrCheckbox==null){
-				    					radioOrCheckbox="<br><input type='radio' name=\'"
-											+ correct + "\' value=\'" + options[i] + "\'><span>" + options[i]+"</span>";
+				    				if(ansButtonOption==null){
+				    					ansButtonOption="<br><label class='btn btn-primary'><input type='radio' name=\'"
+											+ correct + "\' value=\'" + options[i] + "\'>" + options[i]+"</label><br>";
 				    				}
 									else{
-				    				radioOrCheckbox+="<br><input type='radio' name=\'"
-									+ correct + "\' value=\'" + options[i] + "\'><span>" + options[i]+"</span>";
+										ansButtonOption+="<br><label class='btn btn-primary'><input type='radio' name=\'"
+											+ correct + "\' value=\'" + options[i] + "\'>" + options[i]+"</label><br>";
 									}
 				    			} 
 				    		}
+				    		/*
 				    		else{
 				    			var i;
 				    			for(i=0;i<options.length;i++){
@@ -190,8 +191,9 @@
 				    			}
 				    			radioOrCheckbox+="<input type='hidden' value=\'" + correct + "\'>";
 				    		}
+				    		*/
 				    		var button="<br><input type='button' id='check' class='btn btn-primary' value='check'></div>";
-				    		html=name+thumbnail+question+radioOrCheckbox+button;
+				    		html=name+thumbnail+"<div class='btn-group' data-toggle='buttons'>"+question+ansButtonOption+button+"</div>";
 			    		}
 			    		else if(data.type=='infos'){
 			    			name="<img src=Images" + "//" + "Info.png><strong>" + 
@@ -274,7 +276,7 @@ $(document).on("click",".fade_star", function () {
     	
     	else
     	{
-    	var selected = $(this).siblings("input[type='radio']:checked");
+    	var selected = $("input[type='radio']:checked");
     	
     	if (selected.length > 0) {
     	    selectedVal = selected.val();
@@ -293,8 +295,8 @@ $(document).on("click",".fade_star", function () {
     	$('#wrong').html("<img src=Images/cross.png>&nbsp;<strong>"+wrongAns+"</strong>");
     	$("input[type='radio']").each(function(){
     	   if($(this).val()==$(this).attr("name")){
-    		   var span = $(this).next();
-    		   span.css({"background":"#286090","font-weight":"bold"});
+    		   var label = $(this).parent();
+    		   label.attr("class","btn btn-success")
     		   
     	   }
     		

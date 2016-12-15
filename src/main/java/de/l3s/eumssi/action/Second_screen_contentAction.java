@@ -247,12 +247,12 @@ public Second_screen_contentAction(MongoDBManager mongoClient){
 			catch(NullPointerException e){
 				System.out.println(questions.size());
 			}
-			defaultContent.put("number",questionNumber );
+			defaultContent.put("number",String.valueOf(questionNumber) );
 		}
 		if(contentDecision.equals("infos")){
 			JSONArray infos= (JSONArray) content.get("infos");
 			int infoNumber=ran.nextInt(infos.size());
-			defaultContent.put("number",infoNumber );
+			defaultContent.put("number",String.valueOf(infoNumber) );
 		}
 		
 	   content.put("default_content", defaultContent);
