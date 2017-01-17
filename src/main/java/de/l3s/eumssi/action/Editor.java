@@ -35,6 +35,8 @@ private String entityName;
 private String updateString;
 private String documentNumber;
 private String time;
+private String editWhat;
+private String deleteWhat;
 HttpServletRequest request = ServletActionContext.getRequest();	
 HttpSession session = request.getSession(false);
 
@@ -44,13 +46,13 @@ public String execute() throws IOException, java.text.ParseException{
 	int documentNumberInt;
 	
 	//actionType=changeDefault means change and save the new default request in file	
-		 if(actionType.equals("changeDefault") || actionType.equals("editDefault") || actionType.equals("delete")){
+		 if(actionType.equals("changeDefault") || actionType.equals("delete")){
 			 documentNumberInt=Integer.valueOf(documentNumber);
 			Edit(documentNumberInt);
 			getJsonContent();
 			return "default_contents";
 		}
-		 else if(actionType.equals("addQuestion") ||actionType.equals("addInfo")){
+		 else if(actionType.equals("addQuestion") ||actionType.equals("addInfo") || actionType.equals("editContent")|| actionType.equals("deleteContent") ){
 			 documentNumberInt=Integer.valueOf(documentNumber);
 				Edit(documentNumberInt);
 				getJsonContent();
@@ -60,7 +62,7 @@ public String execute() throws IOException, java.text.ParseException{
 	/*in else section 2 types of request will be handaled.
 	 * 1. request for change the default. where all the possible contents of a particular entity will be shown to admin 
 	 * 2. request for edit  the default. admin can edit the default.
-	 * Here getJsonContent() will get all the contents a vtt file and save it as a json object in content varible.
+	 * Here getJsonContent() will get all the contents a vtt file and save it as a json object in content variable.
 	 * Two particular jsp file(ChangeDefaultContents.jsp and EditDefaultContents.jsp) dedicated for above two types of requests. 
 	 * Both will parse the "content" json object and show desired output accoring to their
 	 * responsibility and other parameters  
@@ -77,9 +79,9 @@ public String execute() throws IOException, java.text.ParseException{
   			System.out.println(contents);
   	        return "change_default_request";
   		}
-          else if(actionType.equals("editDefaultRequest")){
+          else if(actionType.equals("editContentRequest")){
     			System.out.println(entityName);
-      	        return "edit_default_request";
+      	        return "edit_content_request";
       		}
    
   }
@@ -194,7 +196,7 @@ private void Edit(int documentNumber) throws IOException, java.text.ParseExcepti
 			  /*If the request is edit default, if it is a question of info, take the number and then update is specified position. 
 			   * if it is not a question or info, no need to look for the number.
 			   */
-				else if(actionType.equals("editDefault")){
+				else if(actionType.equals("editContent")){
 					System.out.println("time is :"+time);
 					DateFormat df = new SimpleDateFormat("HH:mm:ss.SSS");
 				    Date timeTo = df.parse(time);
@@ -206,23 +208,46 @@ private void Edit(int documentNumber) throws IOException, java.text.ParseExcepti
 				    String timeSpan= time+" --> "+df.format(timeTo);
 				    fileContent.remove(fileContent.size()-1);
 				    fileContent.add(timeSpan);
-				   if(default_content.get("type").equals("questions")||default_content.get("type").equals("infos")){
-						   Integer default_content_number= Integer.valueOf((String) default_content.get("number"));
-					   JSONArray questionOrInfo=(JSONArray)jsonObject.get(default_content.get("type"));
-					   if(default_content.get("type").equals("questions")){
+				    JSONObject editWhatJs=new JSONObject();
+				       editWhatJs=(JSONObject) parser.parse(editWhat);
+				   if(editWhatJs.get("type").equals("questions")||editWhatJs.get("type").equals("infos")){
+					     
+						   Integer content_number= Integer.valueOf((String) editWhatJs.get("number"));
+					   JSONArray questionOrInfo=(JSONArray)jsonObject.get(editWhatJs.get("type"));
+					   if(editWhatJs.get("type").equals("questions")){
 					   JSONObject updateStringJson=(JSONObject) parser.parse(updateString);
-					   questionOrInfo.set(default_content_number.intValue(), updateStringJson);
+					   questionOrInfo.set(content_number.intValue(), updateStringJson);
 					   }
 					   else
-						   questionOrInfo.set(default_content_number.intValue(), updateString);
-					   jsonObject.put(default_content.get("type"), questionOrInfo);
+						   questionOrInfo.set(content_number.intValue(), updateString);
+					   jsonObject.put(editWhatJs.get("type"), questionOrInfo);
 					   fileContent.add(jsonObject.toString());   
 				   }
 				   else{
 					   System.out.println(updateString);
-					   jsonObject.put(default_content.get("type"), updateString);
+					   jsonObject.put(editWhatJs.get("type"), updateString);
 					   fileContent.add(jsonObject.toString());
 				   }
+				}
+				else if(actionType.equals("deleteContent")){
+					JSONObject deleteWhatJs=new JSONObject();
+				       deleteWhatJs=(JSONObject) parser.parse(deleteWhat);
+				   if(deleteWhatJs.get("type").equals("questions")||deleteWhatJs.get("type").equals("infos")){
+					   Integer content_number= Integer.valueOf((String) deleteWhatJs.get("number"));
+					   JSONArray questionOrInfo=(JSONArray)jsonObject.get(deleteWhatJs.get("type"));
+					   if(questionOrInfo.size()>1){
+					   questionOrInfo.remove(content_number.intValue());
+					   jsonObject.put(deleteWhatJs.get("type"),questionOrInfo);
+					   }
+					   else
+						   jsonObject.remove(questionOrInfo);
+					   }
+					   else
+						   jsonObject.remove(deleteWhatJs.get("type"));
+					   
+					   fileContent.add(jsonObject.toString());   
+				   
+				   
 				}
 				
 				else{
@@ -319,5 +344,20 @@ public void setTime(String time) {
 	this.time = time;
 }
 
+public String getEditWhat() {
+	return editWhat;
+}
+
+public void setEditWhat(String editWhat) {
+	this.editWhat = editWhat;
+}
+
+public String getDeleteWhat() {
+	return deleteWhat;
+}
+
+public void setDeleteWhat(String deleteWhat) {
+	this.deleteWhat = deleteWhat;
+}
 
 }

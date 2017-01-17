@@ -79,7 +79,7 @@
 			class="de.l3s.eumssi.action.Editor">
               <result name="default_contents">/views/DefaultContents.jsp</result>
               <result name="change_default_request">/views/ChangeDefaultContents.jsp</result>
-              <result name="edit_default_request">/views/EditDefaultContents.jsp</result>
+              <result name="edit_content_request">/views/EditContents.jsp</result>
         </action>
       <!--   
          <action name="video1" 

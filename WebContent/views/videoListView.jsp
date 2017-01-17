@@ -168,11 +168,11 @@
 				    			for(i=0;i<options.length;i++){
 				    				if(ansButtonOption==null){
 				    					ansButtonOption="<br><label class='btn btn-primary'><input type='radio' name=\'"
-											+ correct + "\' value=\'" + options[i] + "\'>" + options[i]+"</label><br>";
+											+ correct + "\' value=\'" + options[i] + "\' class='options'>" + options[i]+"</label><br>";
 				    				}
 									else{
 										ansButtonOption+="<br><label class='btn btn-primary'><input type='radio' name=\'"
-											+ correct + "\' value=\'" + options[i] + "\'>" + options[i]+"</label><br>";
+											+ correct + "\' value=\'" + options[i] + "\'class='options'>" + options[i]+"</label><br>";
 									}
 				    			} 
 				    		}
@@ -192,8 +192,8 @@
 				    			radioOrCheckbox+="<input type='hidden' value=\'" + correct + "\'>";
 				    		}
 				    		*/
-				    		var button="<br><input type='button' id='check' class='btn btn-primary' value='check'></div>";
-				    		html=name+thumbnail+"<div class='btn-group' data-toggle='buttons'>"+question+ansButtonOption+button+"</div>";
+				    		
+				    		html=name+thumbnail+"<div class='btn-group' data-toggle='buttons'>"+question+ansButtonOption+"</div>";
 			    		}
 			    		else if(data.type=='infos'){
 			    			name="<img src=Images" + "//" + "Info.png><strong>" + 
@@ -245,7 +245,7 @@ $(document).on("click",".fade_star", function () {
 
  	var correctAns=0;
  	var wrongAns=0;
-    $(document.body).on("click","#check",function() {
+    $(document.body).on("change","input.options",function() {
     	var selected = $(this).siblings("input[type='hidden']");
     	if($(selected).is(':hidden')){
     	var correctans=selected.val();
@@ -270,8 +270,8 @@ $(document).on("click",".fade_star", function () {
         
       
     	}
-        $(this).attr("disabled",true);
-        
+       // $(this).attr("disabled",true);
+       
     	}
     	
     	else
@@ -283,27 +283,30 @@ $(document).on("click",".fade_star", function () {
     	
         
     	if(selected.val()==selected.attr('name')){
-    	$(this).val("Correct");
-    	$(this).after("<img src=Images/tik.png>");
-    	correctAns++;
+        correctAns++;
         $('#correct').html("<img src=Images/tik.png>&nbsp;<strong>"+correctAns+"</strong>");
+        selected.parent().attr("class","btn btn-success")
     }
     	else{
-    	$(this).val("False");
-    	$(this).after("<img src=Images/cross.png>");
-    	wrongAns++;
-    	$('#wrong').html("<img src=Images/cross.png>&nbsp;<strong>"+wrongAns+"</strong>");
+         wrongAns++;
+  	     $('#wrong').html("<img src=Images/cross.png>&nbsp;<strong>"+wrongAns+"</strong>");
+  	     selected.parent().attr("class","btn btn-danger")
     	$("input[type='radio']").each(function(){
     	   if($(this).val()==$(this).attr("name")){
     		   var label = $(this).parent();
-    		   label.attr("class","btn btn-success")
+    		   label.attr("class","btn btn-warning")
     		   
     	   }
     		
     	});
 
     }
-    	$(this).attr("disabled",true);
+    	
+    	// $(document).find('input.options').attr("disabled",true);
+    	 $(this).parent().siblings().children().remove()
+    	 $(this).remove()
+    
+    	 
     	}	
     	}
     	});

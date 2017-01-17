@@ -265,24 +265,32 @@ public class LocationContentGenerator extends ContentGenerator {
 	}
         
 		if(keyName.equals("neighbours")){
-			where="capital";
+			where="type";
 			projection="name";
 		}
 		else{
 			where=keyName;
 			projection=keyName;
 		}
+/*
 		for (String keyvalue : keyValue)
 			optionList.add(keyvalue);
 
 		if (optionList.size() >= 4)
 			optionList =  new ArrayList(optionList.subList(0, 3));
-	
+	*/
+		optionList.add(keyValue[0]);
+		
 		ArrayList distances = new ArrayList();
 		Map<Double, String> distanceToKeyValue = new HashMap<Double, String>();
 		BasicDBObject whereQuery = new BasicDBObject();
-
+        
+		if(!keyName.equals("neighbours")){
 		whereQuery.put(where, java.util.regex.Pattern.compile("."));
+		}
+		else{
+			whereQuery.put(where, "country");
+		}
 		BasicDBObject projectionQuery = new BasicDBObject();
 		projectionQuery.put("_id", 0);
 		projectionQuery.put(projection, 1);
@@ -323,9 +331,11 @@ public class LocationContentGenerator extends ContentGenerator {
 
 			if (!checkList.contains((String) distanceToKeyValue.get(distances.get(i)))) {
 				String option=distanceToKeyValue.get(distances.get(i));
-				if(optionList.contains(option.substring(0, 1).toUpperCase() + option.substring(1)))
+				if(optionList.contains(option.substring(0, 1).toUpperCase() + option.substring(1)) || checkList.contains(option.substring(0, 1).toUpperCase() + option.substring(1)))
 						continue;
-				if(optionList.contains(option.toLowerCase()))
+				if(optionList.contains(option.toLowerCase()) || checkList.contains(option.toLowerCase()))
+					continue;
+				if(optionList.contains(option.replaceAll("_", " ")) || checkList.contains(option.replaceAll("_", " ")))
 					continue;
 				optionList.add(distanceToKeyValue.get(distances.get(i)));
 				if (optionList.size() == 4) {

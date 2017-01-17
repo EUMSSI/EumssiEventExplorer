@@ -32,10 +32,11 @@ Time: <input type="text" name="time" id="time">
 </br></br>
 
 </div>
- <input type="hidden" name="actionType" value="editDefault">
+ <input type="hidden" name="actionType" value="editContent">
  <s:hidden  name="entityName" id="entityName" />
 <s:hidden  name="documentNumber" id="documentNumber" />
 <s:hidden  name="fileName" id="fileName" />
+<s:hidden  name="editWhat" id="editWhat" />
 <textarea id="updateString"  form="editFrm" name="updateString" cols="100" rows="15"></textarea>
 </br></br>
  <input type="submit" class='btn btn-primary'/>       
@@ -46,6 +47,7 @@ Time: <input type="text" name="time" id="time">
 <s:hidden  name="contents" id="contents" />
 <s:hidden  name="entityName" id="entityName" />
 <s:hidden  name="documentNumber" id="documentNumber" />
+<s:hidden  name="editWhat" id="editWhat" />
 <s:hidden  name="fileName" id="fileName" />
 </body>
 <script>
@@ -53,16 +55,18 @@ var contents=document.getElementById("contents").value;
 var entityName=document.getElementById("entityName").value;
 var documentNumber=document.getElementById("documentNumber").value;
 var fileName=document.getElementById("fileName").value;
+var editWhat=jQuery.parseJSON(document.getElementById("editWhat").value);
+var editContent_type=editWhat.type;
 var jsonContent=jQuery.parseJSON(contents);
-var default_content=jsonContent[documentNumber-1].default_content;
-var default_type=default_content.type;
+//var default_content=jsonContent[documentNumber-1].default_content;
+//var default_type=default_content.type;
 var time=jsonContent[documentNumber-1].time
 $('#time').val(time)
-if(default_type=="questions" || default_type=="infos" ){
-	var default_number=default_content.number;
-	var questionOrInfo=jsonContent[documentNumber-1][default_type]
-	var updateString=questionOrInfo[default_number];
-    if(default_type=="questions"){
+if(editContent_type=="questions" || editContent_type=="infos" ){
+	var editContent_number=editWhat.number;
+	var questionOrInfo=jsonContent[documentNumber-1][editContent_type]
+	var updateString=questionOrInfo[editContent_number];
+    if(editContent_type=="questions"){
     	$('#updateString').hide();
     	$( "#textboxes" ).append( "Question: <input type='text' id='question' name='question' size='40'/></br></br>" )
     	$('#question').val(updateString.question)
@@ -107,7 +111,7 @@ else{
 	$('#updateString').val(updateString)
 }
 
-if(default_type=="questions"){
+if(editContent_type=="questions"){
 $(document).ready(function() {
 $("#editFrm").submit(function() {
 	var options=[];

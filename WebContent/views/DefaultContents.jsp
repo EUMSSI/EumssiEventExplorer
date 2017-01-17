@@ -61,10 +61,18 @@ for(i=0;i<jsonContent.length;i++){
 	 var j;
 	 var optionList=null;
 	 for(j=0;j<options.length;j++){
-		 if(optionList==null)
-			 optionList="<li>"+options[j];
-	     else
-		     optionList+="<li>"+options[j];
+		 if(optionList==null){
+			 if(options[j].toLowerCase()==correct || options[j]==correct)
+				 optionList="<li><strong>"+options[j]+"</strong>";
+		     else	 
+			     optionList="<li>"+options[j];
+		 }
+	     else{
+	    	 if(options[j].toLowerCase()==correct || options[j]==correct)
+				 optionList+="<li><strong>"+options[j]+"</strong>";
+		     else
+		         optionList+="<li>"+options[j];
+	     }
 	 } 
 	 if(thumbnail!=null)
 	content="<img src="+thumbnail+"  style='width:50px;height:50px;'> <strong>"+name+" </strong> <br>"+question+"<br>"+optionList+"<br>Correct: "+correct;
@@ -91,13 +99,16 @@ for(i=0;i<jsonContent.length;i++){
  documentNumber=i+1;
  $("#content").append("<div style='background-color: #fafafa;border-style: ridge;' class='row' style='border-style: ridge;'><div style='padding:10px;' class='col-md-8'>At: "+time
  +"<br>"+content+"</div><div style='padding:10px;' class='col-md-4'><a style='float:right' href=editor?fileName="+fileName+"&entityName="+name+"&actionType=changeDefaultRequest&documentNumber="+documentNumber
-		 +" class='btn btn-primary' role='button'>Change</a><br><br><a data-content-type="+default_content+" id='editLink' style='float:right' href=editor?fileName="+fileName+"&entityName="+name+"&actionType=editDefaultRequest&documentNumber="+documentNumber
-		 +" class='btn btn-primary' role='button'>Edit</a><br><br><a style='float:right' href=editor?fileName="+fileName+"&entityName="+name+"&actionType=delete&documentNumber="+documentNumber
-		 +" class='btn btn-primary' role='button'>Delete</a></div></div>")
+		 +" class='btn btn-primary' role='button'>Change Contents</a><br><br><a name='delete' style='float:right' href=editor?fileName="+fileName+"&entityName="+name+"&actionType=delete&documentNumber="+documentNumber
+		 +" class='btn btn-primary' role='button'>Delete Entity</a></div></div>")
  $("#content").append("<br>");
  
 
 }
 $('a[data-content-type="map"]').hide();
+$("body").on("click",'[name="delete"]', function(){
+	
+	return confirm("Are you sure, you want to delete this entity?")
+});	    
 </script>
 </html>

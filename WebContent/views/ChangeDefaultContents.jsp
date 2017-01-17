@@ -75,25 +75,51 @@ for(i=0;i<jsonContent.length;i++){
 						 var k;
 						 var optionList=null;
 						 for(k=0;k<options.length;k++){
-							 if(optionList==null)
-								 optionList="<li>"+options[k];
-						     else
-							     optionList+="<li>"+options[k];
+							 if(optionList==null){
+								 if(options[k].toLowerCase()==correct || options[k]==correct)
+									 optionList="<li><strong>"+options[k]+"</strong>";
+							     else	 
+								     optionList="<li>"+options[k];
+							 }
+						     else{
+						    	 if(options[k].toLowerCase()==correct || options[k]==correct)
+									 optionList+="<li><strong>"+options[k]+"</strong>";
+							     else
+							         optionList+="<li>"+options[k];
+						     }
 						 } 
 						 var radioButton;
+						 var editButton;
+						 var deleteButton;
 						 if(default_type=='questions'){
-							 if(default_number==j)
-								 radioButton= '<input style="float:left" checked value={"type":"questions","number":"'+j+'"} type="radio" name="optradio">';
-							  else
-								  radioButton= '<input style="float:left" value={"type":"questions","number":"'+j+'"} type="radio" name="optradio">';	  
-						 }
+							 if(default_number==j){
+								 radioButton='<input style="float:left" checked value={"type":"questions","number":"'+j+'"} type="radio" name="optradio">';
+							     editButton='<a style="float:left" href=editor?documentNumber='+documentNumber+'&actionType=editContentRequest&fileName='+fileName+
+							 		'&editWhat={"type":"questions","number":"'+j+'"}&entityName='+entityName+' class="btn btn-primary" role="button">Edit</a>';
+							 		
+							     deleteButton='<a name="delete" style="float:left" href=editor?documentNumber='+documentNumber+'&actionType=deleteContent&fileName='+fileName+
+							 		'&deleteWhat={"type":"questions","number":"'+j+'"}&entityName='+entityName+' class="btn btn-primary" role="button">Delete</a>';
+							 }
+							  else{
+								  radioButton= '<input style="float:left" value={"type":"questions","number":"'+j+'"} type="radio" name="optradio">';
+								  editButton='<a  style="float:left" href=editor?documentNumber='+documentNumber+'&actionType=editContentRequest&fileName='+fileName+
+							 		'&editWhat={"type":"questions","number":"'+j+'"}&entityName='+entityName+' class="btn btn-primary" role="button">Edit</a>';
+							 		
+								  deleteButton='<a name="delete" style="float:left" href=editor?documentNumber='+documentNumber+'&actionType=deleteContent&fileName='+fileName+
+							 		'&deleteWhat={"type":"questions","number":"'+j+'"}&entityName='+entityName+' class="btn btn-primary" role="button">Delete</a>';
+							  }
+						}
 						 else{
 							 radioButton= '<input style="float:left" value={"type":"questions","number":"'+j+'"} type="radio" name="optradio">';
+							 editButton='<a style="float:left" href=editor?documentNumber='+documentNumber+'&actionType=editContentRequest&fileName='+fileName+
+						 		'&editWhat={"type":"questions","number":"'+j+'"}&entityName='+entityName+' class="btn btn-primary" role="button">Edit</a>';
+							 deleteButton='<a name="delete" style="float:left" href=editor?documentNumber='+documentNumber+'&actionType=deleteContent&fileName='+fileName+
+						 		'&deleteWhat={"type":"questions","number":"'+j+'"}&entityName='+entityName+' class="btn btn-primary" role="button">Delete</a>';
 						 }
 						 var questionNumber=j+1;
-						content="<strong>Question:"+" "+ questionNumber +"</strong><br>"+question+"<br>"+optionList+"<br>Correct: "+correct; 
+						content="<strong>Question:"+" "+ questionNumber +"</strong><br>"+question+"<br>"+optionList; 
 						 $("#content").append("<div class='row' style='background-color: #fafafa;border-style: ridge;'><div style='padding:10px;' class='col-md-8'>"+
-								 content+"<br><br>Select"+radioButton+"</div><div style='padding:10px;' class='col-md-4'></div></div>")
+								 content+"<br><br>Select"+radioButton+"<br>"+editButton+"<br><br>"+deleteButton+"</div><div style='padding:10px;' class='col-md-4'></div></div>")
 								 $("#content").append("<br><br>")
 			     }
 			  }
@@ -104,31 +130,53 @@ for(i=0;i<jsonContent.length;i++){
 					 var info=infoArray[j];
 					 var infoNumber=j+1;
 					 if(default_type=='infos'){
-						 if(default_number==j)
+						 if(default_number==j){
 							 radioButton= '<input style="float:left" checked value={"type":"infos","number":"'+j+'"} type="radio" name="optradio">';
-						  else
-							  radioButton= '<input style="float:left" value={"type":"infos","number":"'+j+'"} type="radio" name="optradio">';	  
+							 editButton='<a style="float:left" href=editor?documentNumber='+documentNumber+'&actionType=editContentRequest&fileName='+fileName+
+						 		'&editWhat={"type":"infos","number":"'+j+'"}&entityName='+entityName+' class="btn btn-primary" role="button">Edit</a>';
+							 deleteButton='<a name="delete" style="float:left" href=editor?documentNumber='+documentNumber+'&actionType=deleteContent&fileName='+fileName+
+						 		'&deleteWhat={"type":"infos","number":"'+j+'"}&entityName='+entityName+' class="btn btn-primary" role="button">Delete</a>';
+						 }
+						  else{
+							  radioButton= '<input style="float:left" value={"type":"infos","number":"'+j+'"} type="radio" name="optradio">';
+							  editButton='<a style="float:left" href=editor?documentNumber='+documentNumber+'&actionType=editContentRequest&fileName='+fileName+
+						 		'&editWhat={"type":"infos","number":"'+j+'"}&entityName='+entityName+' class="btn btn-primary" role="button">Edit</a>';
+							  deleteButton='<a name="delete" style="float:left" href=editor?documentNumber='+documentNumber+'&actionType=deleteContent&fileName='+fileName+
+						 		'&deleteWhat={"type":"infos","number":"'+j+'"}&entityName='+entityName+' class="btn btn-primary" role="button">Delete</a>';
+						  }
 					 }
 					 else{
 						 radioButton= '<input style="float:left" value={"type":"infos","number":"'+j+'"} type="radio" name="optradio">';
+						 editButton='<a style="float:left" href=editor?documentNumber='+documentNumber+'&actionType=editContentRequest&fileName='+fileName+
+					 		'&editWhat={"type":"infos","number":"'+j+'"}&entityName='+entityName+' class="btn btn-primary" role="button">Edit</a>';
+						 deleteButton='<a name="delete" style="float:left" href=editor?documentNumber='+documentNumber+'&actionType=deleteContent&fileName='+fileName+
+					 		'&deleteWhat={"type":"infos","number":"'+j+'"}&entityName='+entityName+' class="btn btn-primary" role="button">Delete</a>';
 					 }
 					 content="<strong>Info: "+infoNumber+"</strong> <br>"+info;
 					 $("#content").append("<div class='row' style='background-color:#fafafa; border-style: ridge;'><div style='padding:10px;' class='col-md-8'>"+
-							 content+"<br><br>Select"+radioButton+"</div><divstyle='padding:10px;' class='col-md-4'></div></div>")
+							 content+"<br><br>Select"+radioButton+"<br>"+editButton+"<br><br>"+deleteButton+"</div><divstyle='padding:10px;' class='col-md-4'></div></div>")
 							 $("#content").append("<br><br>")
 					 }
 			    }
 			  else {
 				  if(default_type==key){
-					  radioButton= '<input style="float:left" value={"type":"'+key+'"} checked type="radio" name="optradio">';  
+					  radioButton= '<input style="float:left" value={"type":"'+key+'"} checked type="radio" name="optradio">'; 
+					  editButton='<a style="float:left" href=editor?documentNumber='+documentNumber+'&actionType=editContentRequest&fileName='+fileName+
+				 		'&editWhat={"type":"'+key+'"}&entityName='+entityName+' class="btn btn-primary" role="button">Edit</a>';
+					  deleteButton='<a name="delete" style="float:left" href=editor?documentNumber='+documentNumber+'&actionType=deleteContent&fileName='+fileName+
+				 		'&deleteWhat={"type":"'+key+'"}&entityName='+entityName+' class="btn btn-primary" role="button">Delete</a>';
 				  } 
 				  else{
 					  
 					  radioButton= '<input style="float:left" value={"type":"'+key+'"} type="radio" name="optradio">';
+					  editButton='<a style="float:left" href=editor?documentNumber='+documentNumber+'&actionType=editContentRequest&fileName='+fileName+
+				 		'&editWhat={"type":"'+key+'"}&entityName='+entityName+' class="btn btn-primary" role="button">Edit</a>';
+					  deleteButton='<a name="delete" style="float:left" href=editor?documentNumber='+documentNumber+'&actionType=deleteContent&fileName='+fileName+
+				 		'&deleteWhat={"type":"'+key+'"}&entityName='+entityName+' class="btn btn-primary" role="button">Delete</a>';
 				  }
 				 content="<strong>"+key +"</strong> <br>"+value;
 			     $("#content").append("<div class='row' style='background-color: #fafafa; border-style: ridge;'><div style='padding:10px;' class='col-md-8'>"+
-							 content+"<br><br>Select"+radioButton+"</div><div style='padding:10px;' class='col-md-4'></div></div>")
+							 content+"<br><br>Select"+radioButton+"<br>"+editButton+"<br><br>"+deleteButton+"</div><div style='padding:10px;' class='col-md-4'></div></div>")
 							 $("#content").append("<br><br>")
 			  }
 			}
@@ -155,5 +203,10 @@ $('input:radio[name="optradio"]').on('click',
 	    	var href="editor?documentNumber="+documentNumber+"&actionType=changeDefault&fileName="+fileName+"&updateString="+checked_value
 	    	$('#save').attr("href", href);
 	    });
+	    
+$("body").on("click",'[name="delete"]', function(){
+	
+	return confirm("Are you sure, you want to delete this content?")
+});	    
 </script>
 </html>
