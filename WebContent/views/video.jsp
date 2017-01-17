@@ -38,8 +38,8 @@ Choose from the following. It will be reflected to the second screen with other 
 <div id="asdf"></div><br>
 <div>The timing of the information boxes is currently fixed. <br>
         Our goal is to show them at the exact time that a person appears or a location is mentioned. This is shown in:</div>
-        <a href='<s:url action="annoteted_videos"  includeContext="true">
-	     </s:url>'>Annoteted Videos</a><br>
+        <a href='<s:url action="annotated_videos"  includeContext="true">
+	     </s:url>'>Annotated Videos</a><br>
 
 </div>
 <script>

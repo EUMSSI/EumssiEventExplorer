@@ -18,26 +18,26 @@
       <h3 style="font-family:serif;">Hello <s:property value="userId"/></h3> </a></li>
       <li><a><h3 style="font-family:serif;">Annotated Videos</h3></a></li>
       <li><a><button type="button" class='btn btn-primary'  id="close">Close</button></a></li>
-      <li><a><s:form method="get" action="logout"> <input type="submit" class='btn btn-primary'  value="logout"><s:hidden name="from" value="timed_annoteted"/></s:form></a><li>
+      <li><a><s:form method="get" action="logout"> <input type="submit" class='btn btn-primary'  value="logout"><s:hidden name="from" value="timed_annotated"/></s:form></a><li>
      </ul>
   </div>
 </nav>
 <div class="container-fluid">
-<a href="timed_annoteted?videoUrl=http://tv-download.dw.com/dwtv_video/flv/vdt/2016/beng160613_001_qwiinduweb_01i_sd_avc.mp4&subTitleName=beng160613_001_qwiinduweb_01i_sd_avc.vtt">Brexit and German Company</a>  
+<a href="timed_annotated?videoUrl=http://tv-download.dw.com/dwtv_video/flv/vdt/2016/beng160613_001_qwiinduweb_01i_sd_avc.mp4&subTitleName=beng160613_001_qwiinduweb_01i_sd_avc.vtt">Brexit and German Company</a>  
 &nbsp;&nbsp;<a href="editor?fileName=beng160613_001_qwiinduweb_01i_sd_avc.vtt&actionType=defaultContents">Edit</a>
 <br>
-<a href="timed_annoteted?videoUrl=http://tv-download.dw.com/dwtv_video/flv/wse/wse20160604_usa-latinos_sd_avc.mp4&subTitleName=wse20160604_usa-latinos_sd_avc.vtt">Latinos against Trump</a>
+<a href="timed_annotated?videoUrl=http://tv-download.dw.com/dwtv_video/flv/wse/wse20160604_usa-latinos_sd_avc.mp4&subTitleName=wse20160604_usa-latinos_sd_avc.vtt">Latinos against Trump</a>
 &nbsp;&nbsp;<a href="editor?fileName=wse20160604_usa-latinos_sd_avc.vtt&actionType=defaultContents">Edit</a>
 <br>
-<a href="timed_annoteted?videoUrl=http://tv-download.dw.com/dwtv_video/flv/je/je20160424_merkel11g_sd_avc.mp4&subTitleName=je20160424_merkel11g_sd_avc.vtt">Merkel praises migration deal with Turkey</a>
+<a href="timed_annotated?videoUrl=http://tv-download.dw.com/dwtv_video/flv/je/je20160424_merkel11g_sd_avc.mp4&subTitleName=je20160424_merkel11g_sd_avc.vtt">Merkel praises migration deal with Turkey</a>
 &nbsp;&nbsp;<a href="editor?fileName=je20160424_merkel11g_sd_avc.vtt&actionType=defaultContents">Edit</a>
 <br>
-<!--  <a href="timed_annoteted?videoUrl=http://tv-download.dw.com/dwtv_video/flv/je/je20160424_merkel11g_sd_avc.mp4&subTitleName=test.vtt">Test</a> -->
+<!--  <a href="timed_annotated?videoUrl=http://tv-download.dw.com/dwtv_video/flv/je/je20160424_merkel11g_sd_avc.mp4&subTitleName=test.vtt">Test</a> -->
 </div>
 </br>
 <h3>Some recent automatically Annotated videos</h3>
 <s:iterator value="recentVideos">
-<a href="timed_annoteted?videoUrl=<s:property value="videoUrl"/>&subTitleName=<s:property value="subtitleName"/>"><s:property value="headLine"/></a>  
+<a href="timed_annotated?videoUrl=<s:property value="videoUrl"/>&subTitleName=<s:property value="subtitleName"/>"><s:property value="headLine"/></a>  
 &nbsp;&nbsp;<a href="editor?fileName=<s:property value="subtitleName"/>&actionType=defaultContents">Edit</a>
 <br>
 </s:iterator>

@@ -24,7 +24,7 @@
 </nav>
 <s:hidden  name="videoUrl" id="videoUrl" />
  <div class="container-fluid">
-<form id="login" action="annoteted_videos" method="get">
+<form id="login" action="annotated_videos" method="get">
   Provide your user-id:<br>
   <input type="text" name="userId"><br>
   <s:hidden  name="videoUrl" id="videoUrl" />

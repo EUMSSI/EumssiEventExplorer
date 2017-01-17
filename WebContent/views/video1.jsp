@@ -14,7 +14,7 @@
      <ul class="nav navbar-nav">
       <li><a><img src="Images/eumssi_logo.png"></a></li>
       <li><a><h3 style="font-family:serif;">First Screen</h3></a></li>
-      <li><a><form action="annoteted_videos"> <input type="submit" class='btn btn-primary' value="close"></form></a></li>
+      <li><a><form action="annotated_videos"> <input type="submit" class='btn btn-primary' value="close"></form></a></li>
       <li><a><form action="logout"> <input type="submit" class='btn btn-primary' value="logout"></form></a><li>
      </ul>
   </div>
