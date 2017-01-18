@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Insert title here</title>
+<title>Edit the Content</title>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
 <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
@@ -107,7 +107,8 @@ if(editContent_type=="questions" || editContent_type=="infos" ){
 else{
     $('#textboxes').hide();
 	var updateDocument=jsonContent[documentNumber-1];
-	var updateString=updateDocument[default_type];
+	//var updateString=updateDocument[default_type];
+	var updateString=jsonContent[documentNumber-1][editContent_type]
 	$('#updateString').val(updateString)
 }
 

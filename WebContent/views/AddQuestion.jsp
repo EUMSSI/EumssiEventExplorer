@@ -51,10 +51,22 @@ Option4:<input type="text" id='option4' style="width: 300px;" class='option'/>&n
 $("#updateString").hide();
 $("#editFrm").submit(function() {
 	var options=[];
+	var hasAllOptions=true;
 	$('.option').each(function(){
+		var value= $(this).val()
+		if(value==""){
+			hasAllOptions=false	
+			return false
+	
+		}
 		options.push('"'+$(this).val()+'"')
 	});
-var correctAns=$("input[type='radio'][name='correct']:checked").prev().val();
+	var correctAns=$("input[type='radio'][name='correct']:checked").prev().val();	
+	if(hasAllOptions==false || correctAns==null ){
+		 alert("Please provide all the options")
+			event.preventDefault()	
+	}
+
 var updateString='{"question":"'+$("#question").val()+'" , "correct": "'+correctAns+'", "options":['+options+']}';
 /*
 updateString='{"question":"'+$("#question").val()+'" , "correct": "'+$("#correct").val()+'", "options":["'+$("#option1").val()+'","'+$("#option2").val()+'","'+

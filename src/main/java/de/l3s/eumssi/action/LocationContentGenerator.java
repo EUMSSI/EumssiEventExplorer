@@ -139,11 +139,15 @@ public class LocationContentGenerator extends ContentGenerator {
 			String country =locationObject.getString("country");
 			String cityName=(String) locationObject.get("name");
 			Long population=Long.valueOf(locationObject.getString("population"));
+			if(country==null)
+				continue;
 			JSONArray comparedOption=CityCompareByPopulation(cityName, country, population);
 			question=locationMapQuestion.get(questionableKeyList.get(i));
 			questionObj.put("question",locationMapQuestion.get(questionableKeyList.get(i)));
-			questionObj.put("options",comparedOption);
+			
 			questionObj.put("correct",comparedOption.get(2));
+			comparedOption.remove(2);
+			questionObj.put("options",comparedOption);
 		    //questions array will go inside content array
 			questions.add(questionObj);
 		
